@@ -26,6 +26,12 @@ Proses Bisnis utama meliputi:
 Unique Selling Point:
 Pada RePair, seluruh transaksi akan dilaksanakan dalam bentuk barter/sukarela (donasi), sehingga user dapat memilih barang/jasa lainnya sesuai dengan kebutuhan saat itu.
 
+User Role:
+User role pada aplikasi ini hanya 1 (tidak termasuk superadmin), jadi setiap orang dapat membuat post dan mengajukan penawaran barter.
+
+User Persona:
+Kami menargetkan user utama berupa siswa, mahasiswa, dan pekerja dengan range usia 15 sampai 30 tahun di Kota Depok.
+
 Kompetitor:
 a.) Aplikasi E-Commerce (Tokopedia, Shopee, Blibli, dan lainnya)
 b.) Aplikasi Barter Daring (Belum ada aplikasi skala Produksi)
