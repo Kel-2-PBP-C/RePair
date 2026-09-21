@@ -44,20 +44,32 @@ Kami menargetkan user utama berupa siswa, mahasiswa, dan pekerja dengan range us
 <br><br>
 
 ## MVP (Minimum Viable Product)
-1.  Halaman Login/Register (PIC: Noe Andrew JM. Silalahi)
-Pada halaman ini, user dapat melakukan register akun baru, dengan field utama seperti (Nama, akun email, domisili, tanggal lahir, password, dan field lain yang mungkin dibutuhkan).
+1.  Halaman Login/Register + Profile & Settings(PIC: Noe Andrew JM. Silalahi)
+Pada halaman Login, user dapat melakukan register akun baru, dengan field utama seperti (Nama, akun email, domisili, tanggal lahir, password, dan field lain yang mungkin dibutuhkan).
 
-2. Modul Barter (PIC: Rasya Azyan Kautsa)
-Pada modul ini, user dapat melakukan business process utama untuk menukar barang dengan barang/jasa lainnya, beberapa fitur yang dibutuhkan adalah Search Bar, Halaman Rekomendasi (berisi card barang-barang rekomendasi), Card Barang yang ditawarkan (berisi informasi singkat berupa Foto, Nama Barang, Kondisi Kelayakan, dan Tombol Keranjang), Menu Detail Barang (seperti Foto, Nama, Deskripsi, Kondisi Kelayakan Barang, Barang/Jasa yang ingin didapatkan (opsional), Lokasi Titik Temu, Deadline Penawaran, Tombol Keranjang, dan Tombol Ajukan Penawaran beserta dengan menu pengajuan barang), Tombol & Menu Post Barang (berisi field untuk menambah informasi barang (Sama seperti yang terdapat pada Menu Detail Barang))
+Dalam modul ini, user dapat melihat detail akun, mengubah password, dan mengubah preferensi penggunaan aplikasi
 
-3. Modul Keranjang (PIC: Hafizuddin Dzaki Azzam)
+Create: Membuat akun baru, Read: Lihat profil dan settings, Update: Mengubah preferensi & password, Delete: Hapus akun.
+
+2. Modul Barter / Main Page (PIC: Aisha Ibnaty Zahira)
+Pada modul ini, user dapat melihat seluruh barang yang sedang ditawarkan oleh pengguna lainnya, beberapa fitur yang dibutuhkan adalah Search Bar, Halaman Rekomendasi (berisi card barang-barang rekomendasi), Card Barang yang ditawarkan (berisi informasi singkat berupa Foto, Nama Barang, Kondisi Kelayakan, dan Tombol Keranjang), Filter, Tombol & Menu Post Barang
+
+Create: Post Barang Baru, Read: Melihat daftar barang yang ada, Update:-, Delete:-.
+
+3. Modul Detail Barter (PIC: Rasya Azyan Kautsar)
+Pada modul ini, user dapat melakukan business process utama untuk menukar barang dengan barang/jasa lainnya, dengan komponen berupa halaman Detail Barang (seperti Foto, Nama, Deskripsi, Kondisi Kelayakan Barang, Barang/Jasa yang ingin didapatkan (opsional), Lokasi Titik Temu, Deadline Penawaran, Tombol Keranjang, dan Tombol Ajukan Penawaran beserta dengan menu pengajuan barang).
+
+Create: Buat penawaran , Read: Lihat data detail barang yang dipilih, Update:- , Delete: Batalkan penawaran.
+
+4. Modul Keranjang (PIC: Hafizuddin Dzaki Azzam)
 Pada modul ini, user dapat melihat kembali baarng-barang yang pernah disimpan sebelumnya.
 
-4. Modul Daftar Post (PIC: Naila Salsabila)
+Create: Simpan barang ke keranjang, Read: Lihat barang yang pernah disimpan, Update:- , Delete: Hapus barang dari keranjang.
+
+5. Modul Daftar Post (PIC: Naila Salsabila)
 Pada modul ini, user dapat melihat seluruh post yang pernah dibuat, menghapus post, dan melihat siapa saja yang membuat pengajuan dari barang tersebut beserta detail informasi (Nama User, Domisili, dan Barang/Jasa yang dapat ditawarkan)
 
-5. Modul Profil & Setting (PIC: Aisha Ibnaty Zahira)
-Dalam modul ini, user dapat melihat detail akun, mengubah password, dan mengubah preferensi penggunaan aplikasi
+Create:-, Read: Lihat riwayat post, Update: Approve/reject bid (penawaran), Delete: Hapus post.
 
 ### Fitur lain yang dapat dibangun (Nice To Have Features)
 1. Modul Peta Persebaran Lokasi Service Barang
