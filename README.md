@@ -12,7 +12,7 @@ Nama Aplikasi: **RePair**
 <br><br>
 
 ## Deskripsi Aplikasi
-RePair merupakan sebuah aplikasi untuk mempertemukan barang-barang bekas yang tidak terpakai dengan pemilik baru yang lebih membutuhkan. Tujuan utama dari aplikasi ini adalah untuk meminimalisir produksi sampah dari barang-barang yang dapat dimanfaatkan kembali. RePair hadir untuk memberikan nilai tambah suatu barang pada tangan orang-orang yang tepat.
+    RePair merupakan sebuah aplikasi untuk mempertemukan barang-barang bekas yang tidak terpakai dengan pemilik baru yang lebih membutuhkan. Tujuan utama dari aplikasi ini adalah untuk meminimalisir produksi sampah dari barang-barang yang dapat dimanfaatkan kembali. RePair hadir untuk memberikan nilai tambah suatu barang pada tangan orang-orang yang tepat.
 <br><br>
 
 ## Proses Bisnis utama meliputi
@@ -40,16 +40,28 @@ Kami menargetkan user utama berupa siswa, mahasiswa, dan pekerja dengan range us
 ## Kompetitor
 1. Aplikasi E-Commerce (Tokopedia, Shopee, Blibli, dan lainnya)
 2. Aplikasi Barter Daring (Belum ada aplikasi skala Produksi)
-3. Forum Media Sosial (Facebook dan lainnya)
+3. Forum Media Sosial (Facebook Marketplace dan lainnya)
 <br><br>
 
 ## MVP (Minimum Viable Product)
-1.  Halaman Login/Register + Profile & Settings(PIC: Noe Andrew JM. Silalahi)
-Pada halaman Login, user dapat melakukan register akun baru, dengan field utama seperti (Nama, akun email, domisili, tanggal lahir, password, dan field lain yang mungkin dibutuhkan).
+1.  Halaman Login/Register dan Profil & Setting (PIC: Noe Andrew JM. Silalahi)
+Pada halaman ini, user dapat melakukan register akun baru, dengan field utama seperti (Nama, akun email, domisili, tanggal lahir, password, dan field lain yang mungkin dibutuhkan). Lalu user juga dapat user dapat melihat detail akun, mengubah password, dan mengubah preferensi penggunaan aplikasi.
+a. Create	
+    Register	
+        Nama, email, domisili, tanggal lahir, password + konfirmasi. Domisili bisa dropdown dari emsifa/api-wilayah-indonesia biar seragam.
 
-Dalam modul ini, user dapat melihat detail akun, mengubah password, dan mengubah preferensi penggunaan aplikasi
+b. Read	
+    Lihat detail akun	
+        Halaman profil, password jangan ditampilkan.
 
-Create: Membuat akun baru, Read: Lihat profil dan settings, Update: Mengubah preferensi & password, Delete: Hapus akun.
+c. Update	
+    Edit profil dan ubah password	
+        Ubah password minta password lama dulu. Di Django, panggil update_session_auth_hash(request, user) setelah set_password() biar user nggak ke-logout.
+
+d. Delete	
+    Hapus akun 	
+        soft delete, yaitu set is_active = False sehingga akun cuma dinonaktifkan.
+
 
 2. Modul Barter / Main Page (PIC: Aisha Ibnaty Zahira)
 Pada modul ini, user dapat melihat seluruh barang yang sedang ditawarkan oleh pengguna lainnya, beberapa fitur yang dibutuhkan adalah Search Bar, Halaman Rekomendasi (berisi card barang-barang rekomendasi), Card Barang yang ditawarkan (berisi informasi singkat berupa Foto, Nama Barang, Kondisi Kelayakan, dan Tombol Keranjang), Filter, Tombol & Menu Post Barang
@@ -69,7 +81,8 @@ Create: Simpan barang ke keranjang, Read: Lihat barang yang pernah disimpan, Upd
 5. Modul Daftar Post (PIC: Naila Salsabila)
 Pada modul ini, user dapat melihat seluruh post yang pernah dibuat, menghapus post, dan melihat siapa saja yang membuat pengajuan dari barang tersebut beserta detail informasi (Nama User, Domisili, dan Barang/Jasa yang dapat ditawarkan)
 
-Create:-, Read: Lihat riwayat post, Update: Approve/reject bid (penawaran), Delete: Hapus post.
+5. Modul Profil & Setting (PIC: Aisha Ibnaty Zahira)
+Dalam modul ini, user dapat melihat detail akun, mengubah password, dan mengubah preferensi penggunaan aplikasi
 
 ### Fitur lain yang dapat dibangun (Nice To Have Features)
 1. Modul Peta Persebaran Lokasi Service Barang
