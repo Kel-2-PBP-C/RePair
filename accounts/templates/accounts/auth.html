@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{% if auth_mode == 'register' %}Daftar{% else %}Masuk{% endif %}{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'accounts/css/accounts.css' %}">{% endblock %}
+{% block navbar %}
+<header class="auth-header shell">
+    <a class="brand" href="{% url 'accounts:auth' %}" aria-label="Re and Pair, halaman akun">
+        <span class="brand-icon" aria-hidden="true">↻</span>
+        <span>Re<span class="brand-and">&amp;</span>Pair</span>
+    </a>
+    <span class="auth-tagline">Barang lama. Cerita baru.</span>
+</header>
+{% endblock %}
+{% block main_class %}auth-main{% endblock %}
+{% block content %}
+<div class="auth-layout">
+    <aside class="auth-introduction">
+        <span class="eyebrow">Beri barang kesempatan kedua</span>
+        <h1>{% if auth_mode == 'register' %}Cerita berikutnya dimulai darimu.{% else %}Senang melihatmu kembali.{% endif %}</h1>
+        <p class="auth-intro-copy">Bergabung dengan komunitas yang mempertemukan barang yang masih berharga dengan orang yang membutuhkannya.</p>
+        <div class="auth-art" aria-hidden="true"><span>↻</span><small>reuse · repair · reconnect</small></div>
+        <p class="auth-footnote">Lebih banyak cerita, lebih sedikit limbah.</p>
+    </aside>
+    <section class="panel auth-panel" aria-labelledby="auth-title">
+        <nav class="auth-tabs" aria-label="Masuk atau daftar">
+            <a href="{% url 'accounts:auth' %}?mode=login{% if next_url %}&amp;next={{ next_url|urlencode }}{% endif %}"{% if auth_mode == 'login' %} aria-current="page"{% endif %}>Masuk</a>
+            <a href="{% url 'accounts:auth' %}?mode=register{% if next_url %}&amp;next={{ next_url|urlencode }}{% endif %}"{% if auth_mode == 'register' %} aria-current="page"{% endif %}>Daftar</a>
+        </nav>
+        <h2 id="auth-title">{% if auth_mode == 'register' %}Buat akun baru{% else %}Masuk ke akunmu{% endif %}</h2>
+        <p class="muted">{% if auth_mode == 'register' %}Kenalkan dirimu untuk mulai berbagi.{% else %}Masuk untuk menemukan kesempatan baru.{% endif %}</p>
+        <form class="account-form" method="post" action="{% url 'accounts:auth' %}">
+            {% csrf_token %}
+            <input type="hidden" name="mode" value="{{ auth_mode }}">
+            <input type="hidden" name="next" value="{{ next_url }}">
+            {% include 'accounts/_form_fields.html' with form=auth_form %}
+            <button class="button button-primary" type="submit">{% if auth_mode == 'register' %}Buat akun &amp; mulai{% else %}Masuk{% endif %}</button>
+        </form>
+        <p class="auth-alternative">{% if auth_mode == 'register' %}Sudah punya akun? <a href="{% url 'accounts:auth' %}?mode=login{% if next_url %}&amp;next={{ next_url|urlencode }}{% endif %}">Masuk di sini</a>{% else %}Belum punya akun? <a href="{% url 'accounts:auth' %}?mode=register{% if next_url %}&amp;next={{ next_url|urlencode }}{% endif %}">Daftar di sini</a>{% endif %}</p>
+    </section>
+</div>
+{% endblock %}
