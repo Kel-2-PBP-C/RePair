@@ -1,0 +1,28 @@
+{% extends 'accounts/base.html' %}
+{% block title %}Daftar{% endblock %}
+{% block heading %}Cerita berikutnya dimulai darimu.{% endblock %}
+{% block description %}Bergabung dengan komunitas Re&amp;Pair dan bantu barang yang masih berharga menemukan kesempatan baru.{% endblock %}
+{% block content %}
+<section class="panel" aria-labelledby="register-title">
+    <div class="panel-heading"><span class="eyebrow">Bergabung bersama kami</span><span class="preview-badge">Pratinjau</span></div>
+    <h2 id="register-title">Buat akun baru</h2>
+    <p class="muted">Kenalkan dirimu untuk memulai.</p>
+    <form class="account-form" method="post" aria-describedby="register-preview">
+        {% csrf_token %}
+        <div class="field"><label for="register-name">Nama lengkap</label><input id="register-name" name="name" autocomplete="name" placeholder="Nama lengkapmu" required></div>
+        <div class="field"><label for="register-email">Email</label><input id="register-email" name="email" type="email" autocomplete="email" placeholder="nama@email.com" required></div>
+        <div class="form-grid">
+            <div class="field"><label for="register-domicile">Domisili</label><input id="register-domicile" name="domicile" autocomplete="address-level2" placeholder="Kota tempat tinggal" required></div>
+            <div class="field"><label for="register-birth-date">Tanggal lahir</label><input id="register-birth-date" name="birth_date" type="date" autocomplete="bday" required></div>
+        </div>
+        <div class="field"><label for="register-contact">Kontak / media sosial <span class="optional">(opsional)</span></label><input id="register-contact" name="contact" placeholder="@username atau nomor WhatsApp"></div>
+        <div class="form-grid">
+            <div class="field"><label for="register-password">Kata sandi</label><input id="register-password" name="password" type="password" autocomplete="new-password" placeholder="Buat kata sandi" required></div>
+            <div class="field"><label for="register-confirmation">Konfirmasi kata sandi</label><input id="register-confirmation" name="password_confirmation" type="password" autocomplete="new-password" placeholder="Ulangi kata sandi" required></div>
+        </div>
+        <button class="button button-primary" type="submit" disabled>Buat akun</button>
+        <p class="preview-note" id="register-preview">Pendaftaran sedang disiapkan. Informasi yang kamu isi belum akan disimpan.</p>
+    </form>
+    <p class="form-alternative">Sudah punya akun? <a href="{% url 'accounts:login' %}">Masuk di sini</a></p>
+</section>
+{% endblock %}

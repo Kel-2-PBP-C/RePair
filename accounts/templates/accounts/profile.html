@@ -1,0 +1,27 @@
+{% extends 'accounts/base.html' %}
+{% block title %}Profil{% endblock %}
+{% block heading %}Ruang kecil untuk mengenalmu.{% endblock %}
+{% block description %}Profil membantu orang lain mengenal siapa yang ada di balik setiap cerita dan kesempatan baru.{% endblock %}
+{% block content %}
+<section class="panel" aria-labelledby="profile-title">
+    <div class="panel-heading"><span class="eyebrow">Profil saya</span><span class="preview-badge">Pratinjau</span></div>
+    <div class="profile-summary">
+        <span class="avatar" aria-hidden="true">RP</span>
+        <div><h2 id="profile-title">Lengkapi profilmu</h2><p class="muted">Profil belum dilengkapi</p></div>
+    </div>
+    <dl class="profile-details"><div><dt>Domisili</dt><dd>Belum diisi</dd></div><div><dt>Kontak / media sosial</dt><dd>Belum diisi</dd></div></dl>
+    <form class="account-form" method="post" aria-describedby="profile-preview">
+        {% csrf_token %}
+        <div class="field"><label for="profile-name">Nama lengkap</label><input id="profile-name" name="name" autocomplete="name" placeholder="Nama lengkapmu"></div>
+        <div class="field"><label for="profile-email">Email</label><input id="profile-email" name="email" type="email" autocomplete="email" placeholder="nama@email.com"></div>
+        <div class="form-grid">
+            <div class="field"><label for="profile-domicile">Domisili</label><input id="profile-domicile" name="domicile" autocomplete="address-level2" placeholder="Kota tempat tinggal"></div>
+            <div class="field"><label for="profile-birth-date">Tanggal lahir</label><input id="profile-birth-date" name="birth_date" type="date" autocomplete="bday"></div>
+        </div>
+        <div class="field"><label for="profile-contact">Kontak / media sosial <span class="optional">(opsional)</span></label><input id="profile-contact" name="contact" placeholder="@username atau nomor WhatsApp"></div>
+        <button class="button button-primary" type="submit" disabled>Simpan profil</button>
+        <p class="preview-note" id="profile-preview">Ini pratinjau profil. Perubahan belum dapat disimpan.</p>
+    </form>
+    <p class="form-alternative">Atur kenyamanan akunmu di <a href="{% url 'accounts:settings' %}">Pengaturan</a>.</p>
+</section>
+{% endblock %}

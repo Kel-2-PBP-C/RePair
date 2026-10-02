@@ -1,0 +1,19 @@
+{% extends 'accounts/base.html' %}
+{% block title %}Masuk{% endblock %}
+{% block heading %}Senang melihatmu kembali.{% endblock %}
+{% block description %}Satu langkah kecil untuk kembali terhubung dengan komunitas yang memberi barang kesempatan kedua.{% endblock %}
+{% block content %}
+<section class="panel" aria-labelledby="login-title">
+    <div class="panel-heading"><span class="eyebrow">Akun Re&amp;Pair</span><span class="preview-badge">Pratinjau</span></div>
+    <h2 id="login-title">Masuk ke akunmu</h2>
+    <p class="muted">Selamat datang kembali di Re&amp;Pair.</p>
+    <form class="account-form" method="post" aria-describedby="login-preview">
+        {% csrf_token %}
+        <div class="field"><label for="login-email">Email</label><input id="login-email" name="email" type="email" autocomplete="email" placeholder="nama@email.com" required></div>
+        <div class="field"><label for="login-password">Kata sandi</label><input id="login-password" name="password" type="password" autocomplete="current-password" placeholder="Masukkan kata sandi" required></div>
+        <button class="button button-primary" type="submit" disabled>Masuk</button>
+        <p class="preview-note" id="login-preview">Akses akun sedang disiapkan. Kamu bisa menjelajahi tampilan halaman akun terlebih dahulu.</p>
+    </form>
+    <p class="form-alternative">Belum punya akun? <a href="{% url 'accounts:register' %}">Daftar di sini</a></p>
+</section>
+{% endblock %}

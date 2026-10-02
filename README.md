@@ -106,3 +106,31 @@ Dengan modul ini, harapannya user bisa berinteraksi dengan user lainnya untuk me
 **Link Figma:** https://www.figma.com/design/DECET1J0NLpkkESRoc5YL0/PBP-%7C-Re.Pair?node-id=0-1&t=ETOfeGihmOFiVStt-1
 
 **Link Deployment PWS:** https://pws.cs.ui.ac.id/rasya.azyan/repair
+
+## Checkpoint Modul 1 — Noe Andrew
+
+App Django tersendiri: `accounts`. Tahap ini menyediakan kerangka halaman
+Login, Register, Profil, dan Setting sesuai modul nomor 1. Semua template dan
+CSS berada di dalam app agar tidak mengambil alih modul anggota lain.
+
+| Halaman | URL |
+| --- | --- |
+| Login | `/accounts/login/` |
+| Register | `/accounts/register/` |
+| Profil | `/accounts/profile/` |
+| Setting | `/accounts/settings/` |
+
+URL `/` mengarahkan ke halaman Login. Form masih berupa pratinjau; autentikasi,
+penyimpanan profil/preferensi, ubah password, dan penonaktifan akun belum aktif.
+Tidak ada perubahan model atau migrasi database pada checkpoint ini.
+
+Jalankan dengan `PRODUCTION=False` di environment lokal:
+
+```powershell
+.\.venv\Scripts\python.exe manage.py check
+.\.venv\Scripts\python.exe manage.py runserver
+```
+
+Branch fitur: `Halaman-Login/Register-dan-Profil-dan-Setting`. Pesan commit dan
+alur sinkronisasi/push/PR ke `dev` tersedia di
+[panduan Git modul 1](docs/MODULE_1_WORKFLOW.md).
