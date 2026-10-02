@@ -1,12 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RePair - Main Page</title>
-</head>
-
-<body>
+{% extends 'base.html' %}
+{% block title %}Beranda{% endblock %}
+{% block content %}
+<section class="panel" aria-label="Beranda">
     <h1>RePair</h1>
 
     <h2>Temukan Barang yang Kamu Butuhkan</h2>
@@ -28,5 +23,5 @@
     <br>
 
     <button type="button">Post Barang</button>
-</body>
-</html>
+</section>
+{% endblock %}

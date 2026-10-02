@@ -43,6 +43,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'core.apps.CoreConfig',
+    'accounts.apps.AccountsConfig',
+    'barter_details',
+    'profile_post',
+    'keranjang',
     'main_page',
 ]
 
@@ -63,13 +68,14 @@ ROOT_URLCONF = 'RePair.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'core.context_processors.navigation',
             ],
         },
     },
@@ -148,3 +154,12 @@ WHITENOISE_USE_FINDERS = True
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Auth is the entry screen; all signed-in modules share the same destination.
+LOGIN_URL = 'accounts:auth'
+LOGIN_REDIRECT_URL = 'core:landing'
+LOGOUT_REDIRECT_URL = 'accounts:auth'
+REQUIRE_LOGIN_FOR_LANDING = True
+
+# The post module keeps its own route, distinct from account settings.
+NAVBAR_POSTS_URL_NAME = 'profile_post:show_profile'
