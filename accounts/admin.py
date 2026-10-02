@@ -1,3 +1,9 @@
 from django.contrib import admin
 
-# Register this module's models here when they are introduced.
+from .models import Profile
+
+
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ("user", "domicile", "language", "profile_visibility")
+    search_fields = ("user__username", "user__email", "domicile")

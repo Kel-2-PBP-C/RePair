@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core.apps.CoreConfig',
     'accounts.apps.AccountsConfig',
+    'barter_details',
 ]
 
 MIDDLEWARE = [
@@ -150,3 +151,9 @@ WHITENOISE_USE_FINDERS = True
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Auth is the entry screen; all signed-in modules share the same destination.
+LOGIN_URL = 'accounts:auth'
+LOGIN_REDIRECT_URL = 'core:landing'
+LOGOUT_REDIRECT_URL = 'accounts:auth'
+REQUIRE_LOGIN_FOR_LANDING = True

@@ -81,8 +81,6 @@ Create: Simpan barang ke keranjang, Read: Lihat barang yang pernah disimpan, Upd
 5. Modul Daftar Post (PIC: Naila Salsabila)
 Pada modul ini, user dapat melihat seluruh post yang pernah dibuat, menghapus post, dan melihat siapa saja yang membuat pengajuan dari barang tersebut beserta detail informasi (Nama User, Domisili, dan Barang/Jasa yang dapat ditawarkan)
 
-5. Modul Profil & Setting (PIC: Aisha Ibnaty Zahira)
-Dalam modul ini, user dapat melihat detail akun, mengubah password, dan mengubah preferensi penggunaan aplikasi
 
 ### Fitur lain yang dapat dibangun (Nice To Have Features)
 1. Modul Peta Persebaran Lokasi Service Barang
@@ -107,30 +105,48 @@ Dengan modul ini, harapannya user bisa berinteraksi dengan user lainnya untuk me
 
 **Link Deployment PWS:** https://pws.cs.ui.ac.id/rasya.azyan/repair
 
-## Checkpoint Modul 1 — Noe Andrew
+## Modul 1 — Noe Andrew
 
-App Django tersendiri: `accounts`. Tahap ini menyediakan kerangka halaman
-Login, Register, Profil, dan Setting sesuai modul nomor 1. Semua template dan
-CSS berada di dalam app agar tidak mengambil alih modul anggota lain.
+App Django tersendiri: `accounts`. Modul terdiri dari dua layar utama:
 
-| Halaman | URL |
-| --- | --- |
-| Login | `/accounts/login/` |
-| Register | `/accounts/register/` |
-| Profil | `/accounts/profile/` |
-| Setting | `/accounts/settings/` |
+| Layar | URL | Perilaku |
+| --- | --- | --- |
+| Auth | `/accounts/auth/` | Mode Masuk atau Daftar pada satu halaman; login menggunakan username atau email |
+| Profil & Pengaturan | `/accounts/profile/` | Profil, preferensi, ubah password, dan nonaktifkan akun; perlu login |
 
-URL `/` mengarahkan ke halaman Login. Form masih berupa pratinjau; autentikasi,
-penyimpanan profil/preferensi, ubah password, dan penonaktifan akun belum aktif.
-Tidak ada perubahan model atau migrasi database pada checkpoint ini.
+URL `/` mengarahkan pengunjung ke Auth, dan pengguna yang sudah login ke
+`/landing/`. Login atau register yang berhasil langsung membuat sesi lalu
+membuka landing. URL lama `/accounts/login/`, `/accounts/register/`, dan
+`/accounts/settings/` mengarahkan ke dua layar tersebut.
 
-Jalankan dengan `PRODUCTION=False` di environment lokal:
+Field pendaftaran: username, nama lengkap, email, domisili, tanggal lahir,
+kontak media sosial opsional, password dan konfirmasi. Password di-hash oleh
+Django. Pengaturan hanya mengubah akun pengguna yang login. Ubah password
+memerlukan password lama dan mempertahankan sesi pengguna. Nonaktifkan akun
+memerlukan password serta konfirmasi, memakai `is_active=False`, lalu logout.
+Preferensi tersimpan mencakup notifikasi email, visibilitas profil, dan bahasa;
+pengiriman email dan terjemahan antarmuka belum diterapkan.
+
+Navbar bersama berasal dari branch `feat/shared-navbar`, memakai app `core`,
+`templates/base.html`, `templates/components/navbar.html`, dan `static/css/site.css`.
+Modul lain mewarisi base ini. `/landing/` sekarang berisi halaman penghubung
+sementara sampai modul `main_page` milik Aisha digabung; belum ada katalog barter.
+
+Jalankan dengan `PRODUCTION=False` pada environment lokal:
 
 ```powershell
-.\.venv\Scripts\python.exe manage.py check
+$env:PRODUCTION = 'False'
+.\.venv\Scripts\python.exe manage.py migrate
 .\.venv\Scripts\python.exe manage.py runserver
 ```
 
-Branch fitur: `Halaman-Login/Register-dan-Profil-dan-Setting`. Pesan commit dan
-alur sinkronisasi/push/PR ke `dev` tersedia di
-[panduan Git modul 1](docs/MODULE_1_WORKFLOW.md).
+Pengujian memakai database SQLite sementara:
+
+```powershell
+.\.venv\Scripts\python.exe manage.py test accounts core --settings=accounts.test_settings
+```
+
+Panduan [integrasi navbar](docs/NAVBAR_INTEGRATION.md),
+[commit modul 1](docs/MODULE_1_WORKFLOW.md), dan
+[review/merge PR untuk lead](docs/TEAM_PR_WORKFLOW.md) menjelaskan urutan
+navbar → modul fitur → `dev` → `main`. Branch fitur dipertahankan setelah merge.
