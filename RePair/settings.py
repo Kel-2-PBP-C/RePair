@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'barter_details',
     'profile_post',
     'keranjang',
+    'main_page',
 ]
 
 MIDDLEWARE = [

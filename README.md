@@ -129,8 +129,10 @@ pengiriman email dan terjemahan antarmuka belum diterapkan.
 
 Navbar bersama berasal dari branch `feat/shared-navbar`, memakai app `core`,
 `templates/base.html`, `templates/components/navbar.html`, dan `static/css/site.css`.
-Modul lain mewarisi base ini. `/landing/` sekarang berisi halaman penghubung
-sementara sampai modul `main_page` milik Aisha digabung; belum ada katalog barter.
+Modul lain mewarisi base ini. `/landing/` memakai halaman `main_page` milik
+Aisha, memerlukan login, dan menampilkan navbar bersama. Pencarian, kartu
+rekomendasi, tambah ke keranjang, dan post barang masih berupa kerangka halaman
+sesuai checkpoint; fungsi data untuk modul tersebut belum diterapkan.
 
 Jalankan dengan `PRODUCTION=False` pada environment lokal:
 
