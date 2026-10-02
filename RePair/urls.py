@@ -22,6 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('barter-details/', include('barter_details.urls')),
     path('accounts/', include('accounts.urls')),
+    path('profile/', include('profile_post.urls')),
     path('', include('core.urls')),
     path('', entry, name='home'),
 ]
