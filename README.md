@@ -81,8 +81,6 @@ Create: Simpan barang ke keranjang, Read: Lihat barang yang pernah disimpan, Upd
 5. Modul Daftar Post (PIC: Naila Salsabila)
 Pada modul ini, user dapat melihat seluruh post yang pernah dibuat, menghapus post, dan melihat siapa saja yang membuat pengajuan dari barang tersebut beserta detail informasi (Nama User, Domisili, dan Barang/Jasa yang dapat ditawarkan)
 
-5. Modul Profil & Setting (PIC: Aisha Ibnaty Zahira)
-Dalam modul ini, user dapat melihat detail akun, mengubah password, dan mengubah preferensi penggunaan aplikasi
 
 ### Fitur lain yang dapat dibangun (Nice To Have Features)
 1. Modul Peta Persebaran Lokasi Service Barang
@@ -106,3 +104,49 @@ Dengan modul ini, harapannya user bisa berinteraksi dengan user lainnya untuk me
 **Link Figma:** https://www.figma.com/design/DECET1J0NLpkkESRoc5YL0/PBP-%7C-Re.Pair?node-id=0-1&t=ETOfeGihmOFiVStt-1
 
 **Link Deployment PWS:** https://pws.cs.ui.ac.id/rasya.azyan/repair
+
+## Modul 1 — Noe Andrew
+
+App Django tersendiri: `accounts`. Modul terdiri dari dua layar utama:
+
+| Layar | URL | Perilaku |
+| --- | --- | --- |
+| Auth | `/accounts/auth/` | Mode Masuk atau Daftar pada satu halaman; login menggunakan username atau email |
+| Profil & Pengaturan | `/accounts/profile/` | Profil, preferensi, ubah password, dan nonaktifkan akun; perlu login |
+
+URL `/` mengarahkan pengunjung ke Auth, dan pengguna yang sudah login ke
+`/landing/`. Login atau register yang berhasil langsung membuat sesi lalu
+membuka landing. URL lama `/accounts/login/`, `/accounts/register/`, dan
+`/accounts/settings/` mengarahkan ke dua layar tersebut.
+
+Field pendaftaran: username, nama lengkap, email, domisili, tanggal lahir,
+kontak media sosial opsional, password dan konfirmasi. Password di-hash oleh
+Django. Pengaturan hanya mengubah akun pengguna yang login. Ubah password
+memerlukan password lama dan mempertahankan sesi pengguna. Nonaktifkan akun
+memerlukan password serta konfirmasi, memakai `is_active=False`, lalu logout.
+Preferensi tersimpan mencakup notifikasi email, visibilitas profil, dan bahasa;
+pengiriman email dan terjemahan antarmuka belum diterapkan.
+
+Navbar bersama berasal dari branch `feat/shared-navbar`, memakai app `core`,
+`templates/base.html`, `templates/components/navbar.html`, dan `static/css/site.css`.
+Modul lain mewarisi base ini. `/landing/` sekarang berisi halaman penghubung
+sementara sampai modul `main_page` milik Aisha digabung; belum ada katalog barter.
+
+Jalankan dengan `PRODUCTION=False` pada environment lokal:
+
+```powershell
+$env:PRODUCTION = 'False'
+.\.venv\Scripts\python.exe manage.py migrate
+.\.venv\Scripts\python.exe manage.py runserver
+```
+
+Pengujian memakai database SQLite sementara:
+
+```powershell
+.\.venv\Scripts\python.exe manage.py test accounts core --settings=accounts.test_settings
+```
+
+Panduan [integrasi navbar](docs/NAVBAR_INTEGRATION.md),
+[commit modul 1](docs/MODULE_1_WORKFLOW.md), dan
+[review/merge PR untuk lead](docs/TEAM_PR_WORKFLOW.md) menjelaskan urutan
+navbar → modul fitur → `dev` → `main`. Branch fitur dipertahankan setelah merge.

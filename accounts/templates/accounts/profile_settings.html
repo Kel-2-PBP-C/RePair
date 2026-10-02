@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Profil & Pengaturan{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'accounts/css/accounts.css' %}">{% endblock %}
+{% block content %}
+<header class="account-heading">
+    <span class="eyebrow">Akun saya</span>
+    <h1>Profil &amp; Pengaturan</h1>
+    <p class="muted">Kelola profil, preferensi, dan keamanan akunmu di satu tempat.</p>
+</header>
+<div class="account-layout">
+    <aside class="account-sidebar panel">
+        <div class="account-identity">
+            <span class="account-avatar" aria-hidden="true">{{ user.first_name|default:user.username|first|upper }}</span>
+            <div><strong>{{ user.get_full_name|default:user.username }}</strong><p class="muted">@{{ user.username }}</p></div>
+        </div>
+        <nav class="account-sections" aria-label="Bagian pengaturan akun">
+            <a href="#profile">Profil saya</a>
+            <a href="#settings">Preferensi</a>
+            <a href="#security">Keamanan</a>
+            <a href="#account-status">Status akun</a>
+        </nav>
+        <a class="account-back" href="{{ navigation.home_url }}">← Kembali ke beranda</a>
+    </aside>
+    <div class="account-panels">
+        <section id="profile" class="panel" aria-labelledby="profile-title">
+            <h2 id="profile-title">Profil saya</h2>
+            <p class="muted">Informasi yang membantu orang lain mengenalmu.</p>
+            <dl class="account-details">
+                <div><dt>Nama lengkap</dt><dd>{{ user.get_full_name|default:user.username }}</dd></div>
+                <div><dt>Email</dt><dd>{{ user.email|default:'Belum diisi' }}</dd></div>
+                <div><dt>Domisili</dt><dd>{{ profile.domicile|default:'Belum diisi' }}</dd></div>
+                <div><dt>Tanggal lahir</dt><dd>{{ profile.birth_date|date:'d M Y'|default:'Belum diisi' }}</dd></div>
+                <div><dt>Kontak media sosial</dt><dd>{{ profile.social_contact|default:'Belum diisi' }}</dd></div>
+            </dl>
+            <form class="account-form" method="post" action="{% url 'accounts:profile' %}#profile">
+                {% csrf_token %}<input type="hidden" name="action" value="profile">
+                {% include 'accounts/_form_fields.html' with form=profile_form %}
+                <button class="button button-primary" type="submit">Simpan profil</button>
+            </form>
+        </section>
+        <section id="settings" class="panel" aria-labelledby="preferences-title">
+            <h2 id="preferences-title">Preferensi</h2>
+            <p class="muted">Sesuaikan cara kamu menggunakan Re&amp;Pair.</p>
+            <form class="account-form" method="post" action="{% url 'accounts:profile' %}#settings">
+                {% csrf_token %}<input type="hidden" name="action" value="preferences">
+                {% include 'accounts/_form_fields.html' with form=preferences_form %}
+                <button class="button button-primary" type="submit">Simpan preferensi</button>
+            </form>
+        </section>
+        <section id="security" class="panel" aria-labelledby="password-title">
+            <h2 id="password-title">Ubah kata sandi</h2>
+            <p class="muted">Masukkan kata sandi saat ini sebelum membuat kata sandi baru.</p>
+            <form class="account-form" method="post" action="{% url 'accounts:profile' %}#security">
+                {% csrf_token %}<input type="hidden" name="action" value="password">
+                {% include 'accounts/_form_fields.html' with form=password_form %}
+                <button class="button button-secondary" type="submit">Ubah kata sandi</button>
+            </form>
+        </section>
+        <section id="account-status" class="panel account-danger" aria-labelledby="deactivate-title">
+            <h2 id="deactivate-title">Nonaktifkan akun</h2>
+            <p class="muted">Akun yang dinonaktifkan tidak bisa digunakan untuk masuk. Hubungi admin jika ingin mengaktifkannya kembali.</p>
+            <form class="account-form" method="post" action="{% url 'accounts:profile' %}#account-status">
+                {% csrf_token %}<input type="hidden" name="action" value="deactivate">
+                {% include 'accounts/_form_fields.html' with form=deactivate_form %}
+                <button class="button button-danger" type="submit">Nonaktifkan akun saya</button>
+            </form>
+        </section>
+    </div>
+</div>
+{% endblock %}
