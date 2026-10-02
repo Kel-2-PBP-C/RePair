@@ -1,6 +1,6 @@
-# RePair
+# Re&Pair
 
-Nama Aplikasi: **RePair**
+Nama Aplikasi: **Re&Pair**
 <br><br>
 
 ## Nama & NPM Anggota Kelompok:
@@ -12,7 +12,7 @@ Nama Aplikasi: **RePair**
 <br><br>
 
 ## Deskripsi Aplikasi
-    RePair merupakan sebuah aplikasi untuk mempertemukan barang-barang bekas yang tidak terpakai dengan pemilik baru yang lebih membutuhkan. Tujuan utama dari aplikasi ini adalah untuk meminimalisir produksi sampah dari barang-barang yang dapat dimanfaatkan kembali. RePair hadir untuk memberikan nilai tambah suatu barang pada tangan orang-orang yang tepat.
+    Re&Pair merupakan sebuah aplikasi untuk mempertemukan barang-barang bekas yang tidak terpakai dengan pemilik baru yang lebih membutuhkan. Tujuan utama dari aplikasi ini adalah untuk meminimalisir produksi sampah dari barang-barang yang dapat dimanfaatkan kembali. Re&Pair hadir untuk memberikan nilai tambah suatu barang pada tangan orang-orang yang tepat.
 <br><br>
 
 ## Proses Bisnis utama meliputi
@@ -26,7 +26,7 @@ Nama Aplikasi: **RePair**
 <br><br>
 
 ## Unique Selling Point
-Pada RePair, seluruh transaksi akan dilaksanakan dalam bentuk barter/sukarela (donasi), sehingga user dapat memilih barang/jasa lainnya sesuai dengan kebutuhan saat itu.
+Pada Re&Pair, seluruh transaksi akan dilaksanakan dalam bentuk barter/sukarela (donasi), sehingga user dapat memilih barang/jasa lainnya sesuai dengan kebutuhan saat itu.
 <br><br>
 
 ## User Role
@@ -73,16 +73,14 @@ Pada modul ini, user dapat melakukan business process utama untuk menukar barang
 
 Create: Buat penawaran , Read: Lihat data detail barang yang dipilih, Update:- , Delete: Batalkan penawaran.
 
-4. Modul Keranjang (PIC: Hafizuddin Dzaki Azzam)
+4. Modul Keranjang (PIC: Naila Salsabila)
 Pada modul ini, user dapat melihat kembali baarng-barang yang pernah disimpan sebelumnya.
 
 Create: Simpan barang ke keranjang, Read: Lihat barang yang pernah disimpan, Update:- , Delete: Hapus barang dari keranjang.
 
-5. Modul Daftar Post (PIC: Naila Salsabila)
+5. Modul Daftar Post (PIC: Hafizuddin Dzaki Azzam)
 Pada modul ini, user dapat melihat seluruh post yang pernah dibuat, menghapus post, dan melihat siapa saja yang membuat pengajuan dari barang tersebut beserta detail informasi (Nama User, Domisili, dan Barang/Jasa yang dapat ditawarkan)
 
-5. Modul Profil & Setting (PIC: Aisha Ibnaty Zahira)
-Dalam modul ini, user dapat melihat detail akun, mengubah password, dan mengubah preferensi penggunaan aplikasi
 
 ### Fitur lain yang dapat dibangun (Nice To Have Features)
 1. Modul Peta Persebaran Lokasi Service Barang
@@ -106,3 +104,49 @@ Dengan modul ini, harapannya user bisa berinteraksi dengan user lainnya untuk me
 **Link Figma:** https://www.figma.com/design/DECET1J0NLpkkESRoc5YL0/PBP-%7C-Re.Pair?node-id=0-1&t=ETOfeGihmOFiVStt-1
 
 **Link Deployment PWS:** https://pws.cs.ui.ac.id/rasya.azyan/repair
+
+## Modul 1 — Noe Andrew
+
+App Django tersendiri: `accounts`. Modul terdiri dari dua layar utama:
+
+| Layar | URL | Perilaku |
+| --- | --- | --- |
+| Auth | `/accounts/auth/` | Mode Masuk atau Daftar pada satu halaman; login menggunakan username atau email |
+| Profil & Pengaturan | `/accounts/profile/` | Profil, preferensi, ubah password, dan nonaktifkan akun; perlu login |
+
+URL `/` mengarahkan pengunjung ke Auth, dan pengguna yang sudah login ke
+`/landing/`. Login atau register yang berhasil langsung membuat sesi lalu
+membuka landing. URL lama `/accounts/login/`, `/accounts/register/`, dan
+`/accounts/settings/` mengarahkan ke dua layar tersebut.
+
+Field pendaftaran: username, nama lengkap, email, domisili, tanggal lahir,
+kontak media sosial opsional, password dan konfirmasi. Password di-hash oleh
+Django. Pengaturan hanya mengubah akun pengguna yang login. Ubah password
+memerlukan password lama dan mempertahankan sesi pengguna. Nonaktifkan akun
+memerlukan password serta konfirmasi, memakai `is_active=False`, lalu logout.
+Preferensi tersimpan mencakup notifikasi email, visibilitas profil, dan bahasa;
+pengiriman email dan terjemahan antarmuka belum diterapkan.
+
+Navbar bersama berasal dari branch `feat/shared-navbar`, memakai app `core`,
+`templates/base.html`, `templates/components/navbar.html`, dan `static/css/site.css`.
+Modul lain mewarisi base ini. `/landing/` sekarang berisi halaman penghubung
+sementara sampai modul `main_page` milik Aisha digabung; belum ada katalog barter.
+
+Jalankan dengan `PRODUCTION=False` pada environment lokal:
+
+```powershell
+$env:PRODUCTION = 'False'
+.\.venv\Scripts\python.exe manage.py migrate
+.\.venv\Scripts\python.exe manage.py runserver
+```
+
+Pengujian memakai database SQLite sementara:
+
+```powershell
+.\.venv\Scripts\python.exe manage.py test accounts core --settings=accounts.test_settings
+```
+
+Panduan [integrasi navbar](docs/NAVBAR_INTEGRATION.md),
+[commit modul 1](docs/MODULE_1_WORKFLOW.md), dan
+[review/merge PR untuk lead](docs/TEAM_PR_WORKFLOW.md) menjelaskan urutan
+navbar → modul fitur → `dev` → `main`. Branch fitur dipertahankan setelah merge.
