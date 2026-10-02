@@ -1,6 +1,6 @@
-# RePair
+# Re&Pair
 
-Nama Aplikasi: **RePair**
+Nama Aplikasi: **Re&Pair**
 <br><br>
 
 ## Nama & NPM Anggota Kelompok:
@@ -12,7 +12,7 @@ Nama Aplikasi: **RePair**
 <br><br>
 
 ## Deskripsi Aplikasi
-    RePair merupakan sebuah aplikasi untuk mempertemukan barang-barang bekas yang tidak terpakai dengan pemilik baru yang lebih membutuhkan. Tujuan utama dari aplikasi ini adalah untuk meminimalisir produksi sampah dari barang-barang yang dapat dimanfaatkan kembali. RePair hadir untuk memberikan nilai tambah suatu barang pada tangan orang-orang yang tepat.
+    Re&Pair merupakan sebuah aplikasi untuk mempertemukan barang-barang bekas yang tidak terpakai dengan pemilik baru yang lebih membutuhkan. Tujuan utama dari aplikasi ini adalah untuk meminimalisir produksi sampah dari barang-barang yang dapat dimanfaatkan kembali. Re&Pair hadir untuk memberikan nilai tambah suatu barang pada tangan orang-orang yang tepat.
 <br><br>
 
 ## Proses Bisnis utama meliputi
@@ -26,7 +26,7 @@ Nama Aplikasi: **RePair**
 <br><br>
 
 ## Unique Selling Point
-Pada RePair, seluruh transaksi akan dilaksanakan dalam bentuk barter/sukarela (donasi), sehingga user dapat memilih barang/jasa lainnya sesuai dengan kebutuhan saat itu.
+Pada Re&Pair, seluruh transaksi akan dilaksanakan dalam bentuk barter/sukarela (donasi), sehingga user dapat memilih barang/jasa lainnya sesuai dengan kebutuhan saat itu.
 <br><br>
 
 ## User Role
@@ -73,12 +73,12 @@ Pada modul ini, user dapat melakukan business process utama untuk menukar barang
 
 Create: Buat penawaran , Read: Lihat data detail barang yang dipilih, Update:- , Delete: Batalkan penawaran.
 
-4. Modul Keranjang (PIC: Hafizuddin Dzaki Azzam)
+4. Modul Keranjang (PIC: Naila Salsabila)
 Pada modul ini, user dapat melihat kembali baarng-barang yang pernah disimpan sebelumnya.
 
 Create: Simpan barang ke keranjang, Read: Lihat barang yang pernah disimpan, Update:- , Delete: Hapus barang dari keranjang.
 
-5. Modul Daftar Post (PIC: Naila Salsabila)
+5. Modul Daftar Post (PIC: Hafizuddin Dzaki Azzam)
 Pada modul ini, user dapat melihat seluruh post yang pernah dibuat, menghapus post, dan melihat siapa saja yang membuat pengajuan dari barang tersebut beserta detail informasi (Nama User, Domisili, dan Barang/Jasa yang dapat ditawarkan)
 
 
@@ -129,8 +129,10 @@ pengiriman email dan terjemahan antarmuka belum diterapkan.
 
 Navbar bersama berasal dari branch `feat/shared-navbar`, memakai app `core`,
 `templates/base.html`, `templates/components/navbar.html`, dan `static/css/site.css`.
-Modul lain mewarisi base ini. `/landing/` sekarang berisi halaman penghubung
-sementara sampai modul `main_page` milik Aisha digabung; belum ada katalog barter.
+Modul lain mewarisi base ini. `/landing/` memakai halaman `main_page` milik
+Aisha, memerlukan login, dan menampilkan navbar bersama. Pencarian, kartu
+rekomendasi, tambah ke keranjang, dan post barang masih berupa kerangka halaman
+sesuai checkpoint; fungsi data untuk modul tersebut belum diterapkan.
 
 Jalankan dengan `PRODUCTION=False` pada environment lokal:
 

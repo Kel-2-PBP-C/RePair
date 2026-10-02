@@ -85,33 +85,37 @@ Class bersama yang tersedia: `shell`, `panel`, `panel-heading`, `eyebrow`,
 
 ## Integrasi landing milik Aisha
 
-Halaman `core/templates/core/landing.html` saat ini hanya memberi tujuan
-setelah login dan menjelaskan bahwa modul utama sedang disiapkan. Tidak ada
-barang contoh atau data barter buatan.
+Pada branch `main-page`, `/landing/` memakai view `show_main` milik app
+`main_page`, yang memerlukan login. Template `main_page.html` mewarisi
+`base.html` sehingga navbar, pesan Django, dan footer bersama tetap tersedia.
+Konten pencarian, rekomendasi, dan tombol barang masih berupa kerangka halaman
+milik Aisha sesuai checkpoint.
 
-Saat modul Aisha siap, pertahankan URL `/landing/` dan nama `core:landing`.
-Pindahkan penyajian landing ke view `main_page:show_main` milik Aisha dengan
-mount app pada `/landing/`. Cara integrasi yang menjaga nama URL bersama:
+Nama `core:landing` dan `main_page:show_main` sama-sama menunjuk `/landing/`.
+Konfigurasi alias yang dipakai:
 
 ```python
-# core/urls.py pada PR integrasi main page
+# core/urls.py
 from django.urls import path
 from main_page.views import show_main
 
 app_name = "core"
 urlpatterns = [path("landing/", show_main, name="landing")]
 
-# RePair/urls.py: include core dahulu agar /landing/ memakai view yang sama
+# RePair/urls.py: include core dahulu; root tetap accounts.entry
 path("", include("core.urls")),
 path("landing/", include("main_page.urls")),
 ```
 
-Dengan cara ini `core:landing` dan `main_page:show_main` sama-sama bisa
-menunjuk `/landing/` tanpa redirect antarhalaman. View `show_main` perlu
-memeriksa login, misalnya dengan `@login_required`, setelah autentikasi
-diaktifkan. Root `/` tetap milik entry point autentikasi modul akun.
-Jangan memasang app `main_page` pada root `/` atau mengarahkan `core:landing`
-kembali ke root karena dapat mengganggu entry point atau membuat loop.
+View `show_main` memakai `@login_required` dan `@require_GET`. Root `/`
+tetap milik entry point autentikasi. Pengunjung diarahkan ke auth, sedangkan
+pengguna yang sudah masuk diarahkan ke `/landing/` tanpa loop redirect.
+Jangan memasang app `main_page` pada root `/` karena akan mengambil alih
+pintu masuk auth.
+
+Template landing sementara pada `core` tetap tersedia untuk branch navbar
+yang belum mengintegrasikan `main_page`; route aplikasi terintegrasi memakai
+view Aisha. App `main_page` harus tetap terdaftar pada `INSTALLED_APPS`.
 
 ## Nama URL anggota lain
 
