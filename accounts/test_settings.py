@@ -1,4 +1,4 @@
-"""Isolated local settings: tests never connect to the production database."""
+"""Konfigurasi test dengan database terpisah dari production."""
 
 import os
 

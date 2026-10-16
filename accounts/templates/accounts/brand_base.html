@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#005A32">
+    <meta name="description" content="{% block description %}RePair membantu kamu barter dan memperbaiki barang tak terpakai dengan mudah.{% endblock %}">
+    <title>{% block title %}RePair{% endblock %} | RePair</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Poppins:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'accounts/css/brand.css' %}">
+    <style>
+        :root {
+            --brand-background-desktop: url("{% static 'img/Group 46.png' %}");
+            --brand-background-mobile: url("{% static 'img/Group 47.png' %}");
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="brand-page {% block body_class %}{% endblock %}">
+    <a class="brand-skip-link" href="#content">Lewati ke konten</a>
+    {% include 'accounts/notifications.html' %}
+    <main id="content" class="brand-main">
+        {% block messages %}
+        {% for message in messages %}
+        {% if 'account-deleted' not in message.tags %}
+        <ul class="brand-messages" aria-label="Pemberitahuan" aria-live="polite">
+            <li class="brand-message{% if message.level_tag %} brand-message-{{ message.level_tag }}{% endif %}"{% if 'error' in message.tags %} role="alert"{% endif %}>{{ message }}</li>
+        </ul>
+        {% endif %}
+        {% endfor %}
+        {% endblock %}
+        {% block content %}{% endblock %}
+    </main>
+    <script src="{% static 'accounts/js/notifications.js' %}" defer></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

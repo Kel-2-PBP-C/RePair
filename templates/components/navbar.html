@@ -1,34 +1,27 @@
-<header class="site-header shell">
-    {% if navigation.home_url %}
-    <a class="brand" href="{{ navigation.home_url }}" aria-label="Re and Pair, beranda">
-        <span class="brand-icon" aria-hidden="true">&#8635;</span>
-        <span>Re<span class="brand-and">&amp;</span>Pair</span>
-    </a>
-    {% else %}
-    <span class="brand"><span class="brand-icon" aria-hidden="true">&#8635;</span><span>Re<span class="brand-and">&amp;</span>Pair</span></span>
-    {% endif %}
-    <nav class="site-nav" aria-label="Navigasi utama">
-        {% for item in navigation.items %}
-            {% if item.url %}
-            <a class="nav-link" href="{{ item.url }}"{% if item.active %} aria-current="page"{% endif %}>{{ item.label }}</a>
-            {% else %}
-            <span class="nav-link nav-disabled" aria-disabled="true" title="Halaman ini sedang disiapkan">{{ item.label }}</span>
-            {% endif %}
-        {% endfor %}
-        {% if user.is_authenticated %}
-            {% if navigation.profile_url %}
-            <a class="nav-link" href="{{ navigation.profile_url }}"{% if navigation.account_active %} aria-current="page"{% endif %}>Profil &amp; Pengaturan</a>
-            {% else %}
-            <span class="nav-link nav-disabled" aria-disabled="true" title="Halaman ini sedang disiapkan">Profil &amp; Pengaturan</span>
-            {% endif %}
-            {% if navigation.logout_url %}
-            <form class="nav-logout" method="post" action="{{ navigation.logout_url }}">
-                {% csrf_token %}
-                <button class="nav-link nav-logout-button" type="submit">Keluar</button>
-            </form>
-            {% endif %}
-        {% elif navigation.login_url %}
-            <a class="nav-link nav-auth" href="{{ navigation.login_url }}">Masuk / Daftar</a>
+{% load static %}
+<header class="repair-navbar">
+    <div class="repair-navbar-inner">
+        {% if navigation.home_url %}
+        <a class="repair-navbar-brand" href="{{ navigation.home_url }}" aria-label="RePair, beranda">
+            <img src="{% static 'img/Group 40.png' %}" width="991" height="345" alt="RePair">
+        </a>
+        {% else %}
+        <span class="repair-navbar-brand"><img src="{% static 'img/Group 40.png' %}" width="991" height="345" alt="RePair"></span>
         {% endif %}
-    </nav>
+        <nav class="repair-navbar-menu" aria-label="Navigasi utama">
+            {% for item in navigation.items %}
+                {% if item.url %}
+                <a class="repair-navbar-link" href="{{ item.url }}"{% if item.active %} aria-current="page"{% endif %}>
+                    <img class="repair-navbar-icon" src="{% static item.icon %}" width="64" height="64" alt="" aria-hidden="true">
+                    <span class="repair-navbar-label">{{ item.label }}</span>
+                </a>
+                {% else %}
+                <span class="repair-navbar-link repair-navbar-disabled" role="link" aria-disabled="true" title="Menu belum tersedia">
+                    <img class="repair-navbar-icon" src="{% static item.icon %}" width="64" height="64" alt="" aria-hidden="true">
+                    <span class="repair-navbar-label">{{ item.label }}</span>
+                </span>
+                {% endif %}
+            {% endfor %}
+        </nav>
+    </div>
 </header>

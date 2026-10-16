@@ -1,0 +1,41 @@
+{% extends 'accounts/brand_base.html' %}
+{% load static %}
+{% block title %}Login dan tautkan akun{% endblock %}
+{% block body_class %}brand-page--credentials{% endblock %}
+{% block messages %}
+    {% for message in messages %}
+        {% if 'error' in message.tags %}
+        <div class="brand-messages"><p class="brand-message brand-message-error" role="alert">{{ message }}</p></div>
+        {% endif %}
+    {% endfor %}
+{% endblock %}
+{% block content %}
+<section class="brand-credentials" aria-labelledby="google-link-title">
+    <div class="brand-card brand-login-card">
+        <a class="brand-logo" href="{% url 'accounts:auth' %}" aria-label="RePair, halaman awal">
+            <img src="{% static 'img/Group 40.png' %}" width="991" height="345" alt="RePair">
+        </a>
+        <h1 id="google-link-title" class="brand-visually-hidden">Tautkan akun Google</h1>
+        <p class="brand-visually-hidden" id="google-link-password-help">Gunakan username dan password RePair lama, bukan password Google.</p>
+        <form class="brand-form" method="post" action="{% url 'accounts:google_link' %}" aria-describedby="google-link-password-help">
+            {% csrf_token %}
+            {% if link_form.non_field_errors %}<div class="brand-field-errors" role="alert">{{ link_form.non_field_errors }}</div>{% endif %}
+            <div class="brand-field{% if link_form.username.errors %} brand-field--invalid{% endif %}">
+                <label for="{{ link_form.username.id_for_label }}">Username</label>
+                {{ link_form.username }}
+                {% if link_form.username.errors %}<div class="brand-field-errors" id="{{ link_form.username.auto_id }}_errors" role="alert">{{ link_form.username.errors }}</div>{% endif %}
+            </div>
+            <div class="brand-field{% if link_form.password.errors %} brand-field--invalid{% endif %}">
+                <label for="{{ link_form.password.id_for_label }}">Password</label>
+                {{ link_form.password }}
+                {% if link_form.password.errors %}<div class="brand-field-errors" id="{{ link_form.password.auto_id }}_errors" role="alert">{{ link_form.password.errors }}</div>{% endif %}
+            </div>
+            <div class="brand-field{% if link_form.confirm.errors %} brand-field--invalid{% endif %}">
+                <label class="brand-checkbox" for="{{ link_form.confirm.id_for_label }}">{{ link_form.confirm }} <span>{{ link_form.confirm.label }}</span></label>
+                {% if link_form.confirm.errors %}<div class="brand-field-errors" id="{{ link_form.confirm.auto_id }}_errors" role="alert">{{ link_form.confirm.errors }}</div>{% endif %}
+            </div>
+            <button class="brand-button brand-login-button" type="submit">Login</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

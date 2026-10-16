@@ -1,0 +1,39 @@
+{% extends 'accounts/brand_base.html' %}
+{% load static %}
+
+{% block title %}Syarat &amp; Ketentuan dan Kebijakan Privasi{% endblock %}
+{% block description %}Syarat penggunaan RePair dan informasi tentang data pribadi pengguna.{% endblock %}
+{% block body_class %}brand-policy-page{% endblock %}
+
+{% block content %}
+<section class="brand-legal" aria-labelledby="policy-title">
+    <a class="brand-logo" href="{% url 'accounts:auth' %}" aria-label="Kembali ke halaman awal RePair">
+        <img src="{% static 'img/Group 40.png' %}" alt="RePair">
+    </a>
+
+    <article class="brand-card brand-legal-card">
+        <h1 id="policy-title" class="brand-legal-title">Syarat &amp; Ketentuan dan Kebijakan Privasi.</h1>
+        <p class="brand-legal-meta">Terakhir diperbarui: <time datetime="2026-10-09">9 Oktober 2026</time></p>
+        <p class="brand-legal-intro">Dengan membuat akun dan memakai RePair, kamu menyetujui syarat berikut.</p>
+        <p class="brand-legal-intro">Informasi lengkap tentang data pribadi tersedia di <a href="{% url 'core:privacy' %}">Kebijakan Privasi RePair</a>.</p>
+
+        <div class="brand-legal-content">
+            <p id="about"><strong>Tentang RePair:</strong> Platform untuk menukar (barter) barang bekas dengan barang atau jasa lain. RePair hanya penghubung: bukan pihak dalam barter dan tidak memproses pembayaran.</p>
+            <p id="account"><strong>Akun:</strong> Akun dibuat lewat Google, satu orang satu akun. Kamu minimal 17 tahun (atau seizin orang tua/wali), wajib memberi data yang benar, dan bertanggung jawab atas aktivitas di akunmu.</p>
+            <p id="privacy"><strong>Data pribadi:</strong> Nama, email, domisili, tanggal lahir, dan password. Kami simpan hanya untuk menjalankan aplikasi. Password tidak pernah ditampilkan dan datamu tidak dijual ke pihak ketiga.</p>
+            <p id="public-data"><strong>Data yang terlihat orang lain:</strong> Postingan barangmu bisa dilihat semua pengguna. Saat mengajukan penawaran, nama, domisili, dan barang/jasa yang kamu tawarkan terlihat oleh pemilik barang.</p>
+            <p id="manage-account"><strong>Kelola akun:</strong> Kamu bisa mengubah profil, password, dan preferensi kapan saja. Hapus akun berarti akun dan seluruh data milikmu di aplikasi dihapus permanen, termasuk profil, postingan, dan sesi login. Kamu akan keluar dari akun dan kembali ke halaman awal. Email yang sama dapat dipakai untuk membuat akun RePair baru.</p>
+            <p id="posts"><strong>Posting barang:</strong> Foto, deskripsi, dan kondisi kelayakan harus jujur. Posting hanya barang milikmu dan foto yang berhak kamu pakai. Kontenmu tetap milikmu, tapi kamu mengizinkan RePair menampilkannya. Post bisa kamu hapus kapan saja.</p>
+            <p id="offers"><strong>Penawaran barter:</strong> Penawaran diajukan sebelum deadline dan bisa dibatalkan. Pemilik barang bebas memilih penawaran yang ia mau; kesepakatan sepenuhnya antara kamu dan pengguna lain.</p>
+            <p id="meeting"><strong>Titik temu:</strong> Barter dilakukan langsung di lokasi titik temu. Disarankan bertemu di tempat umum dan memeriksa barang dulu. RePair tidak bertanggung jawab atas kejadian saat pertemuan.</p>
+            <p id="cart"><strong>Keranjang:</strong> Hanya penanda untuk melihat barang lagi nanti, tidak menjamin barangnya masih tersedia.</p>
+            <p id="prohibitions"><strong>Larangan:</strong> Dilarang memposting barang/jasa ilegal, curian, palsu, atau berbahaya, serta menipu, melecehkan, spam, menyalahgunakan data pengguna lain, atau mengganggu sistem.</p>
+            <p id="liability"><strong>Batas tanggung jawab:</strong> Info barang dibuat pemiliknya; RePair tidak menjamin keaslian dan kualitasnya, serta tidak bertanggung jawab atas kerugian akibat barter antar pengguna. Layanan disediakan “apa adanya”.</p>
+            <p id="sanctions"><strong>Sanksi:</strong> Pelanggaran dapat berujung pada penghapusan postingan atau penonaktifan akun.</p>
+            <p id="changes"><strong>Perubahan &amp; hukum:</strong> Syarat dapat diperbarui; terus memakai RePair berarti kamu menyetujui versi terbarunya. Berlaku hukum Republik Indonesia. Pertanyaan? Hubungi tim RePair.</p>
+        </div>
+
+        <a class="brand-button brand-legal-close" href="{{ close_url }}">Tutup</a>
+    </article>
+</section>
+{% endblock %}
