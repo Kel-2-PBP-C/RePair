@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@600&display=swap');
+
 :root {
     color-scheme: light;
     --ink: #244b37;
@@ -7,16 +9,17 @@
     --line: #e0e5d7;
 }
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--cream); color: var(--ink); font-family: "Segoe UI", Arial, sans-serif; line-height: 1.6; }
+body { margin: 0; background: var(--cream); color: var(--ink); font-family: 'Plus Jakarta Sans', 'Segoe UI', Arial, sans-serif; line-height: 1.6; }
 a { color: var(--ink); text-underline-offset: 4px; }
 button, input, select, textarea { font: inherit; }
-button, .button { cursor: pointer; }
+button, .button { cursor: pointer; font-family: 'Poppins', 'Segoe UI', Arial, sans-serif; }
 .shell { width: min(1160px, calc(100% - 64px)); margin-inline: auto; }
 .skip-link { position: absolute; left: 16px; top: -80px; padding: 10px 16px; background: white; z-index: 10; }
 .skip-link:focus { top: 8px; }
 :focus-visible { outline: 3px solid #8faa64; outline-offset: 3px; }
 .site-header { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 100px; padding-block: 16px; border-bottom: 1px solid var(--line); }
 .brand { display: inline-flex; align-items: center; flex-shrink: 0; gap: 10px; text-decoration: none; font-size: 27px; font-weight: 750; letter-spacing: -1px; }
+.brand-logo-image { display: block; width: 180px; max-width: 100%; height: auto; }
 .brand-icon { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; background: var(--ink); color: var(--cream); font-size: 30px; font-weight: 400; }
 .brand-and { color: #7e935b; }
 .site-nav { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 6px; }
@@ -35,15 +38,16 @@ h3 { font-size: 18px; }
 .muted { color: var(--muted); font-size: 14px; }
 .panel { padding: 32px; border: 1px solid var(--line); border-radius: 22px; background: #fffefa; box-shadow: 0 12px 40px rgb(36 75 55 / 4%); }
 .panel-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.button { display: inline-flex; justify-content: center; align-items: center; min-height: 46px; padding: 10px 20px; border: 1px solid transparent; border-radius: 9px; font-size: 14px; font-weight: 600; text-decoration: none; }
-.button-primary { background: var(--ink); color: white; }
-.button-primary:hover { background: #183c29; }
-.button-secondary { background: #edf1e5; color: var(--ink); border-color: #d4dfc7; }
+.button { display: inline-flex; justify-content: center; align-items: center; min-height: 46px; padding: 10px 20px; border: 1px solid transparent; border-radius: 24px; font-size: 14px; font-weight: 600; text-decoration: none; }
+.button-primary { background: linear-gradient(90deg, #41AB5D 0%, #005A32 100%); color: #FFFFFF; font-family: 'Poppins', 'Segoe UI', Arial, sans-serif; font-weight: 600; line-height: 1; letter-spacing: 0; text-align: center; }
+.button-primary:hover { filter: brightness(1.05); }
+.button-secondary { background: linear-gradient(90deg, #41AB5D 0%, #005A32 100%); color: #FFFFFF; border-color: transparent; font-family: 'Poppins', 'Segoe UI', Arial, sans-serif; font-weight: 600; }
+.button-secondary:hover { filter: brightness(1.05); }
 .button-danger { background: #faf0eb; color: #945e4a; border-color: #e6d5cd; }
 .button:disabled { cursor: not-allowed; opacity: 0.65; }
 .button-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
 .field { display: grid; gap: 7px; min-width: 0; }
-.field label { font-size: 13px; font-weight: 600; }
+.field label { font-family: 'Poppins', 'Segoe UI', Arial, sans-serif; font-size: 13px; font-weight: 600; }
 .field input, .field select, .field textarea { width: 100%; min-width: 0; min-height: 45px; padding: 10px 12px; border: 1px solid #d6ddce; border-radius: 9px; background: white; color: var(--ink); font-size: 14px; }
 .field input::placeholder, .field textarea::placeholder { color: #8b9585; opacity: 1; }
 .field input:focus, .field select:focus, .field textarea:focus { border-color: #8faa64; }
@@ -72,6 +76,7 @@ h3 { font-size: 18px; }
     .panel { padding: 24px; }
 }
 @media (max-width: 680px) {
+    .brand-logo-image { width: 158px; }
     .shell { width: calc(100% - 36px); }
     .site-header { flex-direction: column; align-items: flex-start; gap: 16px; padding-block: 20px; }
     .site-nav { width: 100%; justify-content: flex-start; gap: 5px; }
