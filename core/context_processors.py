@@ -30,14 +30,25 @@ def navigation(request):
         "keranjang:show_keranjang",
         "cart:index",
     )
+    forum_url = _optional_url(
+        getattr(settings, "NAVBAR_FORUM_URL_NAME", None),
+        "forum:show_forum",
+        "forum:index",
+        "forum:forum_list",
+        "forum:home",
+    )
     posts_url = _optional_url(
         getattr(settings, "NAVBAR_POSTS_URL_NAME", None),
         "daftar_post:show_daftar_post",
         "daftar_post:show_posts",
         "posts:my_posts",
         "post_list:show_posts",
+        "profile_post:show_profile",
     )
     profile_url = _optional_url("accounts:profile")
+    login_url = _optional_url("accounts:auth", "accounts:login")
+    authenticated = bool(getattr(getattr(request, "user", None), "is_authenticated", False))
+    settings_url = profile_url if authenticated else login_url
     account_active = _is_active(request, profile_url)
     match = getattr(request, "resolver_match", None)
     if match and match.namespace == "accounts":
@@ -47,16 +58,20 @@ def navigation(request):
         "navigation": {
             "home_url": home_url,
             "items": [
-                {"label": label, "url": url, "active": _is_active(request, url)}
-                for label, url in (
-                    ("Beranda", home_url),
-                    ("Keranjang", cart_url),
-                    ("Post Saya", posts_url),
-                )
+                {"key": "home", "label": "Home", "url": home_url,
+                 "active": _is_active(request, home_url), "icon": "img/home_filled.png"},
+                {"key": "cart", "label": "Cart", "url": cart_url,
+                 "active": _is_active(request, cart_url), "icon": "img/shopping_cart.png"},
+                {"key": "forum", "label": "Forum", "url": forum_url,
+                 "active": _is_active(request, forum_url), "icon": "img/chat_bubble_outline.png"},
+                {"key": "posts", "label": "Posts", "url": posts_url,
+                 "active": _is_active(request, posts_url), "icon": "img/insert_photo.png"},
+                {"key": "settings", "label": "Settings", "url": settings_url,
+                 "active": account_active, "icon": "img/settings.png"},
             ],
             "profile_url": profile_url,
             "account_active": account_active,
-            "login_url": _optional_url("accounts:auth", "accounts:login"),
+            "login_url": login_url,
             "register_url": _optional_url("accounts:register"),
             "logout_url": _optional_url("accounts:logout"),
         }

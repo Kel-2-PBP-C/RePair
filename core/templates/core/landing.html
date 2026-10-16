@@ -5,7 +5,7 @@
     <span class="eyebrow">Beri barang kesempatan kedua.</span>
     {% if user.is_authenticated %}
     <h1 id="landing-title">Selamat datang, {% firstof user.get_short_name user.username %}.</h1>
-    <p class="muted">Kamu sudah masuk ke Re&amp;Pair. Profil dan pengaturan akun tersedia melalui navigasi di atas.</p>
+    <p class="muted">Kamu sudah masuk ke Re&amp;Pair. Profil dan pengaturan akun tersedia melalui menu Settings.</p>
     {% if navigation.profile_url %}<a class="button button-primary" href="{{ navigation.profile_url }}">Buka profil &amp; pengaturan</a>{% endif %}
     {% else %}
     <h1 id="landing-title">Barang lama. Cerita baru.</h1>
