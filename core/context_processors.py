@@ -1,5 +1,3 @@
-"""Build navigation without requiring teammates' apps to be installed."""
-
 from django.conf import settings
 from django.urls import NoReverseMatch, reverse
 

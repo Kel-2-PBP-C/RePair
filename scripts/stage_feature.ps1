@@ -28,8 +28,7 @@ if ($actualBranch -ne $expectedBranch) {
 $sharedPaths = @(
     '.gitignore', '.gitattributes', '.githooks/pre-commit', '.githooks/pre-push',
     'scripts/check_git_safety.py', 'scripts/test_git_safety.py',
-    'scripts/stage_feature.ps1', 'docs/GIT_COMMIT_PUSH.md',
-    'docs/NAVBAR_INTEGRATION.md',
+    'scripts/stage_feature.ps1',
     'core/context_processors.py', 'core/templates/core/landing.html',
     'core/tests/test_navigation.py', 'core/tests/urls_integrated.py',
     'static/css/site.css', 'static/css/navbar.css',
@@ -40,15 +39,13 @@ $sharedPaths = @(
     'static/img/settings.png'
 )
 $accountPaths = @(
-    '.env.example', 'README.md', 'RePair/settings.py', 'requirements.txt',
+    '.env.example', 'README.md', 'RePair/settings.py', 'RePair/urls.py',
+    'requirements.txt',
     'accounts', 'barter_details/static/details.css',
     'barter_details/templates/barter_details/details.html',
     'core/urls.py', 'core/views.py',
     'core/templates/core/policies.html', 'core/templates/core/privacy.html',
     'core/tests/test_public_policies.py',
-    'docs/GOOGLE_AUTH_SETUP.md', 'docs/GOOGLE_AUTH_STATUS.md',
-    'docs/GOOGLE_BRANDING_FIX.md', 'docs/LOCATION_PICKER_SETUP.md',
-    'docs/TEAM_PR_WORKFLOW.md',
     'static/img/Group 47.png',
     'static/img/Barter & Perbaiki barang tak terpakai dengan mudah..png',
     'static/img/google.jpg', 'static/img/google.png', 'static/img/Chevron 2.png'

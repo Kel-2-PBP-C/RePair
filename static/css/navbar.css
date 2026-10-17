@@ -1,4 +1,3 @@
-/* Shared component: edit repair-shared-navbar first, then copy into app integrations. */
 :root {
     --navbar-height: 96px;
     --navbar-bottom-height: 84px;
@@ -110,6 +109,6 @@ a.repair-navbar-link:hover { background: rgb(255 255 255 / 14%); }
     .repair-navbar-link[aria-current='page'] .repair-navbar-icon {
         filter: brightness(0) saturate(100%) invert(23%) sepia(38%) saturate(1500%) hue-rotate(108deg) brightness(88%) contrast(104%);
     }
-    a.repair-navbar-link:hover { background: #f1f6f2; border-radius: 18px; }
+    a.repair-navbar-link:hover { background: #f1f6f2; border-radius: 8px; }
     .repair-navbar-link:focus-visible { outline-color: #005A32; }
 }

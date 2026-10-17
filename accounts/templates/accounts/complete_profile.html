@@ -1,0 +1,61 @@
+{% extends 'accounts/brand_base.html' %}
+{% load static %}
+{% block title %}Lengkapi Profil{% endblock %}
+{% block body_class %}brand-page--profile{% endblock %}
+{% block messages %}
+{% if messages %}{% for message in messages %}{% if 'error' in message.tags %}
+<div class="brand-messages"><p class="brand-message brand-message-error" role="alert">{{ message }}</p></div>
+{% endif %}{% endfor %}{% endif %}
+{% endblock %}
+{% block content %}
+<section class="brand-profile-completion" aria-labelledby="complete-profile-title">
+    <a class="brand-logo brand-profile-logo" href="{% url 'home' %}" aria-label="RePair, halaman awal">
+        <img src="{% static 'img/Group 40.png' %}" width="991" height="345" alt="RePair">
+    </a>
+    <div class="brand-card brand-profile-card">
+        <h1 id="complete-profile-title" class="brand-profile-title">Lengkapi Profil</h1>
+        <form class="brand-profile-form" method="post">
+            {% csrf_token %}
+            {% if completion_form.non_field_errors %}
+            <div class="brand-field-errors" role="alert">{{ completion_form.non_field_errors }}</div>
+            {% endif %}
+            <div class="brand-profile-field{% if completion_form.username.errors %} brand-field--invalid{% endif %}">
+                <label for="{{ completion_form.username.id_for_label }}">Username</label>
+                {{ completion_form.username }}
+                {% if completion_form.username.errors %}<div class="brand-field-errors" id="{{ completion_form.username.auto_id }}_error" role="alert">{{ completion_form.username.errors }}</div>{% endif %}
+            </div>
+            <div class="brand-profile-field{% if completion_form.domicile.errors %} brand-field--invalid{% endif %}">
+                <label for="{{ completion_form.domicile.id_for_label }}">Location</label>
+                <div class="brand-location-picker" data-location-picker data-location-url="{% url 'accounts:region_search' %}">
+                    <div class="brand-location-control">
+                        <button class="brand-location-toggle" type="button" aria-label="Tampilkan pilihan kota" aria-expanded="false" aria-controls="location-options" hidden>
+                            <img src="{% static 'img/Chevron 2.png' %}" width="24" height="24" alt="">
+                        </button>
+                        {{ completion_form.domicile }}
+                    </div>
+                    {{ completion_form.domicile_code }}
+                    <div class="brand-location-popup" hidden>
+                        <ul class="brand-location-options" id="location-options" role="listbox" aria-label="Pilihan kota dan kabupaten"></ul>
+                        <p class="brand-location-status" role="status" aria-live="polite"></p>
+                    </div>
+                </div>
+                {% if completion_form.domicile.errors %}<div class="brand-field-errors" id="{{ completion_form.domicile.auto_id }}_error" role="alert">{{ completion_form.domicile.errors }}</div>{% endif %}
+            </div>
+            <fieldset class="brand-profile-field brand-profile-categories"{% if completion_form.preferred_categories.errors %} aria-describedby="{{ completion_form.preferred_categories.auto_id }}_error"{% endif %}>
+                <legend>Kategori barang preferred</legend>
+                {% for category in completion_form.preferred_categories %}
+                <label class="brand-category-chip" for="{{ category.id_for_label }}">{{ category.tag }}<span>{{ category.choice_label }}</span></label>
+                {% endfor %}
+                {% if completion_form.preferred_categories.errors %}<div class="brand-field-errors" id="{{ completion_form.preferred_categories.auto_id }}_error" role="alert">{{ completion_form.preferred_categories.errors }}</div>{% endif %}
+            </fieldset>
+            <div class="brand-profile-actions">
+                <button class="brand-button" type="submit" name="action" value="save">Simpan &amp; Lanjutkan</button>
+                <button class="brand-profile-skip" type="submit" name="action" value="skip" formnovalidate>Lewati Dulu</button>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}
+{% block extra_js %}
+<script src="{% static 'accounts/js/location-picker.js' %}" defer></script>
+{% endblock %}

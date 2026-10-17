@@ -20,6 +20,7 @@ __pycache__/
 .uv-cache/
 staticfiles/
 .test-artifacts/
+/docs/
 
 # Linked worktrees are separate checkouts, never application files
 /repair-shared-navbar/
