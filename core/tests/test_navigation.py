@@ -38,7 +38,7 @@ class SharedNavigationTests(SimpleTestCase):
     def test_shared_branch_renders_for_guests_without_accounts(self):
         response = landing(self.request())
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "semangat ngerjainnya guyss")
+        self.assertContains(response, "semangat ngerjainnya guys-noe")
         self.assertContains(response, 'aria-disabled="true"', count=4)
         self.assertNotContains(response, "/accounts/")
 
@@ -79,7 +79,7 @@ class SharedNavigationTests(SimpleTestCase):
         nav = navigation(request)["navigation"]
         self.assertEqual(nav["items"][4]["url"], "/accounts/profile/")
         response = landing(request)
-        self.assertContains(response, "semangat ngerjainnya guyss")
+        self.assertContains(response, "semangat ngerjainnya guys-noe")
         self.assertContains(response, 'href="/accounts/profile/"')
         self.assertNotContains(response, 'action="/accounts/logout/"')
         self.assertEqual(nav["logout_url"], "/accounts/logout/")

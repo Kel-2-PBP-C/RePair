@@ -41,7 +41,7 @@ def navigation(request):
         "daftar_post:show_posts",
         "posts:my_posts",
         "post_list:show_posts",
-        "profile_post:show_profile",
+        "profile_post:show_posts",
     )
     profile_url = _optional_url("accounts:profile")
     login_url = _optional_url("accounts:auth", "accounts:login")
