@@ -1,4 +1,6 @@
 #!/bin/sh
+# Resolve the script beside this hook so a shared absolute hooksPath also works
+# from the repair-shared-navbar worktree. Never read a working-copy .env.
 set -eu
 hook_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 guard="$hook_dir/../scripts/check_git_safety.py"

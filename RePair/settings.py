@@ -32,6 +32,9 @@ INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'accounts.apps.AccountsConfig',
     'barter_details',
+    'profile_post',
+    'keranjang',
+    'main_page',
 ]
 
 MIDDLEWARE = [
@@ -129,7 +132,6 @@ LOGIN_REDIRECT_URL = 'core:landing'
 LOGOUT_REDIRECT_URL = 'accounts:auth'
 REQUIRE_LOGIN_FOR_LANDING = True
 
-
 GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID', '').strip()
 GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET', '').strip()
 GOOGLE_REDIRECT_URI = os.getenv(
@@ -164,3 +166,6 @@ LOGGING = {
         'authlib': {'level': 'WARNING'},
     },
 }
+
+# The post module keeps its own route, distinct from account settings.
+NAVBAR_POSTS_URL_NAME = 'profile_post:show_profile'

@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Periksa file sensitif dan kredensial sebelum commit atau push."""
+"""Block sensitive files and recognizable credentials before commits and pushes.
+
+Only Git objects are inspected; working-copy environment files are never read.
+Run with --index, --head, or --pre-push (Git's ref updates on standard input).
+"""
 
 from __future__ import annotations
 
@@ -40,7 +44,7 @@ def git(*arguments: str) -> bytes:
     except OSError as exc:
         raise SafetyError("Git is unavailable; the safety check could not run.") from exc
     if result.returncode:
-        # Pesan Git dapat memuat kredensial URL; jangan tampilkan stderr mentah.
+        # Git diagnostics can include repository URLs. Do not echo them.
         raise SafetyError("Git objects could not be inspected. Resolve Git errors or fetch the destination branch, then retry.")
     return result.stdout
 
@@ -69,7 +73,7 @@ def path_problem(path: str, mode: str) -> str | None:
 
 def credential_problems(data: bytes, path: str) -> list[str]:
     if b"\0" in data:
-        return []
+        return []  # Binary images/fonts are not text credentials.
     problems = [label for label, pattern in CREDENTIAL_PATTERNS if pattern.search(data)]
     if path == ".env.example":
         for raw in data.decode("utf-8", errors="replace").splitlines():
@@ -154,7 +158,7 @@ class Scanner:
                 if not re.fullmatch(r"[0-9a-fA-F]{40}|[0-9a-fA-F]{64}", oid):
                     raise SafetyError("Invalid Git object ID; refusing an unchecked push.")
             if set(local_oid) == {"0"}:
-                continue
+                continue  # Deleting a remote branch sends no new content.
             self.commit(local_oid)
             if set(remote_oid) != {"0"}:
                 try:
@@ -168,7 +172,8 @@ class Scanner:
             else:
                 introduced = git("rev-list", local_oid, "--not", "--remotes")
             for oid in introduced.decode("ascii").splitlines():
-                # Periksa commit perantara agar .env yang kemudian dihapus tetap ditolak.
+                # Scan intermediate commits too: committing then deleting .env
+                # must never bypass the guard.
                 self.commit(oid)
 
 

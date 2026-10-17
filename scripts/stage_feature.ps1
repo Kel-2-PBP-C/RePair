@@ -39,18 +39,21 @@ $sharedPaths = @(
     'static/img/settings.png'
 )
 $accountPaths = @(
-    '.env.example', 'README.md', 'RePair', 'requirements.txt', 'manage.py',
-    'accounts', 'barter_details', 'core',
+    '.env.example', 'README.md', 'RePair/settings.py', 'RePair/urls.py',
+    'requirements.txt',
+    'accounts', 'barter_details/static/details.css',
+    'barter_details/templates/barter_details/details.html',
+    'core/urls.py', 'core/views.py',
+    'core/templates/core/policies.html', 'core/templates/core/privacy.html',
+    'core/tests/test_public_policies.py',
     'static/img/Group 47.png',
     'static/img/Barter & Perbaiki barang tak terpakai dengan mudah..png',
     'static/img/google.jpg', 'static/img/google.png', 'static/img/Chevron 2.png'
 )
 $paths = @($sharedPaths)
 if ($Feature -eq 'Accounts') { $paths += $accountPaths }
-$deletedDocs = @(Invoke-ProjectGit -GitArguments @('ls-files', '--deleted', '--', 'docs'))
-$paths += $deletedDocs
-$paths += @(Invoke-ProjectGit -GitArguments @('diff', '--cached', '--name-only', '--diff-filter=D', '--', 'docs'))
 
+# Never silently include somebody else's already-staged changes.
 $alreadyStaged = @(Invoke-ProjectGit -GitArguments @('diff', '--cached', '--name-only'))
 foreach ($file in $alreadyStaged) {
     $owned = $false
@@ -72,9 +75,6 @@ foreach ($file in $sharedPaths) {
 }
 $existingPaths = @($paths | Where-Object { Test-Path -LiteralPath (Join-Path $repoRoot $_) })
 Invoke-ProjectGit -GitArguments (@('add', '--') + $existingPaths)
-if ($deletedDocs.Count -gt 0) {
-    Invoke-ProjectGit -GitArguments (@('add', '-u', '--') + $deletedDocs)
-}
 Invoke-ProjectGit -GitArguments @('update-index', '--chmod=+x', '--', '.githooks/pre-commit', '.githooks/pre-push')
 
 $pythonCandidates = @(

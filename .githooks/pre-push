@@ -1,4 +1,5 @@
 #!/bin/sh
+# Git supplies ref updates on stdin. The guard checks their commit history too.
 set -eu
 hook_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 guard="$hook_dir/../scripts/check_git_safety.py"

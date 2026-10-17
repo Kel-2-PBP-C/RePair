@@ -1,3 +1,5 @@
+"""Integration checks using temporary repositories, never the project's .git."""
+
 from pathlib import Path
 import subprocess
 import sys
