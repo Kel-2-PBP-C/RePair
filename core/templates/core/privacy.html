@@ -1,0 +1,94 @@
+{% extends 'accounts/brand_base.html' %}
+{% load static %}
+
+{% block title %}Kebijakan Privasi RePair{% endblock %}
+{% block description %}Kebijakan Privasi RePair menjelaskan data Google dan data akun yang kami kumpulkan, tujuan penggunaannya, pembagian, penyimpanan, dan cara menghapusnya.{% endblock %}
+{% block body_class %}brand-policy-page brand-privacy-page{% endblock %}
+
+{% block content %}
+<section class="brand-legal" aria-labelledby="privacy-title">
+    <a class="brand-logo" href="{% url 'home' %}" aria-label="Kembali ke halaman awal RePair">
+        <img src="{% static 'img/Group 40.png' %}" alt="RePair">
+    </a>
+
+    <article class="brand-card brand-legal-card">
+        <h1 id="privacy-title" class="brand-legal-title">Kebijakan Privasi RePair</h1>
+        <p class="brand-legal-meta">Terakhir diperbarui: <time datetime="2026-10-16">16 Oktober 2026</time></p>
+        <p class="brand-legal-intro">Kebijakan ini menjelaskan bagaimana tim RePair mengelola data pribadi saat kamu mengunjungi situs, masuk dengan Google, membuat akun, dan menggunakan layanan barter RePair.</p>
+
+        <div class="brand-legal-content">
+            <section aria-labelledby="privacy-operator">
+                <h2 id="privacy-operator" class="brand-legal-subtitle">1. Pengelola dan layanan</h2>
+                <p>RePair dikelola oleh tim RePair dan dapat diakses melalui <a href="https://rasya-azyan-repair.pws.cs.ui.ac.id/">rasya-azyan-repair.pws.cs.ui.ac.id</a>. RePair membantu pengguna menampilkan dan menukar barang bekas. RePair tidak memproses pembayaran. Kebijakan ini berlaku untuk layanan RePair, sedangkan Google dan penyedia situs lain memiliki kebijakan privasinya masing-masing.</p>
+            </section>
+
+            <section aria-labelledby="privacy-google-data">
+                <h2 id="privacy-google-data" class="brand-legal-subtitle">2. Data yang diterima dari Google</h2>
+                <p>Ketika kamu memilih <strong>Lanjutkan dengan Google</strong>, RePair meminta akses identitas dasar melalui izin <code>openid</code>, <code>email</code>, dan <code>profile</code>. Kami menerima pengenal unik akun Google, alamat email, status verifikasi email, dan nama. Pengenal unik dan email digunakan untuk mengenali akun RePair yang benar; nama digunakan sebagai nama awal profil yang dapat kamu ubah.</p>
+                <p>RePair tidak menerima password Google dan tidak meminta akses ke Gmail, Google Drive, Google Calendar, atau daftar kontak Google. Proses login memeriksa token identitas dari Google. Token akses, token identitas, dan kode otorisasi Google tidak disimpan sebagai data akun setelah proses login selesai. RePair tidak meminta akses Google secara berkelanjutan untuk mengambil data dari layanan tersebut.</p>
+            </section>
+
+            <section aria-labelledby="privacy-account-data">
+                <h2 id="privacy-account-data" class="brand-legal-subtitle">3. Data yang kamu berikan</h2>
+                <p>Kami menyimpan username, nama, dan email sebagai data akun. Password RePair disimpan dalam bentuk hash, bukan teks password yang dapat dibaca. Saat melengkapi atau mengubah profil, kamu dapat memberikan domisili, tanggal lahir, dan kontak media sosial. Jika domisili dipilih dari daftar wilayah, kami menyimpan kode kota/kabupaten beserta nama daerah dan provinsinya. Lokasi yang diketik manual disimpan sebagai teks tanpa kode wilayah. Kami juga menyimpan kategori barang pilihan, pilihan bahasa, serta pengaturan notifikasi email dan visibilitas profil. Data yang belum kamu isi tidak diambil dari sumber lain secara otomatis.</p>
+                <p>Untuk barang yang kamu posting, kami menyimpan pemilik, judul, deskripsi, tautan gambar, tahun barang, kondisi, barang pengganti yang diinginkan, lokasi barang, dan waktu pembuatan postingan. Jangan memasukkan password, nomor identitas, alamat rumah lengkap, atau informasi pribadi orang lain ke dalam deskripsi atau foto barang.</p>
+            </section>
+
+            <section aria-labelledby="privacy-purpose">
+                <h2 id="privacy-purpose" class="brand-legal-subtitle">4. Tujuan penggunaan data</h2>
+                <p>Data digunakan untuk membuat dan mengautentikasi akun, menautkan akun Google ke akun RePair yang kamu verifikasi, menampilkan profil dan postingan yang relevan, menyimpan preferensi, menyediakan pengaturan akun, serta menangani permintaan dukungan dan penghapusan. Data keamanan digunakan untuk memvalidasi sesi dan membatasi percobaan login yang gagal.</p>
+                <p>Data identitas Google digunakan hanya untuk mendukung fungsi akun dan login RePair. Kami tidak menjual atau menyewakan data pribadi, tidak memakai data Google untuk iklan yang dipersonalisasi, dan tidak menggunakannya untuk melatih model kecerdasan buatan.</p>
+            </section>
+
+            <section aria-labelledby="privacy-cookies">
+                <h2 id="privacy-cookies" class="brand-legal-subtitle">5. Cookie, sesi, dan catatan teknis</h2>
+                <p>RePair menggunakan cookie sesi untuk mempertahankan status login dan cookie keamanan untuk melindungi formulir dari permintaan palsu. Data sesi dan bukti login sementara disimpan di server, termasuk penanda verifikasi Google dan pengisian profil. Bukti proses login atau penautan Google berlaku selama 10 menit; pembatasan percobaan password memakai jendela waktu 15 menit. Kedaluwarsa masa berlaku tidak selalu berarti catatan tersebut langsung terhapus pada saat yang sama.</p>
+                <p>Server aplikasi dan penyedia hosting dapat mencatat informasi teknis seperti alamat IP, waktu permintaan, alamat halaman, dan hasil respons untuk operasional serta penanganan gangguan. Aplikasi berusaha menyaring parameter sensitif callback Google dari log Django. Catatan infrastruktur hosting dikelola oleh penyedia hosting dan dapat memiliki kebijakan penyimpanan tersendiri.</p>
+            </section>
+
+            <section aria-labelledby="privacy-sharing">
+                <h2 id="privacy-sharing" class="brand-legal-subtitle">6. Data yang ditampilkan dan pihak penerima</h2>
+                <p>Detail barang yang dipublikasikan, termasuk gambar, deskripsi, kondisi, lokasi barang, dan nama pemilik atau username, dapat dilihat oleh pengunjung yang dapat mengakses halaman barang. Email akun, tanggal lahir, dan hash password tidak ditampilkan di halaman detail barang. Informasi yang kamu tulis sendiri di postingan akan ikut terlihat; mengubah preferensi visibilitas profil tidak otomatis menyembunyikan postingan barang yang sudah dipublikasikan.</p>
+                <p>Google memproses permintaan autentikasi ketika kamu masuk. Infrastruktur PWS Universitas Indonesia digunakan untuk menjalankan situs publik dan menyimpan data layanan. Pengelola aplikasi dan penyedia infrastruktur dapat mengakses data sejauh diperlukan untuk operasional, keamanan, penanganan gangguan, atau kewajiban hukum yang berlaku. Kami tidak membagikan data akun kepada pengiklan atau broker data.</p>
+                <p>Pencarian domisili menggunakan API wilayah BogorTech. Teks pencarian wilayah dikirim oleh server RePair ke BogorTech untuk memperoleh pilihan kota/kabupaten dan provinsi; server tidak menyertakan nama, email, atau username akunmu pada permintaan tersebut. BogorTech dapat menerima alamat IP server dan informasi teknis permintaan. Kamu tetap dapat mengetik lokasi secara manual tanpa memilih hasil pencarian.</p>
+                <p>Halaman menggunakan font dari Google Fonts dan dapat memuat gambar barang dari tautan situs lain. Saat browser memuat font atau gambar tersebut, penyedianya dapat menerima alamat IP serta informasi teknis permintaan browser. Situs dan layanan pihak ketiga mengelola data tersebut menurut kebijakannya sendiri, termasuk <a href="https://policies.google.com/privacy" rel="noopener noreferrer">Kebijakan Privasi Google</a>.</p>
+            </section>
+
+            <section aria-labelledby="privacy-storage">
+                <h2 id="privacy-storage" class="brand-legal-subtitle">7. Penyimpanan dan perlindungan</h2>
+                <p>Data akun dan postingan disimpan dalam basis data aplikasi selama akun masih tersimpan di RePair dan data masih diperlukan untuk menjalankan layanan. Akun lama yang dinonaktifkan tidak otomatis terhapus; penghapusan dilakukan melalui fitur hapus akun atau permintaan kepada pengelola. Situs publik menggunakan HTTPS. Password RePair disimpan dalam bentuk hash, identitas Google diverifikasi di server, dan pengubahan atau penghapusan akun memerlukan pemeriksaan identitas. Tidak ada sistem yang sepenuhnya bebas risiko; hubungi pengelola jika kamu menduga ada penyalahgunaan akun.</p>
+                <p>RePair dapat menggunakan penyedia infrastruktur untuk menyimpan cadangan dan catatan teknis. Penghapusan dari basis data aktif tidak serta-merta menghapus salinan cadangan atau log yang dikelola terpisah. Jangka penyimpanan cadangan dan log mengikuti pengaturan pengelola serta penyedia hosting; hubungi tim RePair untuk informasi penyimpanan dan permintaan terkait salinan tersebut.</p>
+            </section>
+
+            <section aria-labelledby="privacy-rights">
+                <h2 id="privacy-rights" class="brand-legal-subtitle">8. Pilihan dan pengelolaan data</h2>
+                <p>Kamu dapat melihat dan memperbarui data profil serta preferensi melalui <strong>Settings / Profil &amp; Pengaturan</strong>. Email Google terverifikasi tidak dapat diganti dari formulir profil RePair. Hubungi tim RePair untuk meminta akses, koreksi, atau penghapusan data yang tidak dapat kamu kelola dari aplikasi. Kami dapat meminta bukti kepemilikan akun sebelum menjalankan permintaan agar data tidak diberikan kepada pihak yang salah.</p>
+                <p>Kamu dapat menghapus izin RePair melalui <a href="https://myaccount.google.com/connections" rel="noopener noreferrer">koneksi pihak ketiga di Akun Google</a>. Mencabut izin Google menghentikan akses yang kamu izinkan, tetapi tidak otomatis menghapus akun atau data yang telah disimpan di RePair. Gunakan fitur hapus akun atau hubungi tim RePair untuk menghapus data aplikasi.</p>
+            </section>
+
+            <section aria-labelledby="privacy-delete">
+                <h2 id="privacy-delete" class="brand-legal-subtitle">9. Hapus akun</h2>
+                <p>Untuk menghapus akun, buka <strong>Settings / Profil &amp; Pengaturan → Hapus akun</strong>, masukkan password RePair, centang konfirmasi, lalu pilih <strong>Hapus akun</strong>. Jika password RePair belum dibuat, aplikasi meminta verifikasi ulang Google terlebih dahulu.</p>
+                <p>Penghapusan yang berhasil menghapus akun, profil, identitas Google yang tertaut, postingan barang milikmu, serta sesi login dan bukti penautan akun dari basis data aktif. Kamu langsung keluar dan kembali ke halaman awal. Penghapusan ini permanen untuk data aktif tersebut; email Google yang sama dapat digunakan untuk membuat akun RePair baru. Salinan data yang telah disimpan pengguna lain, cadangan, dan log infrastruktur memiliki batasan yang dijelaskan di atas.</p>
+            </section>
+
+            <section aria-labelledby="privacy-age">
+                <h2 id="privacy-age" class="brand-legal-subtitle">10. Pengguna di bawah umur</h2>
+                <p>Layanan ditujukan bagi pengguna berusia minimal 17 tahun atau yang memiliki izin orang tua atau wali sesuai syarat RePair. Jika orang tua atau wali mengetahui data anak diproses tanpa izin yang sesuai, hubungi tim RePair untuk pemeriksaan dan penghapusan.</p>
+            </section>
+
+            <section aria-labelledby="privacy-contact">
+                <h2 id="privacy-contact" class="brand-legal-subtitle">11. Kontak privasi dan perubahan kebijakan</h2>
+                {% if support_email %}
+                <p>Untuk pertanyaan privasi, permintaan akses, koreksi, penghapusan, atau laporan penyalahgunaan, hubungi tim RePair melalui <a href="mailto:{{ support_email }}">{{ support_email }}</a>. Jangan mengirim password atau kode login dalam permintaan dukungan.</p>
+                {% else %}
+                <p>Untuk pertanyaan privasi, permintaan akses, koreksi, penghapusan, atau laporan penyalahgunaan, hubungi tim RePair melalui kanal dukungan resmi yang diberikan oleh pengelola. Jangan mengirim password atau kode login dalam permintaan dukungan.</p>
+                {% endif %}
+                <p>Kebijakan ini dapat diperbarui ketika layanan atau cara pengelolaan data berubah. Versi terbaru dipublikasikan pada halaman ini dengan tanggal pembaruan. Baca juga <a href="{% url 'core:terms' %}">Syarat &amp; Ketentuan RePair</a>.</p>
+            </section>
+        </div>
+
+        <a class="brand-button brand-legal-close" href="{{ close_url }}">Tutup</a>
+    </article>
+</section>
+{% endblock %}

@@ -16,11 +16,17 @@ account_patterns = [
 ]
 
 post_patterns = [path("", placeholder, name="show_posts")]
+forum_patterns = [
+    path("", placeholder, name="show_forum"),
+    path("topics/<int:pk>/", placeholder, name="topic"),
+]
 
 urlpatterns = [
     path("", include("core.urls")),
     path("accounts/", include((account_patterns, "accounts"))),
     path("keranjang/", placeholder, name="keranjang"),
     path("posts/", include((post_patterns, "daftar_post"))),
+    path("forum/", include((forum_patterns, "forum"))),
+    path("discussion/", placeholder, name="custom_forum"),
     path("my-posts/", placeholder, name="custom_post_list"),
 ]

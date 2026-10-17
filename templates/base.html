@@ -5,11 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#244b37">
-    <title>{% block title %}RePair{% endblock %} | Re&amp;Pair</title>
+    <title>{% block title %}RePair{% endblock %} | RePair</title>
     <link rel="stylesheet" href="{% static 'css/site.css' %}">
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
     {% block extra_css %}{% endblock %}
 </head>
-<body>
+<body class="{% block body_class %}has-responsive-navbar{% endblock %}">
     <a class="skip-link" href="#content">Lewati ke konten</a>
     {% block navbar %}{% include 'components/navbar.html' %}{% endblock %}
     <main id="content" class="shell {% block main_class %}page-main{% endblock %}">
@@ -22,7 +23,7 @@
         {% endif %}
         {% block content %}{% endblock %}
     </main>
-    <footer class="site-footer shell">Re&amp;Pair &mdash; Lebih banyak cerita, lebih sedikit limbah.</footer>
+    <footer class="site-footer shell">&copy; Repair, all rights reserved.</footer>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

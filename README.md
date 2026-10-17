@@ -1,4 +1,4 @@
-# Re&Pair
+﻿# Re&Pair
 
 Nama Aplikasi: **Re&Pair**
 <br><br>
@@ -45,22 +45,40 @@ Kami menargetkan user utama berupa siswa, mahasiswa, dan pekerja dengan range us
 
 ## MVP (Minimum Viable Product)
 1.  Halaman Login/Register dan Profil & Setting (PIC: Noe Andrew JM. Silalahi)
-Pada halaman ini, user dapat melakukan register akun baru, dengan field utama seperti (Nama, akun email, domisili, tanggal lahir, password, dan field lain yang mungkin dibutuhkan). Lalu user juga dapat user dapat melihat detail akun, mengubah password, dan mengubah preferensi penggunaan aplikasi.
-a. Create	
-    Register	
-        Nama, email, domisili, tanggal lahir, password + konfirmasi. Domisili bisa dropdown dari emsifa/api-wilayah-indonesia biar seragam.
+Modul ini menangani pendaftaran, login, profil, dan pengaturan akun. Fitur yang sudah selesai dikerjakan:
 
-b. Read	
-    Lihat detail akun	
-        Halaman profil, password jangan ditampilkan.
+a. Create
+    Register dan login Google
+    - Pendaftaran dan verifikasi identitas menggunakan akun Google.
+    - Pengguna baru membuat username unik dan password RePair setelah verifikasi Google.
+    - Pengguna lama masuk melalui Google, lalu memverifikasi username dan password RePair.
+    - Akun lama dapat ditautkan ke Google setelah verifikasi Google dan kredensial akun lama.
+    - Halaman Lengkapi Profil ditampilkan setelah login, dengan pilihan Simpan & Lanjutkan atau Lewati Dulu.
 
-c. Update	
-    Edit profil dan ubah password	
-        Ubah password minta password lama dulu. Di Django, panggil update_session_auth_hash(request, user) setelah set_password() biar user nggak ke-logout.
+b. Read
+    Lihat profil dan informasi aplikasi
+    - Menampilkan nama, email Google, username, lokasi, dan kategori barang pilihan pada profil.
+    - Menyediakan landing page, halaman kredensial, Lengkapi Profil, Settings, Syarat & Ketentuan, dan Kebijakan Privasi.
+    - Halaman syarat dan privasi dapat diakses tanpa login.
+    - Password disimpan dalam bentuk hash dan tidak ditampilkan pada profil.
 
-d. Delete	
-    Hapus akun 	
-        soft delete, yaitu set is_active = False sehingga akun cuma dinonaktifkan.
+c. Update
+    Edit profil, preferensi, dan password
+    - Mengubah username, nama, lokasi, tanggal lahir, dan kontak media sosial. Email Google tidak dapat diubah melalui form profil.
+    - Memilih kota/kabupaten dari dropdown pencarian BogorTech atau mengetik lokasi secara manual. Pilihan API menyimpan kode wilayah dan nama daerah beserta provinsinya.
+    - Mengubah kategori barang pilihan, preferensi notifikasi email, visibilitas profil, dan bahasa aplikasi. Pengiriman email dan terjemahan antarmuka belum diterapkan.
+    - Mengubah password dengan memasukkan password lama; sesi login tetap dipertahankan setelah perubahan.
+    - Tombol Edit Profil, Simpan Profil, dan Batal tersedia pada Settings.
+
+d. Delete
+    Hapus akun dan keluar
+    - Menghapus akun secara permanen beserta profil, identitas Google, postingan barang, dan sesi login terkait.
+    - Penghapusan memerlukan password RePair dan konfirmasi; akun tanpa password RePair menggunakan verifikasi ulang Google.
+    - Pengguna keluar dari semua perangkat, kembali ke landing page, dan menerima notifikasi penghapusan.
+    - Email dan akun Google yang sama dapat dipakai untuk mendaftar kembali.
+    - Tombol Keluar dari Akun tersedia di Settings.
+
+Tampilan landing, login, Lengkapi Profil, dan Settings menyesuaikan layar HP dan laptop. Navbar bersama menampilkan Home, Cart, Forum, Posts, dan Settings; berada di bawah pada HP dan di atas pada laptop.
 
 
 2. Modul Barter / Main Page (PIC: Aisha Ibnaty Zahira)
@@ -81,6 +99,8 @@ Create: Simpan barang ke keranjang, Read: Lihat barang yang pernah disimpan, Upd
 5. Modul Daftar Post (PIC: Hafizuddin Dzaki Azzam)
 Pada modul ini, user dapat melihat seluruh post yang pernah dibuat, menghapus post, dan melihat siapa saja yang membuat pengajuan dari barang tersebut beserta detail informasi (Nama User, Domisili, dan Barang/Jasa yang dapat ditawarkan)
 
+5. Modul Profil & Setting (PIC: Aisha Ibnaty Zahira)
+Dalam modul ini, user dapat melihat detail akun, mengubah password, dan mengubah preferensi penggunaan aplikasi
 
 ### Fitur lain yang dapat dibangun (Nice To Have Features)
 1. Modul Peta Persebaran Lokasi Service Barang
@@ -98,57 +118,11 @@ Dengan modul ini, harapannya user bisa berinteraksi dengan user lainnya untuk me
 - Firebase Auth & FCM: Login cepat & notifikasi
 - Overpass API (OSM): Sumber data lokasi tempat reparasi/servis barang
 - Sightengine: Moderasi foto barang otomatis
+- Google OAuth 2.0 / OpenID Connect (Baru): Autentikasi akun Google untuk pendaftaran dan login RePair
+- BogorTech API Wilayah Indonesia (Baru): Pencarian kota/kabupaten beserta provinsi dan kode wilayah untuk domisili pengguna
 <br><br>
 
 ## Link Proyek
 **Link Figma:** https://www.figma.com/design/DECET1J0NLpkkESRoc5YL0/PBP-%7C-Re.Pair?node-id=0-1&t=ETOfeGihmOFiVStt-1
 
 **Link Deployment PWS:** https://pws.cs.ui.ac.id/rasya.azyan/repair
-
-## Modul 1 — Noe Andrew
-
-App Django tersendiri: `accounts`. Modul terdiri dari dua layar utama:
-
-| Layar | URL | Perilaku |
-| --- | --- | --- |
-| Auth | `/accounts/auth/` | Mode Masuk atau Daftar pada satu halaman; login menggunakan username atau email |
-| Profil & Pengaturan | `/accounts/profile/` | Profil, preferensi, ubah password, dan nonaktifkan akun; perlu login |
-
-URL `/` mengarahkan pengunjung ke Auth, dan pengguna yang sudah login ke
-`/landing/`. Login atau register yang berhasil langsung membuat sesi lalu
-membuka landing. URL lama `/accounts/login/`, `/accounts/register/`, dan
-`/accounts/settings/` mengarahkan ke dua layar tersebut.
-
-Field pendaftaran: username, nama lengkap, email, domisili, tanggal lahir,
-kontak media sosial opsional, password dan konfirmasi. Password di-hash oleh
-Django. Pengaturan hanya mengubah akun pengguna yang login. Ubah password
-memerlukan password lama dan mempertahankan sesi pengguna. Nonaktifkan akun
-memerlukan password serta konfirmasi, memakai `is_active=False`, lalu logout.
-Preferensi tersimpan mencakup notifikasi email, visibilitas profil, dan bahasa;
-pengiriman email dan terjemahan antarmuka belum diterapkan.
-
-Navbar bersama berasal dari branch `feat/shared-navbar`, memakai app `core`,
-`templates/base.html`, `templates/components/navbar.html`, dan `static/css/site.css`.
-Modul lain mewarisi base ini. `/landing/` memakai halaman `main_page` milik
-Aisha, memerlukan login, dan menampilkan navbar bersama. Pencarian, kartu
-rekomendasi, tambah ke keranjang, dan post barang masih berupa kerangka halaman
-sesuai checkpoint; fungsi data untuk modul tersebut belum diterapkan.
-
-Jalankan dengan `PRODUCTION=False` pada environment lokal:
-
-```powershell
-$env:PRODUCTION = 'False'
-.\.venv\Scripts\python.exe manage.py migrate
-.\.venv\Scripts\python.exe manage.py runserver
-```
-
-Pengujian memakai database SQLite sementara:
-
-```powershell
-.\.venv\Scripts\python.exe manage.py test accounts core --settings=accounts.test_settings
-```
-
-Panduan [integrasi navbar](docs/NAVBAR_INTEGRATION.md),
-[commit modul 1](docs/MODULE_1_WORKFLOW.md), dan
-[review/merge PR untuk lead](docs/TEAM_PR_WORKFLOW.md) menjelaskan urutan
-navbar → modul fitur → `dev` → `main`. Branch fitur dipertahankan setelah merge.

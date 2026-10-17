@@ -1,20 +1,5 @@
 {% extends 'base.html' %}
 {% block title %}Beranda{% endblock %}
 {% block content %}
-<section class="panel landing-panel" aria-labelledby="landing-title">
-    <span class="eyebrow">Beri barang kesempatan kedua.</span>
-    {% if user.is_authenticated %}
-    <h1 id="landing-title">Selamat datang, {% firstof user.get_short_name user.username %}.</h1>
-    <p class="muted">Kamu sudah masuk ke Re&amp;Pair. Profil dan pengaturan akun tersedia melalui navigasi di atas.</p>
-    {% if navigation.profile_url %}<a class="button button-primary" href="{{ navigation.profile_url }}">Buka profil &amp; pengaturan</a>{% endif %}
-    {% else %}
-    <h1 id="landing-title">Barang lama. Cerita baru.</h1>
-    <p class="muted">Re&amp;Pair mempertemukan barang yang tidak terpakai dengan orang yang membutuhkannya.</p>
-    {% if navigation.login_url %}<a class="button button-primary" href="{{ navigation.login_url }}">Masuk / Daftar</a>{% endif %}
-    {% endif %}
-    <div class="integration-note">
-        <h2>Beranda sedang disiapkan</h2>
-        <p>Temukan barang untuk cerita berikutnya. Pencarian dan rekomendasi akan segera tersedia.</p>
-    </div>
-</section>
+<p>semangat ngerjainnya guyss-noe</p>
 {% endblock %}

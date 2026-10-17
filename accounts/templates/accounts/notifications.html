@@ -1,0 +1,10 @@
+{% for message in messages %}
+{% if 'account-deleted' in message.tags %}
+<div class="brand-notifications" data-account-deleted-notifications>
+    <div class="brand-toast" data-notification role="status" aria-live="polite" aria-atomic="true">
+        <p>{{ message }}</p>
+        <button class="brand-toast-close" type="button" data-notification-close aria-label="Tutup notifikasi" hidden>&times;</button>
+    </div>
+</div>
+{% endif %}
+{% endfor %}
