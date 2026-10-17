@@ -6,7 +6,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('barter-details/', include('barter_details.urls')),
     path('accounts/', include('accounts.urls')),
-    path('profile/', include('profile_post.urls')),
+    path('posts/', include('profile_post.urls')),
     path('keranjang/', include('keranjang.urls')),
     path('', include('core.urls')),
     path('landing/', include('main_page.urls')),
