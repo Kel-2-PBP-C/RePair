@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#244b37">
+    <title>{% block title %}RePair{% endblock %} | RePair</title>
+    <link rel="stylesheet" href="{% static 'css/site.css' %}">
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="{% block body_class %}has-responsive-navbar{% endblock %}">
+    <a class="skip-link" href="#content">Lewati ke konten</a>
+    {% block navbar %}{% include 'components/navbar.html' %}{% endblock %}
+    <main id="content" class="shell {% block main_class %}page-main{% endblock %}">
+        {% if messages %}
+        <ul class="messages" aria-label="Pemberitahuan" aria-live="polite">
+            {% for message in messages %}
+            <li class="message{% if message.tags %} message-{{ message.tags }}{% endif %}"{% if 'error' in message.tags %} role="alert"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+    <footer class="site-footer shell">&copy; Repair, all rights reserved.</footer>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

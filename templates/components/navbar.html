@@ -1,0 +1,27 @@
+{% load static %}
+<header class="repair-navbar">
+    <div class="repair-navbar-inner">
+        {% if navigation.home_url %}
+        <a class="repair-navbar-brand" href="{{ navigation.home_url }}" aria-label="RePair, beranda">
+            <img src="{% static 'img/Group 40.png' %}" width="991" height="345" alt="RePair">
+        </a>
+        {% else %}
+        <span class="repair-navbar-brand"><img src="{% static 'img/Group 40.png' %}" width="991" height="345" alt="RePair"></span>
+        {% endif %}
+        <nav class="repair-navbar-menu" aria-label="Navigasi utama">
+            {% for item in navigation.items %}
+                {% if item.url %}
+                <a class="repair-navbar-link" href="{{ item.url }}"{% if item.active %} aria-current="page"{% endif %}>
+                    <img class="repair-navbar-icon" src="{% static item.icon %}" width="64" height="64" alt="" aria-hidden="true">
+                    <span class="repair-navbar-label">{{ item.label }}</span>
+                </a>
+                {% else %}
+                <span class="repair-navbar-link repair-navbar-disabled" role="link" aria-disabled="true" title="Halaman ini sedang disiapkan">
+                    <img class="repair-navbar-icon" src="{% static item.icon %}" width="64" height="64" alt="" aria-hidden="true">
+                    <span class="repair-navbar-label">{{ item.label }}</span>
+                </span>
+                {% endif %}
+            {% endfor %}
+        </nav>
+    </div>
+</header>

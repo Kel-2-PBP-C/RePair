@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{% if auth_mode == 'register' %}Daftar{% else %}Masuk{% endif %}{% endblock %}
+{% block body_class %}legacy-auth-page{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'accounts/css/accounts.css' %}">{% endblock %}
+{% block navbar %}
+<header class="auth-header shell">
+    <a class="brand" href="{% url 'accounts:auth' %}" aria-label="RePair, halaman akun">
+        <img class="brand-logo-image" src="{% static 'img/Group 40.png' %}" width="991" height="345" alt="RePair">
+    </a>
+    <span class="auth-tagline">Barang lama. Cerita baru.</span>
+</header>
+{% endblock %}
+{% block main_class %}auth-main{% endblock %}
+{% block content %}
+<div class="auth-layout">
+    <aside class="auth-introduction">
+        <h1>{% if auth_mode == 'register' %}Daftar akun RePair{% else %}Masuk ke RePair{% endif %}</h1>
+        <p class="auth-intro-copy">Tawarkan barang yang tidak terpakai dan ajukan penawaran barter.</p>
+    </aside>
+    <section class="panel auth-panel" aria-labelledby="auth-title">
+        <nav class="auth-tabs" aria-label="Masuk atau daftar">
+            <a href="{% url 'accounts:auth' %}?mode=login{% if next_url %}&amp;next={{ next_url|urlencode }}{% endif %}"{% if auth_mode == 'login' %} aria-current="page"{% endif %}>Masuk</a>
+            <a href="{% url 'accounts:auth' %}?mode=register{% if next_url %}&amp;next={{ next_url|urlencode }}{% endif %}"{% if auth_mode == 'register' %} aria-current="page"{% endif %}>Daftar</a>
+        </nav>
+        <h2 id="auth-title">{% if auth_mode == 'register' %}Buat akun baru{% else %}Masuk ke akunmu{% endif %}</h2>
+        <form class="account-form" method="post" action="{% url 'accounts:auth' %}">
+            {% csrf_token %}
+            <input type="hidden" name="mode" value="{{ auth_mode }}">
+            <input type="hidden" name="next" value="{{ next_url }}">
+            {% include 'accounts/_form_fields.html' with form=auth_form %}
+            <button class="button button-primary" type="submit">{% if auth_mode == 'register' %}Daftar{% else %}Masuk{% endif %}</button>
+        </form>
+        <p class="auth-alternative">{% if auth_mode == 'register' %}Sudah punya akun? <a href="{% url 'accounts:auth' %}?mode=login{% if next_url %}&amp;next={{ next_url|urlencode }}{% endif %}">Masuk di sini</a>{% else %}Belum punya akun? <a href="{% url 'accounts:auth' %}?mode=register{% if next_url %}&amp;next={{ next_url|urlencode }}{% endif %}">Daftar di sini</a>{% endif %}</p>
+    </section>
+</div>
+{% endblock %}

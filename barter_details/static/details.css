@@ -2,7 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Plus Jakarta Sans', 'Segoe UI', Arial, sans-serif;
 }
 
 :root {
@@ -147,13 +147,15 @@ body {
 .owner-contact {
     width: 4rem;
     height: 4rem;
-    border-radius: 50%;
-    background-color: var(--green-8);
+    border-radius: 8px;
+    background: linear-gradient(90deg, #41AB5D 0%, #005A32 100%);
+    font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+    font-weight: 600;
     border: 0;
 }
 
 .owner-contact:hover {
-    background-color: var(--green-6);
+    filter: brightness(1.05);
     scale: 102%;
 }
 
@@ -206,11 +208,12 @@ body {
 
 .cart-button {
     width: 48%;
-    border-radius: 0.5rem;
+    border-radius: 8px;
     background-color: var(--white);
     border: 2px solid var(--green-8);
     color: var(--green-8);
-    font-weight: 500;
+    font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+    font-weight: 600;
 }
 
 .cart-button:hover {
@@ -220,20 +223,28 @@ body {
 
 .bid-button {
     width: 48%;
+<<<<<<< HEAD
     display: flex;
     align-items: center;
     justify-content: center;
     text-decoration: none;
     font-size: 0.8333rem;
     border-radius: 0.5rem;
+=======
+    border-radius: 8px;
+>>>>>>> 7c31ac4f2ecd7f780455fe3cea0402194bb0c748
     border: none;
-    background: linear-gradient(to right, #238B45, #005A32);
+    background: linear-gradient(90deg, #41AB5D 0%, #005A32 100%);
     color: var(--white);
-    font-weight: 500;
+    font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0;
+    text-align: center;
 }
 
 .bid-button:hover {
-    background: var(--green-7);
+    filter: brightness(1.05);
     scale: 102%;
 }
 

@@ -5,7 +5,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator, MinLengthValidator
 
-# Create your models here.
+
 class Barter(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='barter_items',)
@@ -17,12 +17,13 @@ class Barter(models.Model):
     item_replacement = models.CharField(max_length=255, blank=True, null=True)
     item_location= models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
-    
+
     class Meta:
         ordering = ['-created_at']
-    
+
     def __str__(self):
         return self.title
+<<<<<<< HEAD
     
 class Bid(models.Model):
     class Status(models.TextChoices):
@@ -66,3 +67,5 @@ class Bid(models.Model):
             
     def __str__(self):
         return str(self.target)
+=======
+>>>>>>> 7c31ac4f2ecd7f780455fe3cea0402194bb0c748

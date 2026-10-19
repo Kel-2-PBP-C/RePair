@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Profil & Pengaturan{% endblock %}
+{% block body_class %}has-responsive-navbar settings-page{% endblock %}
+{% block main_class %}settings-main{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'accounts/css/accounts.css' %}">
+<link rel="stylesheet" href="{% static 'accounts/css/settings.css' %}">
+{% endblock %}
+{% block content %}
+<header class="settings-mobile-brand">
+    <a href="{{ navigation.home_url }}" aria-label="RePair, beranda"><img src="{% static 'img/Group 40.png' %}" width="991" height="345" alt="RePair"></a>
+</header>
+<h1 class="settings-sr-only">Profil &amp; Pengaturan</h1>
+<form id="profile" class="settings-summary" method="post" action="{% url 'accounts:profile' %}#profile" data-profile-editor data-profile-invalid="{% if profile_form.errors %}true{% else %}false{% endif %}">
+    {% csrf_token %}<input type="hidden" name="action" value="profile"><input type="hidden" name="preferred_categories_present" value="1">
+    <div class="settings-profile-card settings-card">
+        <div class="settings-identity">
+            <span class="settings-avatar" aria-hidden="true">{{ profile_initials|default:user.username|slice:':2'|upper }}</span>
+            <div class="settings-identity-copy"><strong>{{ user.get_full_name|default:user.username }}</strong><span>{{ user.email|default:'Email belum diisi' }}</span></div>
+        </div>
+        <div class="settings-profile-fields">
+            {% if profile_form.non_field_errors %}<div class="form-error" role="alert">{{ profile_form.non_field_errors }}</div>{% endif %}
+            <div class="settings-field{% if profile_form.username.errors %} field--invalid{% endif %}">
+                <label for="{{ profile_form.username.id_for_label }}">Username</label>
+                {{ profile_form.username }}
+                {% if profile_form.username.errors %}<div class="form-error" id="{{ profile_form.username.auto_id }}_error" role="alert">{{ profile_form.username.errors }}</div>{% endif %}
+            </div>
+            <div class="settings-field{% if profile_form.domicile.errors %} field--invalid{% endif %}">
+                <label for="{{ profile_form.domicile.id_for_label }}">Lokasi</label>
+                <div class="brand-location-picker" data-location-picker data-location-url="{% url 'accounts:region_search' %}">
+                    <div class="brand-location-control">
+                        <button class="brand-location-toggle" type="button" aria-label="Tampilkan pilihan kota" aria-expanded="false" aria-controls="settings-location-options" hidden><img src="{% static 'img/Chevron 2.png' %}" width="24" height="24" alt=""></button>
+                        {{ profile_form.domicile }}
+                    </div>
+                    {{ profile_form.domicile_code }}
+                    <div class="brand-location-popup" hidden>
+                        <ul class="brand-location-options" id="settings-location-options" role="listbox" aria-label="Pilihan kota dan kabupaten"></ul>
+                        <p class="brand-location-status" role="status" aria-live="polite"></p>
+                    </div>
+                </div>
+                {% if profile_form.domicile.errors %}<div class="form-error" id="{{ profile_form.domicile.auto_id }}_error" role="alert">{{ profile_form.domicile.errors }}</div>{% endif %}
+                {% if profile_form.domicile_code.errors %}<div class="form-error" role="alert">{{ profile_form.domicile_code.errors }}</div>{% endif %}
+            </div>
+            <div id="settings-profile-extra" class="settings-extra-fields" data-profile-extra>
+                {% for field in profile_form %}{% if field.name != 'username' and field.name != 'domicile' and field.name != 'domicile_code' and field.name != 'preferred_categories' %}
+                <div class="settings-field{% if field.errors %} field--invalid{% endif %}">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} <span aria-hidden="true">*</span>{% endif %}</label>
+                    {{ field }}
+                    {% if field.help_text %}<div class="form-help" id="{{ field.auto_id }}_helptext">{{ field.help_text }}</div>{% endif %}
+                    {% if field.errors %}<div class="form-error" id="{{ field.auto_id }}_error" role="alert">{{ field.errors }}</div>{% endif %}
+                </div>
+                {% endif %}{% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="settings-preferences-card settings-card">
+        <dl class="settings-statistics" aria-label="Aktivitas akun">
+            <div class="settings-stat"><dt>Barang Ditukar</dt><dd>{% if profile_stats.items_exchanged != None %}{{ profile_stats.items_exchanged }}{% else %}&mdash;{% endif %}</dd>{% if profile_stats.items_exchanged == None %}<small>Belum ada data</small>{% endif %}</div>
+            <div class="settings-stat"><dt>Reputasi</dt><dd>{% if profile_stats.reputation_percent != None %}{{ profile_stats.reputation_percent }}%{% else %}&mdash;{% endif %}</dd>{% if profile_stats.reputation_percent == None %}<small>Belum ada data</small>{% endif %}</div>
+        </dl>
+        <fieldset class="settings-categories"{% if profile_form.preferred_categories.errors %} aria-describedby="{{ profile_form.preferred_categories.auto_id }}_error"{% endif %}>
+            <legend class="settings-sr-only">Kategori barang pilihan</legend>
+            {% for category in profile_form.preferred_categories %}
+            <label class="settings-category" for="{{ category.id_for_label }}">{{ category.tag }}<span>
+                <svg class="settings-category-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+                {% if category.data.value == 'elektronik' %}<rect x="3" y="4" width="14" height="10" rx="1.5"/><path d="M7 17h6M10 14v3M6 7h3v4H6zM12 7h2M12 10h2"/>
+                {% elif category.data.value == 'buku' %}<path d="M10 5c-2-1-4-1-7-1v12c3 0 5 0 7 1 2-1 4-1 7-1V4c-3 0-5 0-7 1ZM10 5v12"/>
+                {% elif category.data.value == 'pakaian' %}<path d="m7 4-4 2-2 4 4 2 1-2v7h8v-7l1 2 4-2-2-4-4-2c0 3-6 3-6 0Z"/>
+                {% elif category.data.value == 'perabot' %}<path d="M4 10V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4M4 10H2v6h16v-6h-2M4 10h12M4 16v2M16 16v2"/>
+                {% else %}<path d="M6 7h8c3 0 4 7 3 9-1 2-4-1-5-2H8c-1 1-4 4-5 2-1-2 0-9 3-9Z"/><path d="M6 9v4M4 11h4M13 10h.01M15 12h.01"/>{% endif %}
+                </svg>{{ category.choice_label }}
+            </span></label>
+            {% endfor %}
+            {% if profile_form.preferred_categories.errors %}<div class="form-error" id="{{ profile_form.preferred_categories.auto_id }}_error" role="alert">{{ profile_form.preferred_categories.errors }}</div>{% endif %}
+        </fieldset>
+        <div class="settings-profile-actions">
+            <button class="button button-primary settings-edit-button" type="button" data-profile-edit aria-controls="settings-profile-extra" aria-expanded="false" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m16 3 5 5-12 12H4v-5Z"/><path d="m13 6 5 5"/></svg>Edit Profil</button>
+            <div class="settings-edit-actions" data-profile-save><button class="button button-primary" type="submit">Simpan Profil</button><a class="settings-cancel" href="{% url 'accounts:profile' %}#profile" data-profile-cancel>Batal</a></div>
+        </div>
+        <div class="settings-logout-slot"><button class="settings-logout" type="submit" form="settings-logout-form">Keluar dari Akun</button></div>
+    </div>
+</form>
+<form id="settings-logout-form" method="post" action="{{ navigation.logout_url }}" class="settings-logout-form">{% csrf_token %}</form>
+<div class="settings-additional" aria-label="Pengaturan tambahan">
+    <details id="settings" class="settings-detail"{% if preferences_form.is_bound %} open{% endif %}>
+        <summary>Preferensi</summary>
+        <div class="settings-detail-content"><p class="muted">Sesuaikan notifikasi, privasi profil, dan bahasa aplikasi.</p>
+            <form class="account-form" method="post" action="{% url 'accounts:profile' %}#settings">{% csrf_token %}<input type="hidden" name="action" value="preferences">{% include 'accounts/_form_fields.html' with form=preferences_form %}<button class="button button-primary" type="submit">Simpan Preferensi</button></form>
+        </div>
+    </details>
+    <details id="security" class="settings-detail"{% if password_form.is_bound %} open{% endif %}>
+        <summary>Keamanan</summary>
+        <div class="settings-detail-content">
+            {% if is_google_account %}<h2>Akun Google</h2><p class="muted">Akunmu terhubung dengan Google. Gunakan username dan password RePair setelah verifikasi Google.</p>
+                {% if delete_requires_google_reauth %}{% if google_reauth_recent %}<p class="account-verification" role="status">Akun Google baru saja diverifikasi ulang.</p>{% else %}<p class="muted">Verifikasi ulang akun Google diperlukan sebelum menghapus akun RePair.</p>{% endif %}<a class="button button-primary" href="{{ google_reauth_url }}">Verifikasi ulang dengan Google</a>{% endif %}
+            {% endif %}
+            {% if can_change_password %}<h2>Ubah kata sandi RePair</h2><p class="muted">Masukkan kata sandi saat ini sebelum membuat kata sandi baru.</p><form class="account-form" method="post" action="{% url 'accounts:profile' %}#security">{% csrf_token %}<input type="hidden" name="action" value="password">{% include 'accounts/_form_fields.html' with form=password_form %}<button class="button button-primary" type="submit">Ubah Kata Sandi</button></form>{% endif %}
+        </div>
+    </details>
+    <details id="account-status" class="settings-detail settings-detail-danger"{% if deactivate_form.is_bound %} open{% endif %}>
+        <summary>Hapus akun</summary>
+        <div class="settings-detail-content"><p class="muted">Akun, profil, postingan barang, dan semua data milikmu akan dihapus permanen dan tidak dapat dipulihkan. Kamu akan keluar dari semua perangkat. Setelahnya, kamu dapat mendaftar lagi dengan email dan akun Google yang sama.</p>
+            {% if delete_requires_google_reauth and not google_reauth_recent %}<p class="account-reauth-hint">Sebelum melanjutkan, <a href="{{ google_reauth_url }}">verifikasi ulang dengan Google</a>.</p>{% endif %}
+            <form class="account-form" method="post" action="{% url 'accounts:profile' %}#account-status">{% csrf_token %}<input type="hidden" name="action" value="delete">{% include 'accounts/_form_fields.html' with form=deactivate_form %}<button class="button button-danger" type="submit">Hapus Akun</button></form>
+        </div>
+    </details>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script src="{% static 'accounts/js/location-picker.js' %}" defer></script>
+<script src="{% static 'accounts/js/profile-settings.js' %}" defer></script>
+{% endblock %}

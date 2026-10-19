@@ -1,6 +1,6 @@
-# RePair
+﻿# Re&Pair
 
-Nama Aplikasi: **RePair**
+Nama Aplikasi: **Re&Pair**
 <br><br>
 
 ## Nama & NPM Anggota Kelompok:
@@ -12,7 +12,7 @@ Nama Aplikasi: **RePair**
 <br><br>
 
 ## Deskripsi Aplikasi
-    RePair merupakan sebuah aplikasi untuk mempertemukan barang-barang bekas yang tidak terpakai dengan pemilik baru yang lebih membutuhkan. Tujuan utama dari aplikasi ini adalah untuk meminimalisir produksi sampah dari barang-barang yang dapat dimanfaatkan kembali. RePair hadir untuk memberikan nilai tambah suatu barang pada tangan orang-orang yang tepat.
+    Re&Pair merupakan sebuah aplikasi untuk mempertemukan barang-barang bekas yang tidak terpakai dengan pemilik baru yang lebih membutuhkan. Tujuan utama dari aplikasi ini adalah untuk meminimalisir produksi sampah dari barang-barang yang dapat dimanfaatkan kembali. Re&Pair hadir untuk memberikan nilai tambah suatu barang pada tangan orang-orang yang tepat.
 <br><br>
 
 ## Proses Bisnis utama meliputi
@@ -26,7 +26,7 @@ Nama Aplikasi: **RePair**
 <br><br>
 
 ## Unique Selling Point
-Pada RePair, seluruh transaksi akan dilaksanakan dalam bentuk barter/sukarela (donasi), sehingga user dapat memilih barang/jasa lainnya sesuai dengan kebutuhan saat itu.
+Pada Re&Pair, seluruh transaksi akan dilaksanakan dalam bentuk barter/sukarela (donasi), sehingga user dapat memilih barang/jasa lainnya sesuai dengan kebutuhan saat itu.
 <br><br>
 
 ## User Role
@@ -45,22 +45,40 @@ Kami menargetkan user utama berupa siswa, mahasiswa, dan pekerja dengan range us
 
 ## MVP (Minimum Viable Product)
 1.  Halaman Login/Register dan Profil & Setting (PIC: Noe Andrew JM. Silalahi)
-Pada halaman ini, user dapat melakukan register akun baru, dengan field utama seperti (Nama, akun email, domisili, tanggal lahir, password, dan field lain yang mungkin dibutuhkan). Lalu user juga dapat user dapat melihat detail akun, mengubah password, dan mengubah preferensi penggunaan aplikasi.
-a. Create	
-    Register	
-        Nama, email, domisili, tanggal lahir, password + konfirmasi. Domisili bisa dropdown dari emsifa/api-wilayah-indonesia biar seragam.
+Modul ini menangani pendaftaran, login, profil, dan pengaturan akun. Fitur yang sudah selesai dikerjakan:
 
-b. Read	
-    Lihat detail akun	
-        Halaman profil, password jangan ditampilkan.
+a. Create
+    Register dan login Google
+    - Pendaftaran dan verifikasi identitas menggunakan akun Google.
+    - Pengguna baru membuat username unik dan password RePair setelah verifikasi Google.
+    - Pengguna lama masuk melalui Google, lalu memverifikasi username dan password RePair.
+    - Akun lama dapat ditautkan ke Google setelah verifikasi Google dan kredensial akun lama.
+    - Halaman Lengkapi Profil ditampilkan setelah login, dengan pilihan Simpan & Lanjutkan atau Lewati Dulu.
 
-c. Update	
-    Edit profil dan ubah password	
-        Ubah password minta password lama dulu. Di Django, panggil update_session_auth_hash(request, user) setelah set_password() biar user nggak ke-logout.
+b. Read
+    Lihat profil dan informasi aplikasi
+    - Menampilkan nama, email Google, username, lokasi, dan kategori barang pilihan pada profil.
+    - Menyediakan landing page, halaman kredensial, Lengkapi Profil, Settings, Syarat & Ketentuan, dan Kebijakan Privasi.
+    - Halaman syarat dan privasi dapat diakses tanpa login.
+    - Password disimpan dalam bentuk hash dan tidak ditampilkan pada profil.
 
-d. Delete	
-    Hapus akun 	
-        soft delete, yaitu set is_active = False sehingga akun cuma dinonaktifkan.
+c. Update
+    Edit profil, preferensi, dan password
+    - Mengubah username, nama, lokasi, tanggal lahir, dan kontak media sosial. Email Google tidak dapat diubah melalui form profil.
+    - Memilih kota/kabupaten dari dropdown pencarian BogorTech atau mengetik lokasi secara manual. Pilihan API menyimpan kode wilayah dan nama daerah beserta provinsinya.
+    - Mengubah kategori barang pilihan, preferensi notifikasi email, visibilitas profil, dan bahasa aplikasi. Pengiriman email dan terjemahan antarmuka belum diterapkan.
+    - Mengubah password dengan memasukkan password lama; sesi login tetap dipertahankan setelah perubahan.
+    - Tombol Edit Profil, Simpan Profil, dan Batal tersedia pada Settings.
+
+d. Delete
+    Hapus akun dan keluar
+    - Menghapus akun secara permanen beserta profil, identitas Google, postingan barang, dan sesi login terkait.
+    - Penghapusan memerlukan password RePair dan konfirmasi; akun tanpa password RePair menggunakan verifikasi ulang Google.
+    - Pengguna keluar dari semua perangkat, kembali ke landing page, dan menerima notifikasi penghapusan.
+    - Email dan akun Google yang sama dapat dipakai untuk mendaftar kembali.
+    - Tombol Keluar dari Akun tersedia di Settings.
+
+Tampilan landing, login, Lengkapi Profil, dan Settings menyesuaikan layar HP dan laptop. Navbar bersama menampilkan Home, Cart, Forum, Posts, dan Settings; berada di bawah pada HP dan di atas pada laptop.
 
 
 2. Modul Barter / Main Page (PIC: Aisha Ibnaty Zahira)
@@ -73,12 +91,12 @@ Pada modul ini, user dapat melakukan business process utama untuk menukar barang
 
 Create: Buat penawaran , Read: Lihat data detail barang yang dipilih, Update:- , Delete: Batalkan penawaran.
 
-4. Modul Keranjang (PIC: Hafizuddin Dzaki Azzam)
+4. Modul Keranjang (PIC: Naila Salsabila)
 Pada modul ini, user dapat melihat kembali baarng-barang yang pernah disimpan sebelumnya.
 
 Create: Simpan barang ke keranjang, Read: Lihat barang yang pernah disimpan, Update:- , Delete: Hapus barang dari keranjang.
 
-5. Modul Daftar Post (PIC: Naila Salsabila)
+5. Modul Daftar Post (PIC: Hafizuddin Dzaki Azzam)
 Pada modul ini, user dapat melihat seluruh post yang pernah dibuat, menghapus post, dan melihat siapa saja yang membuat pengajuan dari barang tersebut beserta detail informasi (Nama User, Domisili, dan Barang/Jasa yang dapat ditawarkan)
 
 5. Modul Profil & Setting (PIC: Aisha Ibnaty Zahira)
@@ -100,6 +118,8 @@ Dengan modul ini, harapannya user bisa berinteraksi dengan user lainnya untuk me
 - Firebase Auth & FCM: Login cepat & notifikasi
 - Overpass API (OSM): Sumber data lokasi tempat reparasi/servis barang
 - Sightengine: Moderasi foto barang otomatis
+- Google OAuth 2.0 / OpenID Connect (Baru): Autentikasi akun Google untuk pendaftaran dan login RePair
+- BogorTech API Wilayah Indonesia (Baru): Pencarian kota/kabupaten beserta provinsi dan kode wilayah untuk domisili pengguna
 <br><br>
 
 ## Link Proyek

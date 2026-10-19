@@ -1,0 +1,85 @@
+{% extends 'accounts/brand_base.html' %}
+{% load static %}
+{% block title %}RePair — Barter & Perbaiki barang tak terpakai{% endblock %}
+{% block body_class %}brand-page--landing{% endblock %}
+{% block content %}
+<section class="brand-landing" aria-labelledby="landing-title">
+    <div class="brand-landing-intro">
+        <a class="brand-logo" href="{% url 'accounts:auth' %}" aria-label="RePair, halaman awal">
+            <img src="{% static 'img/Group 40.png' %}" width="991" height="345" alt="RePair">
+        </a>
+        <h1 id="landing-title" class="brand-tagline">
+            <img src="{% static 'img/Barter & Perbaiki barang tak terpakai dengan mudah..png' %}" width="1308" height="186" alt="Barter & Perbaiki barang tak terpakai dengan mudah.">
+        </h1>
+    </div>
+    <div class="brand-landing-action">
+        {% if google_failure %}<p class="brand-alert" role="alert">{{ google_failure }}</p>{% endif %}
+        {% if google_configured %}
+        <a id="google-login" class="brand-button brand-google-button" href="{% url 'accounts:google_login' %}{% if next_url %}?next={{ next_url|urlencode }}{% endif %}">
+            <img src="{% static 'img/google.png' %}" width="24" height="24" alt="" aria-hidden="true">
+            <span data-google-label>Lanjutkan dengan Google</span>
+        </a>
+        <p id="google-login-status" class="brand-google-status" role="status" aria-live="polite"></p>
+        {% else %}
+        <button class="brand-button brand-google-button" type="button" disabled aria-describedby="google-config-message">
+            <img src="{% static 'img/google.png' %}" width="24" height="24" alt="" aria-hidden="true">
+            <span>Lanjutkan dengan Google</span>
+        </button>
+        <p id="google-config-message" class="brand-config-message">Login Google belum tersedia. Hubungi pengelola RePair.</p>
+        {% endif %}
+        <p class="brand-consent">
+            <span>Dengan melanjutkan, kamu menyetujui</span>
+            <a href="{% url 'core:terms' %}">Syarat &amp; Ketentuan dan Kebijakan Privasi.</a>
+        </p>
+    </div>
+</section>
+<section id="tentang-repair" class="brand-public-info" aria-labelledby="public-app-name">
+    <div class="brand-card brand-public-card">
+        <h2 id="public-app-name">RePair</h2>
+        <p class="brand-public-summary">Platform untuk mempertemukan barang bekas yang masih berguna dengan orang yang membutuhkannya melalui barter.</p>
+        <div class="brand-public-grid">
+            <section aria-labelledby="public-purpose">
+                <h3 id="public-purpose">Barang lama, kesempatan baru</h3>
+                <p>RePair menghubungkan pengguna untuk mengenali barang, melihat informasi kondisi dan lokasi, serta menyepakati pertukaran barang. Kesepakatan dilakukan antarpengguna; RePair tidak memproses pembayaran.</p>
+            </section>
+            <section aria-labelledby="public-google">
+                <h3 id="public-google">Mengapa masuk dengan Google?</h3>
+                <p>Google digunakan untuk memverifikasi identitas. RePair menerima pengenal akun Google, nama, dan email untuk membuat atau mengenali akunmu. Kami tidak menerima password Google dan tidak meminta akses Gmail, Drive, Calendar, atau kontak Google.</p>
+            </section>
+            <section aria-labelledby="public-account">
+                <h3 id="public-account">Akun dan kendali atas data</h3>
+                <p>Setelah Google, kamu membuat atau memverifikasi username dan password RePair, kemudian meninjau profil, lokasi, dan kategori pilihan. Kamu dapat memperbarui profil atau menghapus akun beserta data aktif milikmu melalui pengaturan akun.</p>
+            </section>
+        </div>
+        <p>Baca <a href="{% url 'core:privacy' %}">Kebijakan Privasi RePair</a> untuk mengetahui data yang dikumpulkan, penggunaannya, pihak penerima, penyimpanan, dan cara meminta penghapusan. Ketentuan penggunaan tersedia pada <a href="{% url 'core:terms' %}">Syarat &amp; Ketentuan</a>.</p>
+        {% if support_email %}<p>Kontak tim RePair: <a href="mailto:{{ support_email }}">{{ support_email }}</a>.</p>{% endif %}
+    </div>
+</section>
+{% endblock %}
+{% block extra_js %}
+<script>
+    (() => {
+        const link = document.getElementById('google-login');
+        if (!link) return;
+        const label = link.querySelector('[data-google-label]');
+        const status = document.getElementById('google-login-status');
+        link.addEventListener('click', (event) => {
+            if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+            if (link.getAttribute('aria-busy') === 'true') {
+                event.preventDefault();
+                return;
+            }
+            link.setAttribute('aria-busy', 'true');
+            link.setAttribute('aria-disabled', 'true');
+            label.textContent = 'Mengarahkan ke Google…';
+            status.textContent = 'Halaman pemilihan akun Google sedang dibuka.';
+        });
+        window.addEventListener('pageshow', () => {
+            link.removeAttribute('aria-busy');
+            link.removeAttribute('aria-disabled');
+            label.textContent = 'Lanjutkan dengan Google';
+            status.textContent = '';
+        });
+    })();
+</script>
+{% endblock %}

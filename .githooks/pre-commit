@@ -1,0 +1,24 @@
+#!/bin/sh
+# Resolve the script beside this hook so a shared absolute hooksPath also works
+# from the repair-shared-navbar worktree. Never read a working-copy .env.
+set -eu
+hook_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+guard="$hook_dir/../scripts/check_git_safety.py"
+repo_root=$(git rev-parse --show-toplevel) || exit 2
+if [ -x "$repo_root/.venv/Scripts/python.exe" ]; then
+    python="$repo_root/.venv/Scripts/python.exe"
+elif [ -x "$repo_root/.venv/bin/python" ]; then
+    python="$repo_root/.venv/bin/python"
+elif [ -x "$repo_root/../.venv/Scripts/python.exe" ]; then
+    python="$repo_root/../.venv/Scripts/python.exe"
+elif [ -x "$repo_root/../.venv/bin/python" ]; then
+    python="$repo_root/../.venv/bin/python"
+elif command -v python3 >/dev/null 2>&1; then
+    python=python3
+elif command -v python >/dev/null 2>&1; then
+    python=python
+else
+    echo "Git safety BLOCKED: Python is required to check staged files." >&2
+    exit 2
+fi
+exec "$python" "$guard" --index
