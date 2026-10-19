@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'barter_details',
+    'add_items',
 ]
 
 MIDDLEWARE = [
@@ -57,6 +58,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+#auto login dev env
+if DEBUG:
+    MIDDLEWARE.append('barter_details.dev_middleware.DevAutoLoginMiddleware')
 
 ROOT_URLCONF = 'RePair.urls'
 

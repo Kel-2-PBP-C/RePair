@@ -18,6 +18,7 @@
     --green-8: #005a32;
     --ink: #323232;
     --black: #000000;
+    --red: #c0392b;
 }
 
 .site-header {
@@ -219,6 +220,11 @@ body {
 
 .bid-button {
     width: 48%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 0.8333rem;
     border-radius: 0.5rem;
     border: none;
     background: linear-gradient(to right, #238B45, #005A32);
@@ -229,6 +235,143 @@ body {
 .bid-button:hover {
     background: var(--green-7);
     scale: 102%;
+}
+
+/* bid-modal */
+.bid-modal {
+    border: none;
+    border-radius: 16px;
+    padding: 24px;
+    width: min(92vw, 480px);
+    font-family: 'Poppins', sans-serif;
+    margin: auto;
+}
+
+.bid-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.bid-cancel {
+    background-color: var(--red);
+    color: var(--white);
+    border-radius: 1rem;
+    padding: 0.7rem;
+    border: none;
+}
+
+.bid-confirm {
+    background-color: var(--green-8);
+    color: var(--white);
+    border-radius: 1rem;
+    padding: 0.7rem;
+    border: none;
+}
+
+.field {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.bid-modal .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 14px;
+}
+
+.bid-modal label {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.bid-modal input,
+.bid-modal select,
+.bid-modal textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--off-white);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    outline: none;
+}
+
+.bid-modal input:focus,
+.bid-modal select:focus,
+.bid-modal textarea:focus {
+    border-color: var(--green-7);
+    box-shadow: 0 0 0 3px rgba(35, 139, 69, 0.25);
+}
+
+.field-error, .form-message.error {
+    color: var(--red);
+    font-size: 0.85rem;
+    margin-top: 4px;
+}
+
+.form-message.success {
+    color: var(--green-7);
+}
+
+.goods-field[hidden] {
+    display: none;
+}
+
+.bid-modal::backdrop {
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(2px);
+}
+
+body.modal-open {
+    overflow: hidden;
+}
+
+.other-items-from-same-profile {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1rem;
+    align-content: start;
+    overflow: hidden;
+}
+
+.other-items-from-same-profile > a {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: var(--ink);
+    background-color: var(--white);
+    border: 1px solid var(--green-3);
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+.other-items-from-same-profile > a:hover {
+    border-color: var(--green-7);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.other-items-from-same-profile > a img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    display: block;
+}
+
+.other-items-from-same-profile > a p {
+    padding: 0 0.75rem 0.75rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--green-8);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.other-items-from-same-profile > .empty-state {
+    grid-column: 1 / -1;
 }
 
 @media (max-width: 600px) {
