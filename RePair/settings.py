@@ -48,7 +48,7 @@ MIDDLEWARE = [
 ]
 
 #auto login dev env
-if DEBUG:
+if DEBUG and (BASE_DIR / 'barter_details' / 'dev_middleware.py').exists():
     MIDDLEWARE.append('barter_details.dev_middleware.DevAutoLoginMiddleware')
 
 ROOT_URLCONF = 'RePair.urls'

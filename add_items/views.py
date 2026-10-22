@@ -63,5 +63,5 @@ def delete_barter_ajax(request, pk):
     barter.delete()
     return JsonResponse({
         'message': 'Barang berhasil dihapus',
-        'redirect_url': reverse('add_items:create'), #ini nanti diganti ke landing page aja
+        'redirect_url': reverse('add_items:create'), #TODO: ini nanti diganti ke landing page aja
     }, status=200)
