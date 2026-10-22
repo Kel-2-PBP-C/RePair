@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Tambah Barang</title>
+    <title>{% if is_edit %} Edit Barang {% else %} Tambah Barang {% endif %}</title>
     <link rel="stylesheet" href="{% static 'details.css' %}">
     <link rel="stylesheet" href="{% static 'add.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -20,11 +20,11 @@
     </header>
 
     <main class="create-page">
-        <h1>Tambah Barang</h1>
+        <h1>{% if is_edit %}Edit Barang{% else %}Tambah Barang{% endif %}</h1>
         <div id="form-message" class="form-message" hidden></div>
 
         <form id="create-form" novalidate
-              data-url="{% url 'add_items:create_ajax' %}">
+              data-url="{% if is_edit %}{% url 'add_items:edit_ajax' barter.pk %}{% else %}{% url 'add_items:create_ajax' %}{% endif %}">
             {% csrf_token %}
             {% for field in form %}
                 <div class="field">
@@ -36,6 +36,8 @@
                 <button type="submit" class="bid-confirm">Simpan</button>
             </div>
         </form>
+
+        {% include "barter_details/components/toast.html" %}
     </main>
 
     <script>
@@ -45,12 +47,6 @@
             if (!form) return;
 
             const submitButton = form.querySelector('button[type="submit"]');
-
-            function showMessage(text, type) {
-                messageBox.textContent = text;
-                messageBox.className = `form-message ${type}`;
-                messageBox.hidden = false;
-            }
 
             function clearErrors() {
                 form.querySelectorAll('.field-error').forEach((el) => el.remove());
@@ -62,7 +58,7 @@
                     const text = list.map((e) => e.message).join(' ');
                     const input = form.elements[name];
                     if (name === '__all__' || !input) {
-                        showMessage(text, 'error');
+                        showToast(text, 'error');
                         return;
                     }
                     const div = document.createElement('div');
@@ -86,16 +82,16 @@
                     });
                     const data = await response.json();
 
-                    if (response.status === 201) {
-                        showMessage(data.message, 'success');
+                    if (response.status === 200 || response.status === 201) {
+                        showToast(data.message, 'success');
                         setTimeout(() => { window.location.href = data.redirect_url; }, 800);
                     } else if (response.status === 400 && data.errors) {
                         showFieldErrors(data.errors);
                     } else {
-                        showMessage(data.message || 'Terjadi kesalahan.', 'error');
+                        showToast(data.message || 'Terjadi kesalahan.', 'error');
                     }
                 } catch (err) {
-                    showMessage('Tidak dapat terhubung ke server. Coba lagi.', 'error');
+                    showToast('Tidak dapat terhubung ke server. Coba lagi.', 'error');
                 } finally {
                     submitButton.disabled = false;
                     submitButton.textContent = 'Simpan';

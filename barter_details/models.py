@@ -23,7 +23,6 @@ class Barter(models.Model):
 
     def __str__(self):
         return self.title
-<<<<<<< HEAD
     
 class Bid(models.Model):
     class Status(models.TextChoices):
@@ -67,5 +66,3 @@ class Bid(models.Model):
             
     def __str__(self):
         return str(self.target)
-=======
->>>>>>> 7c31ac4f2ecd7f780455fe3cea0402194bb0c748

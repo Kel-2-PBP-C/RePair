@@ -1,6 +1,5 @@
 .create-page {
-    width: 100%;
-    max-width: 560px;
+    width: 80%;
     margin: 6.5rem auto 3rem;
 }
 
@@ -26,9 +25,10 @@
 }
 
 .create-page label {
-    font-size: 0.9rem;
+    font-size: 1rem;
     font-weight: 500;
     color: var(--ink);
+    margin-bottom: 0.7rem;
 }
 
 .create-page input,
@@ -42,6 +42,7 @@
     font-size: 0.95rem;
     outline: none;
     background-color: var(--white);
+    margin-bottom: 1rem;
 }
 
 .create-page textarea {
@@ -69,8 +70,9 @@
     width: 100%;
     padding: 0.9rem;
     font-weight: 500;
+    font-size: 1.1rem;
     cursor: pointer;
-    background: linear-gradient(to right, #238B45, #005A32);
+    background: linear-gradient(to right, var(--green-7), var(--green-8));
 }
 
 .create-page .bid-confirm:hover {
@@ -84,6 +86,26 @@
 
 @media (max-width: 600px) {
     .create-page {
+        width: 100%;
         padding: 0 1.5rem;
+    }
+
+    .create-page h1 {
+        font-size: 1.5rem;
+    }
+
+    .create-page form {
+        padding: 1rem;
+    }
+
+    .create-page label {
+        font-size: 0.8rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .create-page input,
+    .create-page select,
+    .create-page textarea {
+        margin-bottom: 0.5rem;
     }
 }

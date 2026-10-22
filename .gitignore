@@ -15,10 +15,8 @@ __pycache__/
 !.vscode/settings.json
 .idea/
 
-<<<<<<< HEAD
 #auto login
 dev_middleware.py
-=======
 # Local development artifacts
 .venv/
 .uv-cache/
@@ -40,4 +38,3 @@ staticfiles/
 *.key
 *.p12
 *.pfx
->>>>>>> 7c31ac4f2ecd7f780455fe3cea0402194bb0c748

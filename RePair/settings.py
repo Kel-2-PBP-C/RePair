@@ -32,13 +32,7 @@ INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'accounts.apps.AccountsConfig',
     'barter_details',
-<<<<<<< HEAD
     'add_items',
-=======
-    'profile_post',
-    'keranjang',
-    'main_page',
->>>>>>> 7c31ac4f2ecd7f780455fe3cea0402194bb0c748
 ]
 
 MIDDLEWARE = [
