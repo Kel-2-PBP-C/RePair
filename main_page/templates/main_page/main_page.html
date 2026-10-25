@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+<h1>RePair</h1>
+
+<h2>Rekomendasi Untuk Kamu</h2>
+
+<div class="barang-container">
+    {% for item in items %}
+        <div class="barang-card">
+            <img src="{{ item.thumbnail }}" alt="{{ item.title }}" width="200">
+
+            <h3>{{ item.title }}</h3>
+
+            <p>Kondisi: {{ item.condition }}%</p>
+
+            <button type="button">Add to Cart</button>
+        </div>
+    {% empty %}
+        <p>Belum ada barang yang diposting.</p>
+    {% endfor %}
+</div>
+
+{% endblock %}

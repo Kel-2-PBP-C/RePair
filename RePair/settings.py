@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'barter_details',
     'add_items',
+    'main_page',
 ]
 
 MIDDLEWARE = [
