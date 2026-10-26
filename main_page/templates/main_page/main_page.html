@@ -6,6 +6,30 @@
 
 <h1>RePair</h1>
 
+<form method="GET">
+    <input
+        type="text"
+        name="search"
+        placeholder="Cari Barang yang Kamu Inginkan..."
+        value="{{ search }}"
+    >
+
+    <select name="kondisi">
+        <option value="">Semua Kondisi</option>
+        <option value="baik" {% if kondisi == 'baik' %}selected{% endif %}>
+            Kondisi 80–100%
+        </option>
+        <option value="cukup" {% if kondisi == 'cukup' %}selected{% endif %}>
+            Kondisi 50–79%
+        </option>
+        <option value="kurang" {% if kondisi == 'kurang' %}selected{% endif %}>
+            Kondisi di bawah 50%
+        </option>
+    </select>
+
+    <button type="submit">Cari</button>
+</form>
+
 <h2>Rekomendasi Untuk Kamu</h2>
 
 <div class="barang-container">
