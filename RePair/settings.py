@@ -168,4 +168,4 @@ LOGGING = {
 }
 
 # The post module keeps its own route, distinct from account settings.
-NAVBAR_POSTS_URL_NAME = 'profile_post:show_posts'
+NAVBAR_POSTS_URL_NAME = 'profile_post:index'

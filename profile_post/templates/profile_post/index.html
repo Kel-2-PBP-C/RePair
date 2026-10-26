@@ -1,244 +1,403 @@
 {% extends 'base.html' %}
 
-{% block title %}Posts{% endblock %}
-{% block extra_css %}<script src="https://cdn.tailwindcss.com"></script>{% endblock %}
+{% block extra_css %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.9/dist/purify.min.js"></script>
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                fontFamily: {
+                    sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
+                },
+                colors: {
+                    // Primary brand accent (single accent color across the UI)
+                    brand: {
+                        50: '#f0fdf4', 100: '#dcfce7', 200: '#bbf7d0', 300: '#86efac',
+                        400: '#4ade80', 500: '#22c55e', 600: '#16a34a', 700: '#15803d',
+                        800: '#166534', 900: '#14532d',
+                    },
+                    // Legacy tokens kept so shared templates (base.html etc.) keep working
+                    repair: {
+                        mintLight: '#F4FBF7',
+                        mintSoft: '#E3F4EA',
+                        mintMid: '#88E2A6',
+                        leaf: '#288B48',
+                        vibrant: '#109E48',
+                        forest: '#0D5C31',
+                        amber: '#B98B22',
+                        gold: '#F5D000',
+                    }
+                }
+            }
+        }
+    }
+</script>
+{% endblock %}
+
 
 {% block content %}
-<section class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center mb-8">
-            
-    <!-- Informasi Akun (Kiri Atas) -->
-    <div class="lg:col-span-5 flex items-center space-x-5">
-        <div class="w-20 h-20 rounded-full bg-gray-300 flex items-center justify-center text-2xl font-bold text-gray-600 shrink-0">
-            {{ user.username|slice:":2"|upper }}
-        </div>
-        <div class="space-y-1 overflow-hidden">
-            <h1 class="text-xl font-bold text-gray-900 truncate">{{ user.get_full_name|default:user.username }}</h1>
-            <p class="text-sm text-gray-600 truncate">📧 {{ user.email|default:"belum-ada-email@repair.id" }}</p>
-            <p class="text-sm text-gray-600 truncate">📱 {{ phone_number }}</p>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-sans antialiased"
+      data-default-location-code="{{ default_location_code }}"
+      data-default-location-label="{{ default_location_label }}">
+
+    <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8 flex-1">
+
+        <!-- PAGE HEADER -->
+        <header class="mb-6">
+            <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Posts saya</h1>
+            <p class="text-sm text-slate-500 mt-0.5">Kelola barang barter, penawaran, dan ulasan Anda.</p>
+        </header>
+
+        <!-- ACCOUNT + STATS -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6 bg-white p-5 sm:p-6 rounded-xl border border-slate-200 shadow-sm">
+
+            <div class="lg:col-span-5 flex items-center gap-4 min-w-0">
+                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-brand-700 flex items-center justify-center text-lg font-semibold text-white shrink-0 ring-4 ring-brand-50">
+                    {{ user.username|slice:":2"|upper }}
+                </div>
+                <div class="min-w-0 space-y-1">
+                    <h2 class="text-base sm:text-lg font-semibold text-slate-900 truncate">{{ user.get_full_name|default:user.username }}</h2>
+                    <p class="flex items-center gap-1.5 text-xs sm:text-sm text-slate-500 truncate">
+                        <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        <span class="truncate">{{ user.email|default:"pengguna@repair.id" }}</span>
+                    </p>
+                    <p class="flex items-center gap-1.5 text-xs sm:text-sm text-slate-500 truncate">
+                        <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                        <span class="truncate">{{ phone_number }}</span>
+                    </p>
+                    <p class="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-brand-700 truncate" title="Domisili akun">
+                        <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        <span class="truncate">{{ default_location_label }}</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="lg:col-span-7 space-y-3">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-sm font-semibold text-slate-900">Ringkasan</h2>
+                    <div role="group" aria-label="Periode statistik" class="inline-flex rounded-lg bg-slate-100 p-0.5">
+                        <button type="button" data-period="M" title="Bulan ini (vs bulan lalu)" aria-label="Bulan ini" class="period-btn px-3 py-1 rounded-md text-xs font-semibold text-slate-500 hover:text-slate-900 transition">M</button>
+                        <button type="button" data-period="Y" title="Tahun ini (vs tahun lalu)" aria-label="Tahun ini" class="period-btn px-3 py-1 rounded-md text-xs font-semibold text-slate-500 hover:text-slate-900 transition">Y</button>
+                        <button type="button" data-period="A" title="Semua waktu" aria-label="Semua waktu" class="period-btn px-3 py-1 rounded-md text-xs font-semibold bg-white text-slate-900 shadow-sm transition">A</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="rounded-lg border border-slate-200 bg-white p-3 sm:p-4">
+                        <div class="flex items-center gap-1.5 text-xs font-medium text-slate-500">
+                            <svg class="w-3.5 h-3.5 text-amber-500" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            Rating
+                        </div>
+                        <div class="mt-2 flex flex-col">
+                            <span id="stat-rating-val" class="text-2xl font-semibold tabular-nums text-slate-900">0.0</span>
+                            <span id="stat-rating-delta" class="text-[11px] font-medium mt-0.5 hidden"></span>
+                        </div>
+                    </div>
+                    <div class="rounded-lg border border-slate-200 bg-white p-3 sm:p-4">
+                        <div class="flex items-center gap-1.5 text-xs font-medium text-slate-500">
+                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                            Posts
+                        </div>
+                        <div class="mt-2 flex flex-col">
+                            <span id="stat-posts-val" class="text-2xl font-semibold tabular-nums text-slate-900">0</span>
+                            <span id="stat-posts-delta" class="text-[11px] font-medium mt-0.5 hidden"></span>
+                        </div>
+                    </div>
+                    <div class="rounded-lg border border-slate-200 bg-white p-3 sm:p-4">
+                        <div class="flex items-center gap-1.5 text-xs font-medium text-slate-500">
+                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+                            Barters
+                        </div>
+                        <div class="mt-2 flex flex-col">
+                            <span id="stat-barters-val" class="text-2xl font-semibold tabular-nums text-slate-900">0</span>
+                            <span id="stat-barters-delta" class="text-[11px] font-medium mt-0.5 hidden"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FILTER + LIST -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+            <div class="lg:hidden">
+                <button id="btn-toggle-mobile-filter" type="button" aria-controls="filter-sidebar"
+                    class="w-full py-2.5 px-4 bg-white border border-slate-200 rounded-lg font-medium text-sm text-slate-700 flex justify-between items-center shadow-sm">
+                    <span class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+                        Filter
+                    </span>
+                    <span id="mobile-filter-icon" class="text-xs text-slate-400">▼</span>
+                </button>
+            </div>
+
+            <aside id="filter-sidebar" class="hidden lg:flex lg:col-span-3 bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-5 lg:sticky lg:top-24 flex-col justify-between">
+                <div class="space-y-4">
+                    <h2 class="text-sm font-semibold text-slate-900 pb-3 border-b border-slate-100">Filter</h2>
+
+                    <div class="relative">
+                        <label for="filter-region-search" class="mb-1.5 block text-xs font-medium text-slate-600">Lokasi</label>
+                        <input type="hidden" id="filter-location-code" value="">
+                        <div class="relative">
+                            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            <input type="text" id="filter-region-search" autocomplete="off" placeholder="Cari wilayah"
+                                class="w-full rounded-lg border border-slate-300 bg-white pl-9 pr-8 py-2 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm transition focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20">
+                            <button type="button" id="btn-clear-filter-region" title="Hapus filter wilayah" aria-label="Hapus filter wilayah"
+                                class="hidden absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 text-lg leading-none">&times;</button>
+                        </div>
+                        <div id="filter-region-dropdown" class="hidden absolute left-0 right-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-lg max-h-48 overflow-y-auto z-30 text-xs py-1"></div>
+                    </div>
+
+                    <div>
+                        <label for="filter-condition" class="mb-1.5 block text-xs font-medium text-slate-600">Kondisi</label>
+                        <select id="filter-condition" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20">
+                            <option value="">Semua kondisi</option>
+                            <option value="NEW">Baru</option>
+                            <option value="GOOD">Bekas - Layak Pakai</option>
+                            <option value="REPAIR">Butuh Perbaikan (RePair)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="filter-shipping" class="mb-1.5 block text-xs font-medium text-slate-600">Pengiriman</label>
+                        <select id="filter-shipping" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20">
+                            <option value="">Semua metode</option>
+                            <option value="COD">COD / Ketemuan Langsung</option>
+                            <option value="INSTANT">Instan / Same Day (&lt; 1 Hari)</option>
+                            <option value="REGULAR">Reguler (2 - 4 Hari)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="filter-status" class="mb-1.5 block text-xs font-medium text-slate-600">Status</label>
+                        <select id="filter-status" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20">
+                            <option value="">Semua status</option>
+                            <option value="AVAILABLE">Tersedia (Tampil di Forum)</option>
+                            <option value="NEGOTIATING">Dalam Negosiasi</option>
+                            <option value="BARTERED">Sudah Dibarter</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button id="btn-reset-filter" type="button"
+                    class="w-full inline-flex items-center justify-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600/40">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+                    Reset
+                </button>
+            </aside>
+
+            <div class="lg:col-span-9 space-y-4">
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <div class="relative flex-1">
+                        <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <input type="text" id="search-input" placeholder="Cari barang, deskripsi, atau barang tukaran"
+                            class="w-full rounded-lg border border-slate-300 bg-white pl-10 pr-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm transition focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20">
+                    </div>
+
+                    <div class="sm:w-52 shrink-0">
+                        <select id="sort-select" aria-label="Urutkan"
+                            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-700 shadow-sm transition focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20 cursor-pointer">
+                            <option value="newest">Terbaru</option>
+                            <option value="rating">Rating tertinggi</option>
+                            <option value="oldest">Terlama</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="min-h-[460px]">
+                    <div id="posts-container" class="space-y-3"></div>
+
+                    <div id="loading-indicator" class="hidden py-8 flex items-center justify-center gap-2 text-sm text-slate-500">
+                        <svg class="w-4 h-4 animate-spin text-brand-700" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-opacity="0.25" stroke-width="4"/><path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
+                        Memuat
+                    </div>
+                    <div id="empty-state" class="hidden py-20 text-center bg-white rounded-xl border border-dashed border-slate-300">
+                        <div class="mx-auto w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+                            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                        </div>
+                        <p class="mt-4 text-sm font-semibold text-slate-900">Belum ada post yang cocok</p>
+                        <p class="text-sm text-slate-500 mt-1">Ubah filter atau tekan <span class="font-semibold text-slate-700">Tambah</span> untuk membuat post baru.</p>
+                    </div>
+                    <div id="scroll-sentinel" class="h-4"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FLOATING ADD BUTTON -->
+    <button id="btn-open-create" type="button" title="Tambah post barter" aria-label="Tambah post barter"
+        class="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 h-12 pl-4 pr-5 rounded-full bg-brand-700 hover:bg-brand-800 text-white shadow-lg shadow-brand-900/20 flex items-center gap-2 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600/50 focus-visible:ring-offset-2 z-40">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Tambah
+    </button>
+
+    <!-- MODAL ADD / EDIT POST -->
+    <div id="post-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl max-w-lg w-full shadow-2xl max-h-[90vh] overflow-y-auto border border-slate-200" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+            <div class="flex justify-between items-center px-5 sm:px-6 py-4 border-b border-slate-100 sticky top-0 bg-white rounded-t-xl z-10">
+                <h3 id="modal-title" class="text-base font-semibold text-slate-900">Tambah Post Barter</h3>
+                <button type="button" id="btn-close-modal" aria-label="Tutup" class="w-8 h-8 inline-flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700 text-xl leading-none transition">&times;</button>
+            </div>
+
+            <form id="post-form" class="px-5 sm:px-6 py-5 space-y-4">
+                {% csrf_token %}
+                <input type="hidden" id="form-post-id" value="">
+
+                <p class="flex items-start gap-2 rounded-lg bg-slate-50 border border-slate-200 px-3 py-2 text-xs text-slate-600">
+                    <svg class="w-4 h-4 mt-px shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    <span>Status otomatis <strong class="font-semibold text-slate-800">Tersedia</strong>. Lokasi mengikuti domisili akun dan dapat diubah.</span>
+                </p>
+
+                <div>
+                    <label for="form-title" class="mb-1.5 block text-xs font-medium text-slate-600">Nama barang</label>
+                    <input type="text" name="title" id="form-title" required
+                        class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm transition focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20">
+                </div>
+
+                <div>
+                    <label for="form-description" class="mb-1.5 block text-xs font-medium text-slate-600">Deskripsi &amp; kondisi detail</label>
+                    <textarea name="description" id="form-description" rows="3" required
+                        class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm transition focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20"></textarea>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="relative">
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label for="form-region-search" class="block text-xs font-medium text-slate-600">Lokasi</label>
+                            <button type="button" id="btn-use-account-region" title="Gunakan domisili akun" class="text-[11px] font-semibold text-brand-700 hover:text-brand-800 hover:underline">
+                                Domisili akun
+                            </button>
+                        </div>
+                        <input type="hidden" name="location_code" id="form-location-code" value="{{ default_location_code }}">
+                        <input type="hidden" name="location" id="form-location" value="{{ default_location_label }}">
+                        <input type="text" id="form-region-search" autocomplete="off" required
+                            value="{{ default_location_label }}"
+                            placeholder="Ketik nama kota"
+                            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm transition focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20">
+                        <div id="form-region-dropdown" class="hidden absolute left-0 right-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-lg max-h-44 overflow-y-auto z-40 text-xs py-1"></div>
+                    </div>
+
+                    <div>
+                        <label for="form-preferred-barter" class="mb-1.5 block text-xs font-medium text-slate-600">Barang yang dicari</label>
+                        <input type="text" name="preferred_barter" id="form-preferred-barter" required placeholder="Mis. Mouse wireless"
+                            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm transition focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="form-condition" class="mb-1.5 block text-xs font-medium text-slate-600">Kondisi</label>
+                        <select name="condition" id="form-condition" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20">
+                            <option value="NEW">Baru</option>
+                            <option value="GOOD">Bekas - Layak Pakai</option>
+                            <option value="REPAIR">Butuh Perbaikan (RePair)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="form-shipping" class="mb-1.5 block text-xs font-medium text-slate-600">Pengiriman</label>
+                        <select name="shipping_duration" id="form-shipping" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20">
+                            <option value="COD">COD / Ketemuan Langsung</option>
+                            <option value="INSTANT">Instan (&lt; 1 Hari)</option>
+                            <option value="REGULAR">Reguler (2 - 4 Hari)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="form-image-url" class="mb-1.5 block text-xs font-medium text-slate-600">URL foto <span class="text-slate-400 font-normal">(opsional)</span></label>
+                    <input type="url" name="image_url" id="form-image-url" placeholder="https://"
+                        class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm transition focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20">
+                </div>
+
+                <div class="flex justify-end gap-2 pt-4 border-t border-slate-100">
+                    <button type="button" id="btn-cancel-modal" class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600/40">Batal</button>
+                    <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-brand-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600/40">Simpan</button>
+                </div>
+            </form>
         </div>
     </div>
 
-    <!-- Statistik M/Y/A + Rating, Posts, Barters (Kanan Atas) -->
-    <div class="lg:col-span-7 flex items-center space-x-4">
-        
-        <!-- Kapsul Vertikal M / Y / A -->
-        <div class="bg-gray-300 rounded-full py-2 px-1.5 flex flex-col items-center space-y-2 shadow-inner">
-            <button type="button" data-period="M" class="period-btn w-7 h-7 rounded-full text-xs font-bold transition">M</button>
-            <button type="button" data-period="Y" class="period-btn w-7 h-7 rounded-full text-xs font-bold transition">Y</button>
-            <button type="button" data-period="A" class="period-btn w-7 h-7 rounded-full text-xs font-bold bg-emerald-600 text-white shadow transition">A</button>
+    <!-- MODAL LOCK BARTER -->
+    <div id="offers-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl max-w-xl w-full shadow-2xl max-h-[90vh] overflow-y-auto border border-slate-200" role="dialog" aria-modal="true">
+            <div class="flex justify-between items-start px-5 sm:px-6 py-4 border-b border-slate-100 sticky top-0 bg-white rounded-t-xl z-10">
+                <div class="min-w-0">
+                    <h3 class="text-base font-semibold text-slate-900">Pilih penawar</h3>
+                    <p id="offers-modal-subtitle" class="text-xs text-slate-500 mt-0.5 truncate"></p>
+                </div>
+                <button type="button" id="btn-close-offers" aria-label="Tutup" class="w-8 h-8 inline-flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700 text-xl leading-none transition">&times;</button>
+            </div>
+            <div id="offers-list-container" class="px-5 sm:px-6 py-5 space-y-3"></div>
         </div>
-
-        <!-- 3 Kotak Statistik (Rating, Posts, Barters) -->
-        <div class="grid grid-cols-3 gap-4 flex-1">
-            <!-- Kotak Rating -->
-            <div class="flex flex-col">
-                <div class="bg-gray-300 text-center py-1.5 font-bold text-sm text-gray-900 rounded-t">Rating</div>
-                <div id="stat-rating" class="bg-gray-200 h-20 flex items-center justify-center text-2xl font-extrabold text-gray-800 rounded-b">
-                    0.0
-                </div>
-            </div>
-            <!-- Kotak Posts -->
-            <div class="flex flex-col">
-                <div class="bg-gray-300 text-center py-1.5 font-bold text-sm text-gray-900 rounded-t">Posts</div>
-                <div id="stat-posts" class="bg-gray-200 h-20 flex items-center justify-center text-2xl font-extrabold text-gray-800 rounded-b">
-                    0
-                </div>
-            </div>
-            <!-- Kotak Barters -->
-            <div class="flex flex-col">
-                <div class="bg-gray-300 text-center py-1.5 font-bold text-sm text-gray-900 rounded-t">Barters</div>
-                <div id="stat-barters" class="bg-gray-200 h-20 flex items-center justify-center text-2xl font-extrabold text-gray-800 rounded-b">
-                    0
-                </div>
-            </div>
-        </div>
-
     </div>
-</section>
 
-<!-- 3. BAGIAN BAWAH: SIDEBAR FILTER (KIRI) & LIST BARANG (KANAN) -->
-<section class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-
-    <!-- Kotak Filter Besar di Samping Kiri -->
-    <aside class="lg:col-span-3 bg-gray-200 p-5 rounded-lg space-y-5 sticky top-24 min-h-[520px] flex flex-col justify-between">
-        <div class="space-y-4">
-            <h2 class="text-lg font-bold text-gray-900 border-b border-gray-300 pb-2">Filter Barang</h2>
-
-            <!-- Filter Lokasi -->
-            <div>
-                <label for="filter-location" class="block text-xs font-bold uppercase text-gray-700 mb-1">Lokasi</label>
-                <input type="text" id="filter-location" placeholder="Misal: Jakarta, Depok..." 
-                    class="w-full px-3 py-2 rounded bg-white text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+    <!-- MODAL TWO-WAY REVIEW -->
+    <div id="review-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl max-w-md w-full shadow-2xl border border-slate-200" role="dialog" aria-modal="true">
+            <div class="flex justify-between items-center px-5 sm:px-6 py-4 border-b border-slate-100">
+                <h3 id="review-modal-title" class="text-base font-semibold text-slate-900">Beri Review Barter</h3>
+                <button type="button" id="btn-close-review" aria-label="Tutup" class="w-8 h-8 inline-flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700 text-xl leading-none transition">&times;</button>
             </div>
 
-            <!-- Filter Kondisi -->
-            <div>
-                <label for="filter-condition" class="block text-xs font-bold uppercase text-gray-700 mb-1">Kondisi Barang</label>
-                <select id="filter-condition" class="w-full px-3 py-2 rounded bg-white text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                    <option value="">Semua Kondisi</option>
-                    <option value="NEW">Baru</option>
-                    <option value="GOOD">Bekas - Layak Pakai</option>
-                    <option value="REPAIR">Butuh Perbaikan</option>
-                </select>
-            </div>
+            <form id="review-form" class="px-5 sm:px-6 py-5 space-y-4">
+                <input type="hidden" id="review-post-id" value="">
+                <input type="hidden" id="review-role" value="OWNER_TO_OFFERER">
 
-            <!-- Filter Durasi / Metode Pengiriman -->
-            <div>
-                <label for="filter-shipping" class="block text-xs font-bold uppercase text-gray-700 mb-1">Durasi / Pengiriman</label>
-                <select id="filter-shipping" class="w-full px-3 py-2 rounded bg-white text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                    <option value="">Semua Metode</option>
-                    <option value="COD">COD / Temu langsung</option>
-                    <option value="PACKAGED">Dipaketkan</option>
-                </select>
-            </div>
-
-            <!-- Filter Status Post -->
-            <div>
-                <label for="filter-status" class="block text-xs font-bold uppercase text-gray-700 mb-1">Status Ketersediaan</label>
-                <select id="filter-status" class="w-full px-3 py-2 rounded bg-white text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                    <option value="">Semua Status</option>
-                    <option value="AVAILABLE">Tersedia</option>
-                    <option value="NEGOTIATING">Dalam Negosiasi</option>
-                    <option value="BARTERED">Sudah Dibarter</option>
-                </select>
-            </div>
-        </div>
-
-        <button id="btn-reset-filter" type="button" 
-            class="w-full py-2 bg-gray-700 hover:bg-gray-800 text-white text-sm font-semibold rounded transition">
-            Reset Filter
-        </button>
-    </aside>
-
-    <!-- Area Kanan: Search Bar, Urutkan, & Tumpukan List Barang -->
-    <div class="lg:col-span-9 space-y-4">
-
-        <!-- Baris Search Bar & Urutkan -->
-        <div class="flex flex-col sm:flex-row gap-3">
-            <!-- Search Bar Kapsul -->
-            <div class="relative flex-1">
-                <input type="text" id="search-input" placeholder="Cari nama barang, deskripsi, atau barang tukaran..." 
-                    class="w-full bg-gray-200 hover:bg-gray-300/70 focus:bg-white rounded-full px-5 py-2.5 text-sm border border-transparent focus:border-emerald-500 focus:outline-none transition">
-            </div>
-
-            <!-- Dropdown Urutkan -->
-            <div class="sm:w-48 shrink-0">
-                <select id="sort-select" aria-label="Urutkan" 
-                    class="w-full bg-gray-200 font-bold text-xs text-gray-900 px-4 py-3 rounded border border-transparent focus:border-emerald-500 focus:outline-none cursor-pointer">
-                    <option value="newest">Urutkan: Terbaru</option>
-                    <option value="oldest">Urutkan: Terlama</option>
-                    <option value="rating">Urutkan: Tawaran Masuk</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- Kontainer Tumpukan List Barang (Infinite Scroll) -->
-        <div class="bg-gray-200 p-4 rounded-lg min-h-[460px]">
-            <div id="posts-container" class="space-y-4">
-                <!-- List barang pakai vanilla JS -->
-            </div>
-
-            <!-- Indikator Loading & Sentinel untuk Infinite Scroll -->
-            <div id="loading-indicator" class="hidden py-6 text-center text-sm font-medium text-gray-600">
-                Memuat barang lainnya...
-            </div>
-            <div id="empty-state" class="hidden py-16 text-center text-gray-500">
-                <p class="text-lg font-semibold">Belum ada barang yang cocok.</p>
-                <p class="text-sm mt-1">Coba ubah filter pencarian atau tambahkan post barter baru.</p>
-            </div>
-            <div id="scroll-sentinel" class="h-4"></div>
-        </div>
-
-    </div>
-</section>
-
-<button id="btn-open-create" type="button" 
-    class="fixed bottom-8 right-8 w-20 h-20 rounded-full bg-gray-500 hover:bg-emerald-600 text-white shadow-xl flex flex-col items-center justify-center transition transform hover:scale-105 z-40">
-    <span class="text-3xl leading-none font-light">+</span>
-    <span class="text-xs font-medium mt-0.5">add</span>
-</button>
-
-<!-- 5. MODAL ADD / EDIT POST -->
-<div id="post-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4">
-    <div class="bg-white rounded-xl max-w-lg w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-        <div class="flex justify-between items-center border-b pb-3">
-            <h3 id="modal-title" class="text-lg font-bold text-gray-900">Tambah Post Barter</h3>
-            <button type="button" id="btn-close-modal" class="text-gray-400 hover:text-gray-700 text-xl font-bold">&times;</button>
-        </div>
-
-        <form id="post-form" class="space-y-3">
-            {% csrf_token %}
-            <input type="hidden" id="form-post-id" value="">
-
-            <div>
-                <label class="block text-xs font-bold uppercase text-gray-700 mb-1">Nama Barang</label>
-                <input type="text" name="title" id="form-title" required 
-                    class="w-full border rounded px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-            </div>
-
-            <div>
-                <label class="block text-xs font-bold uppercase text-gray-700 mb-1">Deskripsi & Kondisi Detail</label>
-                <textarea name="description" id="form-description" rows="3" required 
-                    class="w-full border rounded px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none"></textarea>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                    <label class="block text-xs font-bold uppercase text-gray-700 mb-1">Lokasi</label>
-                    <input type="text" name="location" id="form-location" required placeholder="Contoh: Jakarta Selatan"
-                        class="w-full border rounded px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase text-gray-700 mb-1">Barang Tukaran yang Dicari</label>
-                    <input type="text" name="preferred_barter" id="form-preferred-barter" required placeholder="Contoh: Keyboard Mekanik"
-                        class="w-full border rounded px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div>
-                    <label class="block text-xs font-bold uppercase text-gray-700 mb-1">Kondisi</label>
-                    <select name="condition" id="form-condition" class="w-full border rounded px-2 py-2 text-sm">
-                        <option value="NEW">Baru</option>
-                        <option value="GOOD">Bekas - Layak</option>
-                        <option value="REPAIR">Butuh Perbaikan</option>
+                    <label for="review-rating" class="mb-1.5 block text-xs font-medium text-slate-600">Rating</label>
+                    <select id="review-rating" name="rating" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-amber-600 shadow-sm transition focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20">
+                        <option value="5">★★★★★  5 · Sangat puas</option>
+                        <option value="4">★★★★☆  4 · Bagus</option>
+                        <option value="3">★★★☆☆  3 · Cukup</option>
+                        <option value="2">★★☆☆☆  2 · Kurang</option>
+                        <option value="1">★☆☆☆☆  1 · Mengecewakan</option>
                     </select>
                 </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase text-gray-700 mb-1">Pengiriman</label>
-                    <select name="shipping_duration" id="form-shipping" class="w-full border rounded px-2 py-2 text-sm">
-                        <option value="COD">COD / Temu langsung</option>
-                        <option value="PACKAGED">Dipaketkan</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase text-gray-700 mb-1">Status</label>
-                    <select name="status" id="form-status" class="w-full border rounded px-2 py-2 text-sm">
-                        <option value="AVAILABLE">Tersedia</option>
-                        <option value="NEGOTIATING">Negosiasi</option>
-                        <option value="BARTERED">Sudah Dibarter</option>
-                    </select>
-                </div>
-            </div>
 
-            <div>
-                <label class="block text-xs font-bold uppercase text-gray-700 mb-1">URL Foto Barang (Opsional)</label>
-                <input type="url" name="image_url" id="form-image-url" placeholder="https://..." 
-                    class="w-full border rounded px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-            </div>
+                <div>
+                    <label for="review-comment" class="mb-1.5 block text-xs font-medium text-slate-600">Komentar</label>
+                    <textarea id="review-comment" name="comment" rows="3" required placeholder="Tulis pengalaman barter Anda"
+                        class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm transition focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20"></textarea>
+                </div>
 
-            <div class="flex justify-end space-x-2 pt-3 border-t">
-                <button type="button" id="btn-cancel-modal" class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 text-sm font-semibold">Batal</button>
-                <button type="submit" class="px-5 py-2 rounded bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold">Simpan</button>
-            </div>
-        </form>
+                <div class="flex justify-end gap-2 pt-4 border-t border-slate-100">
+                    <button type="button" id="btn-cancel-review" class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600/40">Batal</button>
+                    <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-brand-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600/40">Kirim</button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
+</body>
 {% endblock %}
+
 
 {% block extra_js %}
 <script>
-    // Helper untuk mencegah XSS saat merender teks dari JSON ke HTML
+    const DEFAULT_LOCATION_CODE = document.body.dataset.defaultLocationCode || '';
+    const DEFAULT_LOCATION_LABEL = document.body.dataset.defaultLocationLabel || '';
+
+    const URL_TEMPLATES = {
+        regions: "{% url 'profile_post:search_regions' %}",
+        stats: "{% url 'profile_post:get_user_stats' %}",
+        list: "{% url 'profile_post:get_posts_json' %}",
+        create: "{% url 'profile_post:create_post' %}",
+        edit: "{% url 'profile_post:edit_post' 0 %}",
+        delete: "{% url 'profile_post:delete_post' 0 %}",
+        offers: "{% url 'profile_post:get_post_offers' 0 %}",
+        lock: "{% url 'profile_post:lock_barter' 0 %}",
+        cancel: "{% url 'profile_post:cancel_negotiation' 0 %}",
+        complete: "{% url 'profile_post:complete_barter' 0 %}",
+        review: "{% url 'profile_post:submit_review' 0 %}"
+    };
+
+    function buildUrl(template, postId) {
+        return template.replace('/0/', `/${postId}/`);
+    }
+
     function escapeHtml(str) {
         if (!str) return '';
         return String(str)
@@ -249,14 +408,55 @@
             .replace(/'/g, '&#039;');
     }
 
-    // Ambil CSRF Token dari form
+    function sanitizeImageUrl(url) {
+        if (!url) return 'https://placehold.co/300x300/f1f5f9/475569?text=RePair';
+        try {
+            const parsed = new URL(url, window.location.origin);
+            if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+                return escapeHtml(parsed.href);
+            }
+        } catch (e) {}
+        return 'https://placehold.co/300x300/f1f5f9/475569?text=RePair';
+    }
+
+    function renderStars(rating) {
+        const r = Math.max(0, Math.min(5, Number(rating) || 0));
+        return '★'.repeat(r) + '☆'.repeat(5 - r);
+    }
+
     function getCsrfToken() {
         return document.querySelector('[name=csrfmiddlewaretoken]').value;
     }
 
-    // State Global Halaman Posts
+    // Inline SVG icon set (stroke icons, inherit text color)
+    const ICON_PATHS = {
+        pin: '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>',
+        tag: '<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/>',
+        truck: '<rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>',
+        swap: '<polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/>',
+        lock: '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+        edit: '<path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>',
+        trash: '<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>',
+        check: '<polyline points="20 6 9 17 4 12"/>',
+        x: '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
+        clock: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+        phone: '<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>',
+        user: '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+        box: '<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>',
+        arrowRight: '<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>',
+        star: '<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>'
+    };
+
+    function icon(name, cls = 'w-4 h-4') {
+        return `<svg class="${cls} shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON_PATHS[name] || ''}</svg>`;
+    }
+
+    const PERIOD_BTN_ACTIVE = 'period-btn px-3 py-1 rounded-md text-xs font-semibold bg-white text-slate-900 shadow-sm transition';
+    const PERIOD_BTN_IDLE = 'period-btn px-3 py-1 rounded-md text-xs font-semibold text-slate-500 hover:text-slate-900 transition';
+
     const state = {
         q: '',
+        location_code: '',
         location: '',
         condition: '',
         shipping: '',
@@ -266,87 +466,331 @@
         hasNext: true,
         isLoading: false,
         period: 'A',
-        postsCache: {} // Menyimpan objek post berdasarkan ID untuk memudahkan Edit
+        postsCache: {}
     };
 
-    // Referensi Elemen DOM
     const postsContainer = document.getElementById('posts-container');
     const loadingIndicator = document.getElementById('loading-indicator');
     const emptyState = document.getElementById('empty-state');
     const scrollSentinel = document.getElementById('scroll-sentinel');
 
     // ==========================================
-    // A. FUNGSI STATISTIK (M / Y / A)
+    // A. REUSABLE REGION API AUTOCOMPLETE PICKER
     // ==========================================
+    function setupRegionPicker({ searchInput, dropdownEl, onSelect }) {
+        let debounceTimer = null;
+
+        async function fetchAndRenderRegions(query) {
+            try {
+                const res = await fetch(`${URL_TEMPLATES.regions}?q=${encodeURIComponent(query)}`);
+                const data = await res.json();
+                const results = data.results || [];
+
+                if (results.length === 0) {
+                    dropdownEl.innerHTML = `<div class="px-3 py-2 text-slate-400">Wilayah tidak ditemukan</div>`;
+                } else {
+                    const itemsHtml = results.map(item => `
+                        <button type="button" data-code="${escapeHtml(item.code)}" data-name="${escapeHtml(item.name)}"
+                            class="region-option w-full text-left px-3 py-2 hover:bg-slate-50 text-slate-700 flex justify-between items-center gap-3 transition">
+                            <span class="flex items-center gap-2 min-w-0">${icon('pin', 'w-3.5 h-3.5 text-slate-400')}<span class="truncate">${escapeHtml(item.name)}</span></span>
+                            <span class="text-[10px] text-slate-400 tabular-nums">${escapeHtml(item.code)}</span>
+                        </button>
+                    `).join('');
+                    dropdownEl.innerHTML = DOMPurify.sanitize(itemsHtml);
+
+                    dropdownEl.querySelectorAll('.region-option').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const code = btn.getAttribute('data-code');
+                            const name = btn.getAttribute('data-name');
+                            searchInput.value = name;
+                            dropdownEl.classList.add('hidden');
+                            onSelect({ code, name });
+                        });
+                    });
+                }
+                dropdownEl.classList.remove('hidden');
+            } catch (err) {
+                console.error('Gagal mengambil daftar wilayah:', err);
+            }
+        }
+
+        searchInput.addEventListener('focus', () => {
+            fetchAndRenderRegions(searchInput.value.trim());
+        });
+
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                fetchAndRenderRegions(e.target.value.trim());
+            }, 250);
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!searchInput.contains(e.target) && !dropdownEl.contains(e.target)) {
+                dropdownEl.classList.add('hidden');
+            }
+        });
+    }
+
+    // 1. Filter sidebar region picker
+    const filterRegionSearch = document.getElementById('filter-region-search');
+    const filterRegionDropdown = document.getElementById('filter-region-dropdown');
+    const filterLocationCode = document.getElementById('filter-location-code');
+    const btnClearFilterRegion = document.getElementById('btn-clear-filter-region');
+
+    setupRegionPicker({
+        searchInput: filterRegionSearch,
+        dropdownEl: filterRegionDropdown,
+        onSelect: ({ code, name }) => {
+            filterLocationCode.value = code;
+            state.location_code = code;
+            state.location = name;
+            btnClearFilterRegion.classList.remove('hidden');
+            loadPosts(true);
+        }
+    });
+
+    btnClearFilterRegion.addEventListener('click', () => {
+        filterRegionSearch.value = '';
+        filterLocationCode.value = '';
+        state.location_code = '';
+        state.location = '';
+        btnClearFilterRegion.classList.add('hidden');
+        loadPosts(true);
+    });
+
+    // 2. Add/Edit modal region picker
+    const formRegionSearch = document.getElementById('form-region-search');
+    const formRegionDropdown = document.getElementById('form-region-dropdown');
+    const formLocationCode = document.getElementById('form-location-code');
+    const formLocationLabel = document.getElementById('form-location');
+
+    setupRegionPicker({
+        searchInput: formRegionSearch,
+        dropdownEl: formRegionDropdown,
+        onSelect: ({ code, name }) => {
+            formLocationCode.value = code;
+            formLocationLabel.value = name;
+        }
+    });
+
+    document.getElementById('btn-use-account-region').addEventListener('click', () => {
+        formLocationCode.value = DEFAULT_LOCATION_CODE;
+        formLocationLabel.value = DEFAULT_LOCATION_LABEL;
+        formRegionSearch.value = DEFAULT_LOCATION_LABEL;
+    });
+
+    // ==========================================
+    // B. STATS WITH DELTA INDICATOR (M / Y / A)
+    // ==========================================
+    function updateStatBox(prefix, statObj, showDelta, isFloat = false) {
+        const valEl = document.getElementById(`stat-${prefix}-val`);
+        const deltaEl = document.getElementById(`stat-${prefix}-delta`);
+
+        valEl.textContent = isFloat ? Number(statObj.value).toFixed(1) : statObj.value;
+
+        if (!showDelta) {
+            deltaEl.classList.add('hidden');
+            deltaEl.textContent = '';
+            return;
+        }
+
+        deltaEl.classList.remove('hidden');
+        const sign = statObj.diff > 0 ? '+' : '';
+        const arrow = statObj.diff > 0 ? '▲' : (statObj.diff < 0 ? '▼' : '•');
+        deltaEl.textContent = `${arrow} ${sign}${statObj.diff} (${sign}${statObj.pct}%)`;
+
+        if (statObj.diff > 0) {
+            deltaEl.className = 'text-[11px] font-medium mt-0.5 text-emerald-600';
+        } else if (statObj.diff < 0) {
+            deltaEl.className = 'text-[11px] font-medium mt-0.5 text-red-600';
+        } else {
+            deltaEl.className = 'text-[11px] font-medium mt-0.5 text-slate-500';
+        }
+    }
+
     async function fetchStats(period = 'A') {
         state.period = period;
-        // Update tampilan tombol aktif M/Y/A
         document.querySelectorAll('.period-btn').forEach(btn => {
-            if (btn.dataset.period === period) {
-                btn.className = 'period-btn w-7 h-7 rounded-full text-xs font-bold bg-emerald-600 text-white shadow transition';
-            } else {
-                btn.className = 'period-btn w-7 h-7 rounded-full text-xs font-bold text-gray-800 hover:bg-gray-400/50 transition';
-            }
+            btn.className = btn.dataset.period === period ? PERIOD_BTN_ACTIVE : PERIOD_BTN_IDLE;
         });
 
         try {
-            const res = await fetch(`{% url 'profile_post:get_user_stats' %}?period=${period}`);
+            const res = await fetch(`${URL_TEMPLATES.stats}?period=${period}`);
             const data = await res.json();
-            document.getElementById('stat-rating').textContent = data.rating.toFixed(1);
-            document.getElementById('stat-posts').textContent = data.total_posts;
-            document.getElementById('stat-barters').textContent = data.total_barters;
+            updateStatBox('rating', data.rating, data.show_delta, true);
+            updateStatBox('posts', data.posts, data.show_delta, false);
+            updateStatBox('barters', data.barters, data.show_delta, false);
         } catch (err) {
             console.error('Gagal memuat statistik:', err);
         }
     }
 
     // ==========================================
-    // B. FUNGSI RENDER KARTU POST & FETCH LIST
+    // C. RENDER POST CARD BY STATUS
     // ==========================================
+    const BTN_PRIMARY = 'inline-flex items-center justify-center gap-1.5 rounded-lg bg-brand-700 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-brand-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600/40';
+    const BTN_ICON = 'inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600/40';
+    const BTN_ICON_DANGER = 'inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40';
+
     function createPostCardHtml(post) {
         state.postsCache[post.id] = post;
-        return `
-            <article id="post-card-${post.id}" class="bg-gray-400/70 rounded-xl p-4 flex flex-col sm:flex-row gap-4 items-start relative shadow-sm hover:shadow transition">
-                <!-- Gambar Barang di Kiri Kartu -->
-                <img src="${escapeHtml(post.image_url)}" alt="${escapeHtml(post.title)}" 
-                    class="w-full sm:w-32 h-32 object-cover rounded-lg bg-gray-200 shrink-0">
 
-                <!-- Informasi Barang di Tengah Kartu -->
+        let statusBadgeHtml = '';
+        if (post.status_code === 'AVAILABLE') {
+            statusBadgeHtml = `<span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-700 ring-1 ring-inset ring-emerald-600/20"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>Tersedia</span>`;
+        } else if (post.status_code === 'NEGOTIATING') {
+            statusBadgeHtml = `<span class="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-2.5 py-0.5 text-[11px] font-semibold text-amber-700 ring-1 ring-inset ring-amber-600/20"><span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>Negosiasi</span>`;
+        } else {
+            statusBadgeHtml = `<span class="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-0.5 text-[11px] font-semibold text-slate-600 ring-1 ring-inset ring-slate-500/20">${icon('check', 'w-3 h-3')}Dibarter</span>`;
+        }
+
+        let actionButtonsHtml = '';
+        if (post.status_code === 'AVAILABLE') {
+            actionButtonsHtml = `
+                <button type="button" data-action="open-offers" data-post-id="${post.id}" class="${BTN_PRIMARY}">
+                    ${icon('lock', 'w-3.5 h-3.5')}Lock barter
+                </button>
+                <button type="button" data-action="open-edit" data-post-id="${post.id}" title="Edit" aria-label="Edit post" class="${BTN_ICON}">
+                    ${icon('edit')}
+                </button>
+                <button type="button" data-action="delete-post" data-post-id="${post.id}" title="Hapus" aria-label="Hapus post" class="${BTN_ICON_DANGER}">
+                    ${icon('trash')}
+                </button>
+            `;
+        } else if (post.status_code === 'NEGOTIATING') {
+            actionButtonsHtml = `
+                <button type="button" data-action="complete-barter" data-post-id="${post.id}" class="${BTN_PRIMARY}">
+                    ${icon('check', 'w-3.5 h-3.5')}Selesaikan
+                </button>
+                <button type="button" data-action="open-offers" data-post-id="${post.id}" title="Ubah penawar" aria-label="Ubah penawar" class="${BTN_ICON}">
+                    ${icon('swap')}
+                </button>
+                <button type="button" data-action="cancel-negotiation" data-post-id="${post.id}" title="Batalkan negosiasi" aria-label="Batalkan negosiasi" class="${BTN_ICON_DANGER}">
+                    ${icon('x')}
+                </button>
+            `;
+        }
+
+        let extraSectionHtml = '';
+        if (post.status_code === 'NEGOTIATING' && post.selected_offer) {
+            const off = post.selected_offer;
+            extraSectionHtml = `
+                <div class="mt-3 rounded-lg border border-amber-200 bg-amber-50/60 p-3 text-xs space-y-1.5">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <span class="flex items-center gap-1.5 font-semibold text-slate-800">${icon('user', 'w-3.5 h-3.5 text-amber-600')}${escapeHtml(off.offerer_name)}</span>
+                        <span class="inline-flex items-center gap-1.5 rounded-md bg-white px-2 py-0.5 text-slate-600 ring-1 ring-inset ring-slate-200">${icon('phone', 'w-3 h-3')}${escapeHtml(off.offerer_contact)}</span>
+                    </div>
+                    <p class="flex items-center gap-1.5 font-medium text-slate-800">${icon('box', 'w-3.5 h-3.5 text-slate-400')}${escapeHtml(off.offered_item_title)}</p>
+                    <p class="text-slate-500 pl-5">${escapeHtml(off.offered_item_description)}</p>
+                </div>
+            `;
+        } else if (post.status_code === 'BARTERED') {
+            const revOwner = post.reviews.to_owner;
+            const revOfferer = post.reviews.to_offerer;
+            const partnerName = post.selected_offer ? escapeHtml(post.selected_offer.offerer_name) : 'Penawar';
+
+            const ownerReviewContent = revOwner
+                ? `<div class="flex items-center gap-1.5 text-amber-500 text-sm tracking-wide">${renderStars(revOwner.rating)} <span class="text-xs text-slate-500 tracking-normal">${revOwner.rating}/5</span></div>
+                    <p class="text-slate-600 mt-1">${escapeHtml(revOwner.comment)}</p>`
+                : `<p class="text-slate-400">Belum direview</p>
+                    <button type="button" data-action="open-review" data-post-id="${post.id}" data-role="OFFERER_TO_OWNER" class="mt-1 text-[11px] font-semibold text-brand-700 hover:underline">Simulasikan review penawar</button>`;
+
+            const offererReviewContent = revOfferer
+                ? `<div class="flex items-center gap-1.5 text-amber-500 text-sm tracking-wide">${renderStars(revOfferer.rating)} <span class="text-xs text-slate-500 tracking-normal">${revOfferer.rating}/5</span></div>
+                    <p class="text-slate-600 mt-1">${escapeHtml(revOfferer.comment)}</p>`
+                : `<p class="text-slate-400">Belum direview</p>
+                    <button type="button" data-action="open-review" data-post-id="${post.id}" data-role="OWNER_TO_OFFERER" class="mt-1 text-[11px] font-semibold text-brand-700 hover:underline">Beri review ke ${partnerName}</button>`;
+
+            extraSectionHtml = `
+                <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+                    <div class="rounded-lg border border-slate-200 bg-slate-50 p-3">
+                        <div class="font-semibold text-slate-700 mb-1.5">Dari ${partnerName} <span class="font-normal text-slate-400">· untuk Anda</span></div>
+                        ${ownerReviewContent}
+                    </div>
+                    <div class="rounded-lg border border-slate-200 bg-slate-50 p-3">
+                        <div class="font-semibold text-slate-700 mb-1.5">Untuk ${partnerName} <span class="font-normal text-slate-400">· dari Anda</span></div>
+                        ${offererReviewContent}
+                    </div>
+                </div>
+            `;
+        }
+
+        return `
+            <article id="post-card-${post.id}" class="bg-white rounded-xl p-4 flex flex-col sm:flex-row gap-4 items-start border border-slate-200 shadow-sm hover:shadow-md hover:border-slate-300 transition">
+                <a href="${escapeHtml(post.detail_url)}" class="block w-full sm:w-28 h-40 sm:h-28 shrink-0 overflow-hidden rounded-lg bg-slate-100 group">
+                    <img src="${sanitizeImageUrl(post.image_url)}" alt="${escapeHtml(post.title)}" loading="lazy"
+                        class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                </a>
+
                 <div class="flex-1 min-w-0 w-full">
-                    <!-- Baris Judul & Tombol Edit/Hapus di Kanan Atas Kartu -->
-                    <div class="flex justify-between items-start gap-2 mb-2">
-                        <h3 class="font-bold text-gray-900 text-base truncate bg-gray-200/80 px-3 py-0.5 rounded">
-                            ${escapeHtml(post.title)}
-                        </h3>
-                        <div class="flex items-center space-x-1.5 shrink-0">
-                            <button type="button" onclick="openEditModal(${post.id})" 
-                                class="px-2.5 py-1 rounded bg-gray-200 hover:bg-amber-400 text-gray-800 text-xs font-bold transition">
-                                Edit
-                            </button>
-                            <button type="button" onclick="deletePost(${post.id})" 
-                                class="px-2.5 py-1 rounded bg-gray-200 hover:bg-red-500 hover:text-white text-gray-800 text-xs font-bold transition">
-                                Hapus
-                            </button>
+                    <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-3 mb-2.5">
+                        <div class="min-w-0">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <a href="${escapeHtml(post.detail_url)}" class="font-semibold text-slate-900 hover:text-brand-700 text-base truncate transition">
+                                    ${escapeHtml(post.title)}
+                                </a>
+                                ${statusBadgeHtml}
+                            </div>
+                            <p class="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs text-slate-500 mt-1">
+                                ${icon('clock', 'w-3.5 h-3.5')}
+                                <span>${escapeHtml(post.created_at_display)}</span>
+                                <span class="text-slate-300">·</span>
+                                <span>${escapeHtml(post.created_at_ago)}</span>
+                            </p>
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-1.5 shrink-0">
+                            ${actionButtonsHtml}
                         </div>
                     </div>
 
-                    <!-- Kotak Deskripsi -->
-                    <div class="bg-gray-200/90 rounded p-2.5 text-xs text-gray-700 mb-2.5 line-clamp-2 min-h-[3rem]">
-                        ${escapeHtml(post.description)}
+                    <p class="text-sm text-slate-600 line-clamp-2 mb-3">${escapeHtml(post.description)}</p>
+
+                    <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-slate-500">
+                        <span class="inline-flex items-center gap-1.5" title="Lokasi">${icon('pin', 'w-3.5 h-3.5')}${escapeHtml(post.location)}</span>
+                        <span class="inline-flex items-center gap-1.5" title="Kondisi">${icon('tag', 'w-3.5 h-3.5')}${escapeHtml(post.condition_label)}</span>
+                        <span class="inline-flex items-center gap-1.5" title="Pengiriman">${icon('truck', 'w-3.5 h-3.5')}${escapeHtml(post.shipping_label)}</span>
                     </div>
 
-                    <!-- Pil Informasi Bawah (Kondisi, Lokasi, Pengiriman, & Preferensi Barter) -->
-                    <div class="flex flex-wrap gap-2 text-[11px] font-semibold text-gray-800">
-                        <span class="bg-gray-200 px-3 py-0.5 rounded-full">📍 ${escapeHtml(post.location)}</span>
-                        <span class="bg-gray-200 px-3 py-0.5 rounded-full">🏷️ ${escapeHtml(post.condition_label)}</span>
-                        <span class="bg-gray-200 px-3 py-0.5 rounded-full">🚚 ${escapeHtml(post.shipping_label)}</span>
-                        <span class="bg-emerald-100 text-emerald-900 px-3 py-0.5 rounded-full">🔄 Dicari: ${escapeHtml(post.preferred_barter)}</span>
-                        <span class="bg-gray-800 text-white px-3 py-0.5 rounded-full">${escapeHtml(post.status_label)}</span>
+                    <div class="mt-3 inline-flex max-w-full items-center gap-2 rounded-lg bg-brand-50 px-3 py-1.5 text-xs text-brand-800 ring-1 ring-inset ring-brand-600/15" title="Barang yang dicari">
+                        ${icon('swap', 'w-3.5 h-3.5 text-brand-700')}
+                        <span class="truncate"><span class="text-brand-700/70">Dicari</span> <span class="font-semibold">${escapeHtml(post.preferred_barter)}</span></span>
                     </div>
+
+                    ${extraSectionHtml}
                 </div>
             </article>
         `;
     }
+
+    postsContainer.addEventListener('click', (event) => {
+        if (!(event.target instanceof Element)) return;
+        const button = event.target.closest('button[data-action]');
+        if (!button) return;
+
+        const postId = button.dataset.postId;
+        switch (button.dataset.action) {
+            case 'open-offers':
+                window.openOffersModal(postId);
+                break;
+            case 'open-edit':
+                window.openEditModal(postId);
+                break;
+            case 'delete-post':
+                window.deletePost(postId);
+                break;
+            case 'complete-barter':
+                window.completeBarter(postId);
+                break;
+            case 'cancel-negotiation':
+                window.cancelNegotiation(postId);
+                break;
+            case 'open-review':
+                window.openReviewModal(postId, button.dataset.role);
+                break;
+        }
+    });
 
     async function loadPosts(reset = false) {
         if (state.isLoading) return;
@@ -363,6 +807,7 @@
 
         const params = new URLSearchParams({
             q: state.q,
+            location_code: state.location_code,
             location: state.location,
             condition: state.condition,
             shipping: state.shipping,
@@ -372,22 +817,20 @@
         });
 
         try {
-            const res = await fetch(`{% url 'profile_post:get_posts_json' %}?${params.toString()}`);
+            const res = await fetch(`${URL_TEMPLATES.list}?${params.toString()}`);
             const data = await res.json();
 
             if (reset && data.posts.length === 0) {
                 emptyState.classList.remove('hidden');
             } else {
                 const htmlChunk = data.posts.map(createPostCardHtml).join('');
-                postsContainer.insertAdjacentHTML('beforeend', htmlChunk);
+                postsContainer.insertAdjacentHTML('beforeend', DOMPurify.sanitize(htmlChunk));
             }
 
             state.hasNext = data.has_next;
-            if (state.hasNext) {
-                state.page += 1;
-            }
+            if (state.hasNext) state.page += 1;
         } catch (err) {
-            console.error('Gagal memuat daftar post:', err);
+            console.error('Gagal memuat post:', err);
         } finally {
             state.isLoading = false;
             loadingIndicator.classList.add('hidden');
@@ -395,32 +838,162 @@
     }
 
     // ==========================================
-    // C. INFINITE SCROLL (INTERSECTION OBSERVER)
+    // D. LOCK BARTER, NEGOTIATION, & REVIEW
+    // ==========================================
+    const offersModal = document.getElementById('offers-modal');
+    const offersListContainer = document.getElementById('offers-list-container');
+
+    window.openOffersModal = async function(postId) {
+        offersModal.classList.remove('hidden');
+        offersModal.classList.add('flex');
+        offersListContainer.innerHTML = `<p class="text-sm text-center py-8 text-slate-500">Memuat penawar</p>`;
+
+        try {
+            const res = await fetch(buildUrl(URL_TEMPLATES.offers, postId));
+            const data = await res.json();
+            document.getElementById('offers-modal-subtitle').textContent = data.post_title;
+
+            const offersHtml = data.offers.map(off => `
+                <div class="p-4 rounded-lg border ${off.is_selected ? 'border-amber-300 bg-amber-50/60' : 'border-slate-200 bg-white hover:border-slate-300'} flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 transition">
+                    <div class="space-y-1 text-xs min-w-0">
+                        <div class="font-semibold text-slate-900 text-sm flex items-center gap-2">
+                            ${icon('user', 'w-4 h-4 text-slate-400')}
+                            <span class="truncate">${escapeHtml(off.offerer_name)}</span>
+                            ${off.is_selected ? '<span class="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-700">Dipilih</span>' : ''}
+                        </div>
+                        <p class="font-medium text-slate-800">${escapeHtml(off.offered_item_title)}</p>
+                        <p class="text-slate-500">${escapeHtml(off.offered_item_description)}</p>
+                        <p class="inline-flex items-center gap-1.5 text-slate-500">${icon('phone', 'w-3 h-3')}${escapeHtml(off.offerer_contact)}</p>
+                    </div>
+                    <button type="button" data-action="select-offer" data-post-id="${postId}" data-offer-id="${off.id}"
+                        class="w-full sm:w-auto shrink-0 inline-flex items-center justify-center rounded-lg bg-brand-700 px-4 py-2 text-xs font-semibold text-white transition hover:bg-brand-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600/40">
+                        Pilih
+                    </button>
+                </div>
+            `).join('');
+
+            offersListContainer.innerHTML = DOMPurify.sanitize(offersHtml);
+        } catch (err) {
+            offersListContainer.innerHTML = `<p class="text-sm text-red-600 text-center py-6">Gagal memuat penawar.</p>`;
+        }
+    };
+
+    offersListContainer.addEventListener('click', (event) => {
+        if (!(event.target instanceof Element)) return;
+        const button = event.target.closest('button[data-action="select-offer"]');
+        if (!button) return;
+        window.selectOfferForLock(button.dataset.postId, button.dataset.offerId);
+    });
+
+    document.getElementById('btn-close-offers').addEventListener('click', () => {
+        offersModal.classList.add('hidden');
+        offersModal.classList.remove('flex');
+    });
+
+    window.selectOfferForLock = async function(postId, offerId) {
+        const formData = new FormData();
+        formData.append('offer_id', offerId);
+
+        const res = await fetch(buildUrl(URL_TEMPLATES.lock, postId), {
+            method: 'POST',
+            headers: { 'X-CSRFToken': getCsrfToken() },
+            body: formData
+        });
+
+        if (res.ok) {
+            offersModal.classList.add('hidden');
+            offersModal.classList.remove('flex');
+            loadPosts(true);
+        }
+    };
+
+    window.cancelNegotiation = async function(postId) {
+        if (!confirm('Batalkan negosiasi ini? Status barang akan kembali menjadi Tersedia.')) return;
+        const res = await fetch(buildUrl(URL_TEMPLATES.cancel, postId), {
+            method: 'POST',
+            headers: { 'X-CSRFToken': getCsrfToken() }
+        });
+        if (res.ok) loadPosts(true);
+    };
+
+    window.completeBarter = async function(postId) {
+        if (!confirm('Selesaikan barter ini sekarang? Status akan dikunci menjadi Sudah Dibarter.')) return;
+        const res = await fetch(buildUrl(URL_TEMPLATES.complete, postId), {
+            method: 'POST',
+            headers: { 'X-CSRFToken': getCsrfToken() }
+        });
+        if (res.ok) {
+            loadPosts(true);
+            fetchStats(state.period);
+        }
+    };
+
+    const reviewModal = document.getElementById('review-modal');
+    const reviewForm = document.getElementById('review-form');
+
+    window.openReviewModal = function(postId, role) {
+        document.getElementById('review-post-id').value = postId;
+        document.getElementById('review-role').value = role;
+        document.getElementById('review-comment').value = '';
+        document.getElementById('review-modal-title').textContent =
+            role === 'OWNER_TO_OFFERER' ? 'Beri Review ke Penawar' : 'Simulasi Review dari Penawar';
+        reviewModal.classList.remove('hidden');
+        reviewModal.classList.add('flex');
+    };
+
+    function closeReviewModal() {
+        reviewModal.classList.add('hidden');
+        reviewModal.classList.remove('flex');
+    }
+
+    document.getElementById('btn-close-review').addEventListener('click', closeReviewModal);
+    document.getElementById('btn-cancel-review').addEventListener('click', closeReviewModal);
+
+    reviewForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const postId = document.getElementById('review-post-id').value;
+        const formData = new FormData();
+        formData.append('role', document.getElementById('review-role').value);
+        formData.append('rating', document.getElementById('review-rating').value);
+        formData.append('comment', document.getElementById('review-comment').value);
+
+        const res = await fetch(buildUrl(URL_TEMPLATES.review, postId), {
+            method: 'POST',
+            headers: { 'X-CSRFToken': getCsrfToken() },
+            body: formData
+        });
+
+        if (res.ok) {
+            closeReviewModal();
+            loadPosts(true);
+            fetchStats(state.period);
+        }
+    });
+
+    // ==========================================
+    // E. INFINITE SCROLL & FILTER LISTENERS
     // ==========================================
     const observer = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && state.hasNext && !state.isLoading) {
             loadPosts(false);
         }
-    }, { rootMargin: '100px' });
+    }, { rootMargin: '120px' });
 
     observer.observe(scrollSentinel);
 
-    // ==========================================
-    // D. EVENT LISTENERS: SEARCH, FILTER, SORT
-    // ==========================================
+    document.getElementById('btn-toggle-mobile-filter').addEventListener('click', () => {
+        const sidebar = document.getElementById('filter-sidebar');
+        const icon = document.getElementById('mobile-filter-icon');
+        sidebar.classList.toggle('hidden');
+        sidebar.classList.toggle('flex');
+        icon.textContent = sidebar.classList.contains('hidden') ? '▼' : '▲';
+    });
+
     let searchTimeout = null;
     document.getElementById('search-input').addEventListener('input', (e) => {
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(() => {
             state.q = e.target.value.trim();
-            loadPosts(true);
-        }, 350);
-    });
-
-    document.getElementById('filter-location').addEventListener('input', (e) => {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => {
-            state.location = e.target.value.trim();
             loadPosts(true);
         }, 350);
     });
@@ -447,13 +1020,14 @@
 
     document.getElementById('btn-reset-filter').addEventListener('click', () => {
         document.getElementById('search-input').value = '';
-        document.getElementById('filter-location').value = '';
+        filterRegionSearch.value = '';
+        filterLocationCode.value = '';
+        btnClearFilterRegion.classList.add('hidden');
         document.getElementById('filter-condition').value = '';
         document.getElementById('filter-shipping').value = '';
         document.getElementById('filter-status').value = '';
         document.getElementById('sort-select').value = 'newest';
-
-        Object.assign(state, { q: '', location: '', condition: '', shipping: '', status: '', sort: 'newest' });
+        Object.assign(state, { q: '', location_code: '', location: '', condition: '', shipping: '', status: '', sort: 'newest' });
         loadPosts(true);
     });
 
@@ -462,7 +1036,7 @@
     });
 
     // ==========================================
-    // E. LOGIKA MODAL CRUD (ADD, EDIT, DELETE)
+    // F. MODAL CRUD (ADD, EDIT, DELETE)
     // ==========================================
     const postModal = document.getElementById('post-modal');
     const postForm = document.getElementById('post-form');
@@ -478,6 +1052,10 @@
         document.getElementById('modal-title').textContent = 'Tambah Post Barter';
         document.getElementById('form-post-id').value = '';
         postForm.reset();
+        // Pre-fill with inherited account domicile
+        formLocationCode.value = DEFAULT_LOCATION_CODE;
+        formLocationLabel.value = DEFAULT_LOCATION_LABEL;
+        formRegionSearch.value = DEFAULT_LOCATION_LABEL;
         postModal.classList.remove('hidden');
         postModal.classList.add('flex');
     });
@@ -485,19 +1063,31 @@
     document.getElementById('btn-close-modal').addEventListener('click', closeModal);
     document.getElementById('btn-cancel-modal').addEventListener('click', closeModal);
 
+    // Close any open modal with Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        if (!postModal.classList.contains('hidden')) closeModal();
+        if (!reviewModal.classList.contains('hidden')) closeReviewModal();
+        if (!offersModal.classList.contains('hidden')) {
+            offersModal.classList.add('hidden');
+            offersModal.classList.remove('flex');
+        }
+    });
+
     window.openEditModal = function(postId) {
         const post = state.postsCache[postId];
-        if (!post) return;
+        if (!post || post.status_code !== 'AVAILABLE') return;
 
         document.getElementById('modal-title').textContent = 'Edit Post Barter';
         document.getElementById('form-post-id').value = post.id;
         document.getElementById('form-title').value = post.title;
         document.getElementById('form-description').value = post.description;
-        document.getElementById('form-location').value = post.location;
+        formLocationCode.value = post.location_code || DEFAULT_LOCATION_CODE;
+        formLocationLabel.value = post.location || DEFAULT_LOCATION_LABEL;
+        formRegionSearch.value = post.location || DEFAULT_LOCATION_LABEL;
         document.getElementById('form-preferred-barter').value = post.preferred_barter;
         document.getElementById('form-condition').value = post.condition_code;
         document.getElementById('form-shipping').value = post.shipping_code;
-        document.getElementById('form-status').value = post.status_code;
         document.getElementById('form-image-url').value = post.image_url;
 
         postModal.classList.remove('hidden');
@@ -507,54 +1097,36 @@
     postForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const postId = document.getElementById('form-post-id').value;
-        const url = postId 
-            ? `/posts/api/edit/${postId}/` 
-            : `{% url 'profile_post:create_post' %}`;
-
+        const url = postId ? buildUrl(URL_TEMPLATES.edit, postId) : URL_TEMPLATES.create;
         const formData = new FormData(postForm);
 
-        try {
-            const res = await fetch(url, {
-                method: 'POST',
-                headers: { 'X-CSRFToken': getCsrfToken() },
-                body: formData
-            });
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'X-CSRFToken': getCsrfToken() },
+            body: formData
+        });
 
-            if (res.ok) {
-                closeModal();
-                loadPosts(true);
-                fetchStats(state.period);
-            } else {
-                alert('Gagal menyimpan post. Periksa kembali isian form.');
-            }
-        } catch (err) {
-            console.error('Error saat menyimpan post:', err);
+        if (res.ok) {
+            closeModal();
+            loadPosts(true);
+            fetchStats(state.period);
+        } else {
+            alert('Gagal menyimpan post. Pastikan wilayah telah dipilih dari daftar.');
         }
     });
 
     window.deletePost = async function(postId) {
-        if (!confirm('Apakah kamu yakin ingin menghapus post barter ini?')) return;
-
-        try {
-            const res = await fetch(`/posts/api/delete/${postId}/`, {
-                method: 'POST',
-                headers: { 'X-CSRFToken': getCsrfToken() }
-            });
-
-            if (res.ok) {
-                const card = document.getElementById(`post-card-${postId}`);
-                if (card) card.remove();
-                fetchStats(state.period);
-                if (postsContainer.children.length === 0) {
-                    loadPosts(true);
-                }
-            }
-        } catch (err) {
-            console.error('Gagal menghapus post:', err);
+        if (!confirm('Hapus post barter ini?')) return;
+        const res = await fetch(buildUrl(URL_TEMPLATES.delete, postId), {
+            method: 'POST',
+            headers: { 'X-CSRFToken': getCsrfToken() }
+        });
+        if (res.ok) {
+            loadPosts(true);
+            fetchStats(state.period);
         }
     };
 
-    // Inisialisasi awal saat halaman dibuka
     document.addEventListener('DOMContentLoaded', () => {
         fetchStats('A');
         loadPosts(true);

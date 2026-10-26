@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ post.title }} - Detail RePair</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'] },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4', 100: '#dcfce7', 200: '#bbf7d0', 300: '#86efac',
+                            400: '#4ade80', 500: '#22c55e', 600: '#16a34a', 700: '#15803d',
+                            800: '#166534', 900: '#14532d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen p-4 sm:p-8 font-sans antialiased">
+    <div class="max-w-3xl mx-auto">
+
+        <a href="{% url 'profile_post:index' %}" class="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-900 transition mb-4">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Kembali ke Posts
+        </a>
+
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="p-5 sm:p-6 space-y-6">
+                <div class="flex flex-col sm:flex-row gap-6">
+                    <img src="{{ post.image_url }}" alt="{{ post.title }}" class="w-full sm:w-64 h-64 object-cover rounded-lg bg-slate-100 shrink-0">
+
+                    <div class="flex-1 min-w-0 space-y-4">
+                        <div class="space-y-2">
+                            <span class="inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-2.5 py-0.5 text-[11px] font-semibold text-brand-700 ring-1 ring-inset ring-brand-600/20">
+                                <span class="h-1.5 w-1.5 rounded-full bg-brand-500"></span>{{ post.get_status_display }}
+                            </span>
+                            <h1 class="text-2xl font-semibold tracking-tight text-slate-900">{{ post.title }}</h1>
+                            <p class="flex flex-wrap items-center gap-x-1.5 text-xs text-slate-500">
+                                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                <span>{{ post.created_at|date:"d M Y, H:i" }}</span>
+                                <span class="text-slate-300">·</span>
+                                <span>oleh <span class="font-medium text-slate-700">{{ post.user.username }}</span></span>
+                            </p>
+                        </div>
+
+                        <dl class="divide-y divide-slate-100 border-t border-slate-100 text-sm">
+                            <div class="flex items-start gap-3 py-2.5">
+                                <dt class="flex items-center gap-2 w-28 shrink-0 text-slate-500">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                    Lokasi
+                                </dt>
+                                <dd class="font-medium text-slate-900">{{ post.location }}</dd>
+                            </div>
+                            <div class="flex items-start gap-3 py-2.5">
+                                <dt class="flex items-center gap-2 w-28 shrink-0 text-slate-500">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                                    Kondisi
+                                </dt>
+                                <dd class="font-medium text-slate-900">{{ post.get_condition_display }}</dd>
+                            </div>
+                            <div class="flex items-start gap-3 py-2.5">
+                                <dt class="flex items-center gap-2 w-28 shrink-0 text-slate-500">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                                    Pengiriman
+                                </dt>
+                                <dd class="font-medium text-slate-900">{{ post.get_shipping_duration_display }}</dd>
+                            </div>
+                        </dl>
+
+                        <div class="flex items-center gap-2 rounded-lg bg-brand-50 px-3 py-2 text-sm text-brand-800 ring-1 ring-inset ring-brand-600/15">
+                            <svg class="w-4 h-4 shrink-0 text-brand-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+                            <span><span class="text-brand-700/70">Dicari</span> <span class="font-semibold">{{ post.preferred_barter }}</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h2 class="text-sm font-semibold text-slate-900 mb-2">Deskripsi</h2>
+                    <p class="text-sm leading-relaxed text-slate-600 bg-slate-50 p-4 rounded-lg border border-slate-200 whitespace-pre-line">{{ post.description }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
