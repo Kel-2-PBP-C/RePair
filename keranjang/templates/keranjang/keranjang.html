@@ -1,15 +1,169 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Keranjang</title>
-</head>
-<body>
 
-    <h1>Keranjang Saya</h1>
+{% extends "base.html" %}
 
-    <p>Belum ada barang di keranjang.</p>
+{% block title %}Keranjang{% endblock %}
+{% block main_class %}page-main cart-page{% endblock %}
 
-</body>
-</html>
+{% block extra_css %}
+<style>
+    .cart-page {
+        background: #f0f0f0;
+        min-height: 70vh;
+        padding: 28px;
+    }
+
+    .cart-heading {
+        max-width: 1100px;
+        margin: 0 auto 22px;
+        color: #173d2a;
+        font-size: 28px;
+    }
+
+    .cart-grid {
+        max-width: 1100px;
+        margin: auto;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 22px;
+    }
+
+    .cart-card {
+        background: white;
+        border-radius: 10px;
+        padding: 14px;
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        box-shadow: 0 2px 8px #0000000d;
+    }
+
+    .cart-image {
+        width: 42%;
+        height: 145px;
+        object-fit: contain;
+        border: 1px solid #eee;
+        border-radius: 4px;
+    }
+
+    .cart-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .cart-info h3 {
+        margin: 0 0 10px;
+        color: #222;
+        font-size: 17px;
+        overflow-wrap: anywhere;
+    }
+
+    .cart-info p {
+        margin: 5px 0;
+        font-size: 13px;
+        color: #555;
+    }
+
+    .cart-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 14px;
+    }
+
+    .cart-button {
+        border: 0;
+        border-radius: 5px;
+        background: #08783e;
+        color: white;
+        padding: 9px 12px;
+        font-size: 12px;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .cart-button.delete {
+        background: #a52e2e;
+    }
+
+    .empty-cart {
+        grid-column: 1 / -1;
+        background: white;
+        border-radius: 10px;
+        padding: 36px;
+        text-align: center;
+        color: #555;
+    }
+
+    @media (max-width: 700px) {
+        .cart-page {
+            padding: 18px 12px;
+        }
+
+        .cart-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .cart-card {
+            gap: 12px;
+            padding: 10px;
+        }
+
+        .cart-image {
+            height: 120px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section aria-labelledby="cart-heading">
+    <h1 class="cart-heading" id="cart-heading">Keranjang</h1>
+
+    <div class="cart-grid">
+        {% for item in cart_items %}
+            <article class="cart-card">
+                <img
+                    class="cart-image"
+                    src="{{ item.barter.thumbnail }}"
+                    alt="{{ item.barter.title }}"
+                >
+
+                <div class="cart-info">
+                    <h3>{{ item.barter.title }}</h3>
+                    <p>Tahun: {{ item.barter.item_year }}</p>
+                    <p>Kondisi: {{ item.barter.condition }}%</p>
+                    <p>Lokasi: {{ item.barter.item_location }}</p>
+
+                    <div class="cart-actions">
+                        <a
+                            class="cart-button"
+                            href="{% url 'keranjang' %}"
+                            aria-label="Lihat keranjang"
+                        >
+                            Barang Tersimpan
+                        </a>
+
+                        <form
+                            method="post"
+                            action="{% url 'hapus_keranjang' item.id %}"
+                        >
+                            {% csrf_token %}
+                            <button
+                                class="cart-button delete"
+                                type="submit"
+                            >
+                                Hapus
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </article>
+        {% empty %}
+            <div class="empty-cart">
+                <h2>Keranjang kamu masih kosong</h2>
+                <p>Simpan barang yang kamu minati agar mudah ditemukan lagi.</p>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
