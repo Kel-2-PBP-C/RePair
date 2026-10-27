@@ -12,13 +12,53 @@
 </head>
 
 <body>
+    <!-- TODO: Akan diganti dari base.html -->
     <header class="site-header">
         <div class="logo">
             <img src="{% static 'RePair..svg' %}" alt="RePair">
         </div>
     </header>
 
-    <img class="barter-thumbnail" src="{{ barter.thumbnail }}" alt="{{ barter.title }}">
+    {% if user.is_authenticated %}
+        <div class="content-button">
+            {% if user == barter.owner %}
+                <a href="{% url 'add_items:edit' barter.pk %}" class="edit-fab" id="open-edit-item-mobile" aria-label="Edit Barang">
+                    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                        <path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a>
+            {% endif %}
+            <a href="{% url 'add_items:create' %}" class="add-button floating" id="open-add-item">+ Tambah Barang</a>
+        </div>
+
+        <div class="mobile-actions">
+            {% if user == barter.owner %}
+                <a href="{% url 'add_items:edit' barter.pk %}" class="add-button mobile edit" id="open-edit-item-mobile" aria-label="Edit Barang">
+                    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                        <path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a>
+            {% endif %}
+            <a href="{% url 'add_items:create' %}" class="add-button mobile" id="open-add-item-mobile" aria-label="Tambah Barang">
+                <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+                    <path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>
+            </a>
+        </div>
+    {% endif %}
+
+    {% include 'barter_details/components/toast.html' %}
+
+    <div class="thumbnail-wrap">
+        <img class="barter-thumbnail" src="{{ barter.thumbnail }}" alt="{{ barter.title }}">
+        {% if user == barter.owner %}
+            <button type="button" class="delete-fab" id="open-delete" aria-label="Hapus Barang" title="Hapus Barang">
+                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                    <path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 11v6M14 11v6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+        {% endif %}
+    </div>
     
     <main class="barter-details">
 
@@ -39,7 +79,17 @@
                             <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
                             <path d="M12 17h.01"/>
                         </svg>
-                        <span>{{ barter.condition }}%</span>
+                        <span>{{ barter.get_condition_display }} ({{ barter.condition_percentage }}%)</span>
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/>
+                            <path d="M15 18H9"/>
+                            <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14"/>
+                            <circle cx="17" cy="18" r="2"/>
+                            <circle cx="7" cy="18" r="2"/>
+                        </svg>
+                        <span>{{ barter.get_shipping_method_display }}</span>
                     </li>
                     <li>
                         <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -66,17 +116,55 @@
 
         <div class="owner">
             <div class="owner-info">
-                <div class="profile-photo"></div>
+                <div class="profile-photo"></div> <!-- TODO: ini masukin pp user -->
                 <p>{{ barter.owner.get_full_name|default:barter.owner.username }}</p>
             </div>
-            <button class="owner-contact"></button>
+            <button class="owner-contact"> <!-- TODO: ini masukin nomor user -->
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                </svg>
+            </button>
         </div>
 
         <div class="other-items-from-same-profile">
             {% for item in other_items %}
                 <a href="{% url 'barter_details:barter_detail' item.pk %}">
                     <img src="{{ item.thumbnail }}" alt="{{ item.title }}">
-                    <p>{{ item.title }}</p>
+                    <div class="item-card-body">
+                        <p class="item-card-title">{{ item.title }}</p>
+                        <ul class="detail-list compact">
+                            <li>
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <rect width="18" height="18" x="3" y="4" rx="2"/>
+                                    <path d="M16 2v4M8 2v4M3 10h18"/>
+                                </svg>
+                                <span>{{ item.item_year }}</span>
+                            </li>
+                            <li>
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                                    <path d="M12 17h.01"/>
+                                </svg>
+                                <span>{{ item.condition_percentage }}%</span>
+                            </li>
+                            <li>
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+                                    <circle cx="12" cy="10" r="3"/>
+                                </svg>
+                                <span>{{ item.item_location }}</span>
+                            </li>
+                            {% if item.item_replacement %}
+                            <li>
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M8 16H3v5"/>
+                                </svg>
+                                <span>{{ item.item_replacement }}</span>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </div>
                 </a>
             {% empty %}
                 <div class="empty-state">
@@ -95,9 +183,245 @@
         </div>
     </main>
 
+    <!-- Jangan diganti dari base.html karena footernya beda -->
     <footer class="site-footer">
-        <button class="cart-button">Tambah ke Keranjang</button>
-        <button class="bid-button">Ajukan Penawaran</button>
+        <button type="button" class="cart-button" id="open-cart">Tambah ke Keranjang</button>
+        <button type="button" class="bid-button" id="open-bid">Ajukan Penawaran</button>
     </footer>
+
+    <dialog id="bid-modal" class="bid-modal">
+        <h2>Ajukan Penawaran</h2>
+        <p class="bid-target">Kamu menawar <strong>{{ barter.title }}</strong></p>
+
+        <form id="bid-form" novalidate data-url="{% url 'barter_details:submit_bid_ajax' barter.pk %}">
+            {% csrf_token %}
+            {% for field in bid_form %}
+                <div class="field{% if field.name == 'replacement_thumbnail' or field.name == 'item_year' or field.name == 'condition' or field.name == 'condition_percentage' %} goods-field{% endif %}">
+                    {{ field.label_tag }}
+                    {{ field }}
+                </div>
+            {% endfor %}
+
+            <div class="bid-actions">
+                <button type="button" class="bid-cancel" id="close-bid">Batal</button>
+                <button type="submit" class="bid-confirm">Konfirmasi</button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="cart-modal" class="bid-modal">
+        <h2>Tambah ke Keranjang?</h2>
+        <p class="bid-target">Kamu akan menambahkan <strong>{{ barter.title }}</strong> ke keranjang.</p>
+
+        <div class="bid-actions">
+            <button type="button" class="bid-cancel" id="cart-cancel">Batal</button>
+            <button type="button" class="bid-confirm" id="cart-confirm">Ya, Tambahkan</button>
+        </div>
+    </dialog>
+
+    {% if user == barter.owner %}
+    <dialog id="delete-modal" class="bid-modal">
+        <h2>Hapus Barang?</h2>
+        <p class="bid-target">Apakah kamu yakin ingin menghapus <strong>{{ barter.title }}</strong>? Tindakan ini tidak bisa dibatalkan.</p>
+        <form id="delete-form" data-url="{% url 'barter_details:delete_ajax' barter.pk %}">
+            {% csrf_token %}
+            <div class="bid-actions">
+                <button type="button" class="bid-confirm" id="delete-cancel">Batal</button>
+                <button type="submit" class="bid-cancel" id="delete-confirm">Hapus</button>
+            </div>
+        </form>
+    </dialog>
+    {% endif %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('bid-modal');
+            const form = document.getElementById('bid-form');
+            if (!modal || !form) return;
+
+            const openButton = document.getElementById('open-bid');
+            const closeButton = document.getElementById('close-bid');
+            const submitButton = form.querySelector('button[type="submit"]');
+            const typeField = form.elements['replacement_type'];
+            const goodsField = form.querySelectorAll('.goods-field');
+            const submitUrl = form.dataset.url;
+
+            function toggleGoodsFields(){
+                const isGood = typeField.value === 'goods';
+                goodsField.forEach((wrapper) => {
+                    wrapper.hidden = !isGood;
+                    wrapper.querySelectorAll('input, select, textarea').forEach((input) => {
+                        input.disabled = !isGood;
+                    });
+                });
+            }
+
+            function clearErrors() {
+                form.querySelectorAll('.field-error').forEach((el) => el.remove());
+            }
+
+            function showFieldErrors(errors) {
+                Object.entries(errors).forEach(([fieldName, errorList]) => {
+                const text = errorList.map((e) => e.message).join(' ');
+                if (fieldName === '__all__') {
+                    showToast(text, 'error');
+                    return;
+                }
+                const input = form.elements[fieldName];
+                if (!input) return;
+                const div = document.createElement('div');
+                div.className = 'field-error';
+                div.textContent = text;
+                input.closest('.field').appendChild(div);
+                });
+            }
+
+            function openModal() {
+                clearErrors();
+                modal.showModal();
+                document.body.classList.add('modal-open');
+            }
+
+            function closeModal(){
+                modal.close();
+                form.reset();
+                clearErrors();
+                toggleGoodsFields();
+            }
+
+            async function handleSubmit(event) {
+                event.preventDefault();
+                clearErrors();
+
+                submitButton.disabled = true;
+                submitButton.textContent = 'Mengirim Request...';
+
+                try {
+                    const response = await fetch(submitUrl, {
+                        method: 'POST',
+                        body: new FormData(form),
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                    });
+                    const data = await response.json();
+
+                    if (response.status === 201) {
+                        showToast(data.message, 'success');
+                        setTimeout(closeModal, 1200);
+                    } else if (response.status === 400 && data.errors) {
+                        showFieldErrors(data.errors);
+                    } else {
+                        showToast(data.message || 'Terjadi kesalahan.', 'error');
+                    }
+                } catch (err) {
+                    showToast('Tidak dapat terhubung ke server. Coba lagi.', 'error');
+                } finally {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Konfirmasi';
+                }
+            }
+        
+            openButton.addEventListener('click', openModal);
+            closeButton.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+            });
+
+            typeField.addEventListener('change', toggleGoodsFields);
+            form.addEventListener('submit', handleSubmit);
+
+            toggleGoodsFields();
+
+            modal.addEventListener('close', () => {
+                document.body.classList.remove('modal-open');
+            });
+        });
+    </script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const modal = document.getElementById('cart-modal');
+        const openButton = document.getElementById('open-cart');
+        const cancelButton = document.getElementById('cart-cancel');
+        const confirmButton = document.getElementById('cart-confirm');
+        if (!modal || !openButton) return;
+
+        function openModal() {
+            confirmButton.disabled = false;
+            modal.showModal();
+            document.body.classList.add('modal-open');
+        }
+
+        function closeModal() {
+            modal.close();
+        }
+
+        async function handleConfirm() {
+            confirmButton.disabled = true;
+
+            // TODO: sambungin ke endpoint keranjang
+
+            showToast('Barang ditambahkan ke keranjang!', 'success');
+            setTimeout(closeModal, 1000);
+        }
+
+        openButton.addEventListener('click', openModal);
+        cancelButton.addEventListener('click', closeModal);
+        confirmButton.addEventListener('click', handleConfirm);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+        modal.addEventListener('close', () => {
+            document.body.classList.remove('modal-open');
+        });
+    });
+
+        document.addEventListener('DOMContentLoaded', () => {
+        const modal = document.getElementById('delete-modal');
+        const openButton = document.getElementById('open-delete');
+        if (!modal || !openButton) return;
+
+        const form = document.getElementById('delete-form');
+        const confirmButton = document.getElementById('delete-confirm');
+
+        function getBackUrl(fallbackUrl) {
+            if (!document.referrer) return fallbackUrl;
+            const refUrl = new URL(document.referrer);
+            const ok = refUrl.origin === window.location.origin && !refUrl.pathname.includes('{{ barter.pk }}');
+            return ok ? document.referrer : fallbackUrl;
+        }
+
+        openButton.addEventListener('click', () => {
+            modal.showModal();
+            document.body.classList.add('modal-open');
+        });
+        document.getElementById('delete-cancel').addEventListener('click', () => modal.close());
+        modal.addEventListener('click', (e) => { if (e.target === modal) modal.close(); });
+        modal.addEventListener('close', () => document.body.classList.remove('modal-open'));
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            confirmButton.disabled = true;
+            try {
+                const response = await fetch(form.dataset.url, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    showToast(data.message, 'success', 800);
+                    modal.close();
+                    setTimeout(() => { window.location.href = getBackUrl(data.redirect_url); }, 800);
+                } else {
+                    showToast(data.message || 'Gagal menghapus.', 'error');
+                    confirmButton.disabled = false;
+                }
+            } catch (err) {
+                showToast('Tidak dapat terhubung ke server. Coba lagi.', 'error');
+                confirmButton.disabled = false;
+            }
+        });
+    });
+</script>
 </body>
 </html>

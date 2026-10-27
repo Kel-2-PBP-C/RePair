@@ -1,0 +1,111 @@
+.create-page {
+    width: 80%;
+    margin: 6.5rem auto 3rem;
+}
+
+.create-page h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--green-8);
+    margin-bottom: 1rem;
+}
+
+.create-page form {
+    background-color: var(--white);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.create-page .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 0 0 14px;
+}
+
+.create-page label {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 0.7rem;
+}
+
+.create-page input,
+.create-page select,
+.create-page textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--green-3);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    outline: none;
+    background-color: var(--white);
+    margin-bottom: 1rem;
+}
+
+.create-page textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.create-page input:focus,
+.create-page select:focus,
+.create-page textarea:focus {
+    border-color: var(--green-7);
+    box-shadow: 0 0 0 3px rgba(35, 139, 69, 0.25);
+}
+
+.create-page .form-message {
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.create-page .bid-actions {
+    margin-top: 1.5rem;
+}
+
+.create-page .bid-confirm {
+    width: 100%;
+    padding: 0.9rem;
+    font-weight: 500;
+    font-size: 1.1rem;
+    cursor: pointer;
+    background: linear-gradient(to right, var(--green-7), var(--green-8));
+}
+
+.create-page .bid-confirm:hover {
+    background: var(--green-7);
+}
+
+.create-page .bid-confirm:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+    .create-page {
+        width: 100%;
+        padding: 0 1.5rem;
+    }
+
+    .create-page h1 {
+        font-size: 1.5rem;
+    }
+
+    .create-page form {
+        padding: 1rem;
+    }
+
+    .create-page label {
+        font-size: 0.8rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .create-page input,
+    .create-page select,
+    .create-page textarea {
+        margin-bottom: 0.5rem;
+    }
+}

@@ -32,9 +32,7 @@ INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'accounts.apps.AccountsConfig',
     'barter_details',
-    'profile_post',
-    'keranjang',
-    'main_page',
+    'add_items',
 ]
 
 MIDDLEWARE = [
@@ -48,6 +46,10 @@ MIDDLEWARE = [
     'accounts.middleware.GoogleProfileCompletionMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+#auto login dev env
+if DEBUG and (BASE_DIR / 'barter_details' / 'dev_middleware.py').exists():
+    MIDDLEWARE.append('barter_details.dev_middleware.DevAutoLoginMiddleware')
 
 ROOT_URLCONF = 'RePair.urls'
 
