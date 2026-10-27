@@ -5,13 +5,15 @@ from barter_details.models import Barter
 class BarterForm(forms.ModelForm):
     class Meta:
         model = Barter
-        fields = ['title', 'description', 'thumbnail', 'item_year', 'condition', 'item_location', 'item_replacement']
+        fields = ['title', 'description', 'thumbnail', 'item_year', 'condition', 'condition_percentage', 'shipping_method', 'item_location', 'item_replacement']
         labels = {
             'title': 'Nama Barang',
             'description': 'Deskripsi Barang',
             'thumbnail': 'URL Foto Barang',
             'item_year': 'Tahun Barang',
-            'condition': 'Kondisi (%)',
+            'condition': 'Kondisi Barang',
+            'condition_percentage': 'Kondisi Barang dalam Persentase (%)',
+            'shipping_method': 'Metode Pengiriman',
             'item_location': 'Lokasi Barang',
             'item_replacement': 'Barang yang Diinginkan (Opsional)',
         }
