@@ -79,7 +79,17 @@
                             <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
                             <path d="M12 17h.01"/>
                         </svg>
-                        <span>{{ barter.condition }}%</span>
+                        <span>{{ barter.get_condition_display }} ({{ barter.condition_percentage }}%)</span>
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/>
+                            <path d="M15 18H9"/>
+                            <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14"/>
+                            <circle cx="17" cy="18" r="2"/>
+                            <circle cx="7" cy="18" r="2"/>
+                        </svg>
+                        <span>{{ barter.get_shipping_method_display }}</span>
                     </li>
                     <li>
                         <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -136,7 +146,7 @@
                                     <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
                                     <path d="M12 17h.01"/>
                                 </svg>
-                                <span>{{ item.condition }}%</span>
+                                <span>{{ item.condition_percentage }}%</span>
                             </li>
                             <li>
                                 <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -186,7 +196,7 @@
         <form id="bid-form" novalidate data-url="{% url 'barter_details:submit_bid_ajax' barter.pk %}">
             {% csrf_token %}
             {% for field in bid_form %}
-                <div class="field{% if field.name == 'replacement_thumbnail' or field.name == 'item_year' or field.name == 'condition' %} goods-field{% endif %}">
+                <div class="field{% if field.name == 'replacement_thumbnail' or field.name == 'item_year' or field.name == 'condition' or field.name == 'condition_percentage' %} goods-field{% endif %}">
                     {{ field.label_tag }}
                     {{ field }}
                 </div>
@@ -217,7 +227,7 @@
             {% csrf_token %}
             <div class="bid-actions">
                 <button type="button" class="bid-confirm" id="delete-cancel">Batal</button>
-                <button type="submit" class="bid-cancel" id="delete-confirm">sHapus</button>
+                <button type="submit" class="bid-cancel" id="delete-confirm">Hapus</button>
             </div>
         </form>
     </dialog>
