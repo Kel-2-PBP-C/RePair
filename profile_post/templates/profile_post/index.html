@@ -44,189 +44,202 @@
       data-default-location-code="{{ default_location_code }}"
       data-default-location-label="{{ default_location_label }}">
 
-    <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8 flex-1">
 
-        <!-- PAGE HEADER -->
-        <header class="mb-6">
-            <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Posts saya</h1>
-            <p class="text-sm text-slate-500 mt-0.5">Kelola barang barter, penawaran, dan ulasan Anda.</p>
-        </header>
+    <!-- PAGE HEADER -->
+    <header class="mb-6">
+        <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Unggahan Saya</h1>
+        <p class="text-sm text-slate-500 mt-0.5">Kelola barang barter, penawaran, dan ulasan Anda.</p>
+    </header>
 
-        <!-- ACCOUNT + STATS -->
-        <section class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6 bg-white p-5 sm:p-6 rounded-xl border border-slate-200 shadow-sm">
+    <!-- ACCOUNT + STATS -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6 bg-white p-5 sm:p-6 rounded-xl border border-slate-200 shadow-sm">
 
-            <div class="lg:col-span-5 flex items-center gap-4 min-w-0">
-                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-brand-700 flex items-center justify-center text-lg font-semibold text-white shrink-0 ring-4 ring-brand-50">
-                    {{ user.username|slice:":2"|upper }}
-                </div>
-                <div class="min-w-0 space-y-1">
-                    <h2 class="text-base sm:text-lg font-semibold text-slate-900 truncate">{{ user.get_full_name|default:user.username }}</h2>
-                    <p class="flex items-center gap-1.5 text-xs sm:text-sm text-slate-500 truncate">
-                        <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                        <span class="truncate">{{ user.email|default:"pengguna@repair.id" }}</span>
-                    </p>
-                    <p class="flex items-center gap-1.5 text-xs sm:text-sm text-slate-500 truncate">
-                        <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                        <span class="truncate">{{ phone_number }}</span>
-                    </p>
-                    <p class="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-brand-700 truncate" title="Domisili akun">
-                        <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                        <span class="truncate">{{ default_location_label }}</span>
-                    </p>
-                </div>
+        <!-- ACCOUNT INFO -->
+        <div class="lg:col-span-5 flex items-center gap-4 min-w-0">
+            <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-brand-700 flex items-center justify-center text-lg font-semibold text-white shrink-0 ring-4 ring-brand-50">
+                {{ profile_initials }}
             </div>
-
-            <div class="lg:col-span-7 space-y-3">
-                <div class="flex items-center justify-between">
-                    <h2 class="text-sm font-semibold text-slate-900">Ringkasan</h2>
-                    <div role="group" aria-label="Periode statistik" class="inline-flex rounded-lg bg-slate-100 p-0.5">
-                        <button type="button" data-period="M" title="Bulan ini (vs bulan lalu)" aria-label="Bulan ini" class="period-btn px-3 py-1 rounded-md text-xs font-semibold text-slate-500 hover:text-slate-900 transition">M</button>
-                        <button type="button" data-period="Y" title="Tahun ini (vs tahun lalu)" aria-label="Tahun ini" class="period-btn px-3 py-1 rounded-md text-xs font-semibold text-slate-500 hover:text-slate-900 transition">Y</button>
-                        <button type="button" data-period="A" title="Semua waktu" aria-label="Semua waktu" class="period-btn px-3 py-1 rounded-md text-xs font-semibold bg-white text-slate-900 shadow-sm transition">A</button>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-3 gap-3">
-                    <div class="rounded-lg border border-slate-200 bg-white p-3 sm:p-4">
-                        <div class="flex items-center gap-1.5 text-xs font-medium text-slate-500">
-                            <svg class="w-3.5 h-3.5 text-amber-500" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                            Rating
-                        </div>
-                        <div class="mt-2 flex flex-col">
-                            <span id="stat-rating-val" class="text-2xl font-semibold tabular-nums text-slate-900">0.0</span>
-                            <span id="stat-rating-delta" class="text-[11px] font-medium mt-0.5 hidden"></span>
-                        </div>
-                    </div>
-                    <div class="rounded-lg border border-slate-200 bg-white p-3 sm:p-4">
-                        <div class="flex items-center gap-1.5 text-xs font-medium text-slate-500">
-                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-                            Posts
-                        </div>
-                        <div class="mt-2 flex flex-col">
-                            <span id="stat-posts-val" class="text-2xl font-semibold tabular-nums text-slate-900">0</span>
-                            <span id="stat-posts-delta" class="text-[11px] font-medium mt-0.5 hidden"></span>
-                        </div>
-                    </div>
-                    <div class="rounded-lg border border-slate-200 bg-white p-3 sm:p-4">
-                        <div class="flex items-center gap-1.5 text-xs font-medium text-slate-500">
-                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
-                            Barters
-                        </div>
-                        <div class="mt-2 flex flex-col">
-                            <span id="stat-barters-val" class="text-2xl font-semibold tabular-nums text-slate-900">0</span>
-                            <span id="stat-barters-delta" class="text-[11px] font-medium mt-0.5 hidden"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- FILTER + LIST -->
-        <section class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-
-            <div class="lg:hidden">
-                <button id="btn-toggle-mobile-filter" type="button" aria-controls="filter-sidebar"
-                    class="w-full py-2.5 px-4 bg-white border border-slate-200 rounded-lg font-medium text-sm text-slate-700 flex justify-between items-center shadow-sm">
-                    <span class="flex items-center gap-2">
-                        <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
-                        Filter
+            <div class="min-w-0 space-y-1">
+                <h2 class="text-base sm:text-lg font-semibold text-slate-900 truncate">
+                    {{ user.get_full_name|default:user.username }}
+                </h2>
+                <p class="flex items-center gap-1.5 text-xs sm:text-sm text-slate-500 truncate">
+                    <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    <span class="truncate">
+                        {{ user.email|default:"pengguna@repair.id" }}
                     </span>
-                    <span id="mobile-filter-icon" class="text-xs text-slate-400">▼</span>
-                </button>
+                </p>
+                <p class="flex items-center gap-1.5 text-xs sm:text-sm text-slate-500 truncate">
+                    <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5 8.4 8.4 0 0 1-4-.95L3 21l1.95-5.5a8.4 8.4 0 0 1-.95-4A8.5 8.5 0 0 1 12.5 3h.5a8.5 8.5 0 0 1 8 8z"/></svg>
+                    <span class="truncate">
+                        Kontak pilihan:
+                        {% if preferred_contact %}
+                            {{ preferred_contact }}
+                        {% else %}
+                            Belum diatur ·
+                            {% url 'accounts:profile' as profile_settings_url %}
+                            <a href="{{ profile_settings_url }}" class="font-medium text-brand-700 hover:text-brand-800 hover:underline">
+                                Atur di Pengaturan Akun
+                            </a>
+                        {% endif %}
+                    </span>
+                </p>
+                <p class="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-brand-700 truncate" title="Domisili akun">
+                    <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <span class="truncate">
+                        {{ default_location_label }}
+                    </span>
+                </p>
+            </div>
+        </div>
+
+        <!-- STATS -->
+        <div class="lg:col-span-7 space-y-3">
+            <div class="flex items-center justify-between">
+                <h2 class="text-sm font-semibold text-slate-900">Ringkasan</h2>
+                <div role="group" aria-label="Periode statistik" class="inline-flex rounded-lg bg-slate-100 p-0.5">
+                    <button type="button" data-period="M" title="Bulan ini (vs bulan lalu)" aria-label="Bulan ini" class="period-btn px-3 py-1 rounded-md text-xs font-semibold text-slate-500 hover:text-slate-900 transition">M</button>
+                    <button type="button" data-period="Y" title="Tahun ini (vs tahun lalu)" aria-label="Tahun ini" class="period-btn px-3 py-1 rounded-md text-xs font-semibold text-slate-500 hover:text-slate-900 transition">Y</button>
+                    <button type="button" data-period="A" title="All time" aria-label="All time" class="period-btn px-3 py-1 rounded-md text-xs font-semibold bg-white text-slate-900 shadow-sm transition">A</button>
+                </div>
             </div>
 
-            <aside id="filter-sidebar" class="hidden lg:flex lg:col-span-3 bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-5 lg:sticky lg:top-24 flex-col justify-between">
-                <div class="space-y-4">
-                    <h2 class="text-sm font-semibold text-slate-900 pb-3 border-b border-slate-100">Filter</h2>
+            <div class="grid grid-cols-3 gap-3">
+                <div class="rounded-lg border border-slate-200 bg-white p-3 sm:p-4">
+                    <div class="flex items-center gap-1.5 text-xs font-medium text-slate-500">
+                        <svg class="w-3.5 h-3.5 text-amber-500" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        Rating
+                    </div>
+                    <div class="mt-2 flex flex-col">
+                        <span id="stat-rating-val" class="text-2xl font-semibold tabular-nums text-slate-900">0.0</span>
+                        <span id="stat-rating-delta" class="text-[11px] font-medium mt-0.5 hidden"></span>
+                    </div>
+                </div>
+                <div class="rounded-lg border border-slate-200 bg-white p-3 sm:p-4">
+                    <div class="flex items-center gap-1.5 text-xs font-medium text-slate-500"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                            <line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                        Posts
+                    </div>
+                    <div class="mt-2 flex flex-col">
+                        <span id="stat-posts-val" class="text-2xl font-semibold tabular-nums text-slate-900">0</span>
+                        <span id="stat-posts-delta" class="text-[11px] font-medium mt-0.5 hidden"></span>
+                    </div>
+                </div>
+                <div class="rounded-lg border border-slate-200 bg-white p-3 sm:p-4">
+                    <div class="flex items-center gap-1.5 text-xs font-medium text-slate-500">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+                        Barters
+                    </div>
+                    <div class="mt-2 flex flex-col">
+                        <span id="stat-barters-val" class="text-2xl font-semibold tabular-nums text-slate-900">0</span>
+                        <span id="stat-barters-delta" class="text-[11px] font-medium mt-0.5 hidden"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
+    <!-- FILTER + LIST -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+        <div class="lg:hidden">
+            <button id="btn-toggle-mobile-filter" type="button" aria-controls="filter-sidebar"
+                class="w-full py-2.5 px-4 bg-white border border-slate-200 rounded-lg font-medium text-sm text-slate-700 flex justify-between items-center shadow-sm">
+                <span class="flex items-center gap-2">
+                    <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/>
+                        <line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/>
+                        <line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+                    Filter
+                </span>
+                <span id="mobile-filter-icon" class="text-xs text-slate-400">▼</span>
+            </button>
+        </div>
+
+        <aside id="filter-sidebar" class="hidden lg:flex lg:col-span-3 bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-5 lg:sticky lg:top-24 flex-col justify-between">
+            <div class="space-y-4">
+                <h2 class="text-sm font-semibold text-slate-900 pb-3 border-b border-slate-100">Filter</h2>
+
+                <div class="relative">
+                    <label for="filter-region-search" class="mb-1.5 block text-xs font-medium text-slate-600">Lokasi</label>
+                    <input type="hidden" id="filter-location-code" value="">
                     <div class="relative">
-                        <label for="filter-region-search" class="mb-1.5 block text-xs font-medium text-slate-600">Lokasi</label>
-                        <input type="hidden" id="filter-location-code" value="">
-                        <div class="relative">
-                            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                            <input type="text" id="filter-region-search" autocomplete="off" placeholder="Cari wilayah"
-                                class="w-full rounded-lg border border-slate-300 bg-white pl-9 pr-8 py-2 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm transition focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20">
-                            <button type="button" id="btn-clear-filter-region" title="Hapus filter wilayah" aria-label="Hapus filter wilayah"
-                                class="hidden absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 text-lg leading-none">&times;</button>
-                        </div>
-                        <div id="filter-region-dropdown" class="hidden absolute left-0 right-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-lg max-h-48 overflow-y-auto z-30 text-xs py-1"></div>
+                        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        <input type="text" id="filter-region-search" autocomplete="off" placeholder="Cari wilayah"
+                            class="w-full rounded-lg border border-slate-300 bg-white pl-9 pr-8 py-2 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm transition focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20">
+                        <button type="button" id="btn-clear-filter-region" title="Hapus filter wilayah" aria-label="Hapus filter wilayah"
+                            class="hidden absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 text-lg leading-none">&times;</button>
                     </div>
-
-                    <div>
-                        <label for="filter-condition" class="mb-1.5 block text-xs font-medium text-slate-600">Kondisi</label>
-                        <select id="filter-condition" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20">
-                            <option value="">Semua kondisi</option>
-                            <option value="NEW">Baru</option>
-                            <option value="GOOD">Bekas - Layak Pakai</option>
-                            <option value="REPAIR">Butuh Perbaikan (RePair)</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label for="filter-shipping" class="mb-1.5 block text-xs font-medium text-slate-600">Pengiriman</label>
-                        <select id="filter-shipping" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20">
-                            <option value="">Semua metode</option>
-                            <option value="COD">COD / Ketemuan Langsung</option>
-                            <option value="INSTANT">Instan / Same Day (&lt; 1 Hari)</option>
-                            <option value="REGULAR">Reguler (2 - 4 Hari)</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label for="filter-status" class="mb-1.5 block text-xs font-medium text-slate-600">Status</label>
-                        <select id="filter-status" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20">
-                            <option value="">Semua status</option>
-                            <option value="AVAILABLE">Tersedia (Tampil di Forum)</option>
-                            <option value="NEGOTIATING">Dalam Negosiasi</option>
-                            <option value="BARTERED">Sudah Dibarter</option>
-                        </select>
-                    </div>
+                    <div id="filter-region-dropdown" class="hidden absolute left-0 right-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-lg max-h-48 overflow-y-auto z-30 text-xs py-1"></div>
                 </div>
 
-                <button id="btn-reset-filter" type="button"
-                    class="w-full inline-flex items-center justify-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600/40">
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
-                    Reset
-                </button>
-            </aside>
-
-            <div class="lg:col-span-9 space-y-4">
-                <div class="flex flex-col sm:flex-row gap-3">
-                    <div class="relative flex-1">
-                        <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                        <input type="text" id="search-input" placeholder="Cari barang, deskripsi, atau barang tukaran"
-                            class="w-full rounded-lg border border-slate-300 bg-white pl-10 pr-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm transition focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20">
-                    </div>
-
-                    <div class="sm:w-52 shrink-0">
-                        <select id="sort-select" aria-label="Urutkan"
-                            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-700 shadow-sm transition focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20 cursor-pointer">
-                            <option value="newest">Terbaru</option>
-                            <option value="rating">Rating tertinggi</option>
-                            <option value="oldest">Terlama</option>
-                        </select>
-                    </div>
+                <div>
+                    <label for="filter-condition" class="mb-1.5 block text-xs font-medium text-slate-600">Kondisi</label>
+                    <select id="filter-condition" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20">
+                        <option value="">Semua kondisi</option>
+                        <option value="NEW">Baru</option>
+                        <option value="GOOD">Bekas - Layak Pakai</option>
+                        <option value="REPAIR">Butuh Perbaikan</option>
+                    </select>
                 </div>
 
-                <div class="min-h-[460px]">
-                    <div id="posts-container" class="space-y-3"></div>
-
-                    <div id="loading-indicator" class="hidden py-8 flex items-center justify-center gap-2 text-sm text-slate-500">
-                        <svg class="w-4 h-4 animate-spin text-brand-700" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-opacity="0.25" stroke-width="4"/><path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
-                        Memuat
-                    </div>
-                    <div id="empty-state" class="hidden py-20 text-center bg-white rounded-xl border border-dashed border-slate-300">
-                        <div class="mx-auto w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
-                            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-                        </div>
-                        <p class="mt-4 text-sm font-semibold text-slate-900">Belum ada post yang cocok</p>
-                        <p class="text-sm text-slate-500 mt-1">Ubah filter atau tekan <span class="font-semibold text-slate-700">Tambah</span> untuk membuat post baru.</p>
-                    </div>
-                    <div id="scroll-sentinel" class="h-4"></div>
+                <div>
+                    <label for="filter-status" class="mb-1.5 block text-xs font-medium text-slate-600">Status</label>
+                    <select id="filter-status" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20">
+                        <option value="">Semua status</option>
+                        <option value="AVAILABLE">Tersedia</option>
+                        <option value="NEGOTIATING">Dalam Negosiasi</option>
+                        <option value="BARTERED">Sudah Dibarter</option>
+                    </select>
                 </div>
             </div>
-        </section>
-    </main>
+
+            <button id="btn-reset-filter" type="button"
+                class="w-full inline-flex items-center justify-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600/40">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+                Reset
+            </button>
+        </aside>
+
+        <div class="lg:col-span-9 space-y-4">
+            <div class="flex flex-col sm:flex-row gap-3">
+                <div class="relative flex-1">
+                    <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="text" id="search-input" placeholder="Cari barang, deskripsi, atau barang tukaran"
+                        class="w-full rounded-lg border border-slate-300 bg-white pl-10 pr-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm transition focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20">
+                </div>
+
+                <div class="sm:w-52 shrink-0">
+                    <select id="sort-select" aria-label="Urutkan"
+                        class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-700 shadow-sm transition focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20 cursor-pointer">
+                        <option value="newest">Terbaru</option>
+                        <option value="offer">Tawaran terbanyak</option>
+                        <option value="oldest">Terlama</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="min-h-[460px]">
+                <div id="posts-container" class="space-y-3"></div>
+
+                <div id="loading-indicator" class="hidden py-8 flex items-center justify-center gap-2 text-sm text-slate-500">
+                    <svg class="w-4 h-4 animate-spin text-brand-700" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-opacity="0.25" stroke-width="4"/><path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
+                    Memuat
+                </div>
+
+                <div id="empty-state" class="hidden py-20 text-center bg-white rounded-xl border border-dashed border-slate-300">
+                    <div class="mx-auto w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+                        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                    </div>
+                    <p class="mt-4 text-sm font-semibold text-slate-900">Belum ada post yang cocok</p>
+                    <p class="text-sm text-slate-500 mt-1">Ubah filter atau tekan <span class="font-semibold text-slate-700">Tambah</span> untuk membuat post baru.</p>
+                </div>
+                <div id="scroll-sentinel" class="h-4"></div>
+            </div>
+        </div>
+    </section>
 
     <!-- FLOATING ADD BUTTON -->
     <button id="btn-open-create" type="button" title="Tambah post barter" aria-label="Tambah post barter"
@@ -290,19 +303,20 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
+                        <label for="form-category" class="mb-1.5 block text-xs font-medium text-slate-600">Kategori barang</label>
+                        <select name="category" id="form-category" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20">
+                            <option value="">Pilih kategori</option>
+                            {% for value, label in category_choices %}
+                            <option value="{{ value }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
                         <label for="form-condition" class="mb-1.5 block text-xs font-medium text-slate-600">Kondisi</label>
                         <select name="condition" id="form-condition" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20">
                             <option value="NEW">Baru</option>
                             <option value="GOOD">Bekas - Layak Pakai</option>
-                            <option value="REPAIR">Butuh Perbaikan (RePair)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="form-shipping" class="mb-1.5 block text-xs font-medium text-slate-600">Pengiriman</label>
-                        <select name="shipping_duration" id="form-shipping" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20">
-                            <option value="COD">COD / Ketemuan Langsung</option>
-                            <option value="INSTANT">Instan (&lt; 1 Hari)</option>
-                            <option value="REGULAR">Reguler (2 - 4 Hari)</option>
+                            <option value="REPAIR">Butuh Perbaikan</option>
                         </select>
                     </div>
                 </div>
@@ -345,8 +359,6 @@
 
             <form id="review-form" class="px-5 sm:px-6 py-5 space-y-4">
                 <input type="hidden" id="review-post-id" value="">
-                <input type="hidden" id="review-role" value="OWNER_TO_OFFERER">
-
                 <div>
                     <label for="review-rating" class="mb-1.5 block text-xs font-medium text-slate-600">Rating</label>
                     <select id="review-rating" name="rating" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-amber-600 shadow-sm transition focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20">
@@ -441,6 +453,7 @@
         x: '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
         clock: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
         phone: '<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>',
+        chat: '<path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5 8.4 8.4 0 0 1-4-.95L3 21l1.95-5.5a8.4 8.4 0 0 1-.95-4A8.5 8.5 0 0 1 12.5 3h.5a8.5 8.5 0 0 1 8 8z"/>',
         user: '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
         box: '<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>',
         arrowRight: '<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>',
@@ -459,7 +472,6 @@
         location_code: '',
         location: '',
         condition: '',
-        shipping: '',
         status: '',
         sort: 'newest',
         page: 1,
@@ -679,39 +691,27 @@
                 <div class="mt-3 rounded-lg border border-amber-200 bg-amber-50/60 p-3 text-xs space-y-1.5">
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <span class="flex items-center gap-1.5 font-semibold text-slate-800">${icon('user', 'w-3.5 h-3.5 text-amber-600')}${escapeHtml(off.offerer_name)}</span>
-                        <span class="inline-flex items-center gap-1.5 rounded-md bg-white px-2 py-0.5 text-slate-600 ring-1 ring-inset ring-slate-200">${icon('phone', 'w-3 h-3')}${escapeHtml(off.offerer_contact)}</span>
+                        <span class="inline-flex items-center gap-1.5 rounded-md bg-white px-2 py-0.5 text-slate-600 ring-1 ring-inset ring-slate-200">${icon('chat', 'w-3 h-3')}${escapeHtml(off.offerer_contact)}</span>
                     </div>
                     <p class="flex items-center gap-1.5 font-medium text-slate-800">${icon('box', 'w-3.5 h-3.5 text-slate-400')}${escapeHtml(off.offered_item_title)}</p>
                     <p class="text-slate-500 pl-5">${escapeHtml(off.offered_item_description)}</p>
                 </div>
             `;
         } else if (post.status_code === 'BARTERED') {
-            const revOwner = post.reviews.to_owner;
             const revOfferer = post.reviews.to_offerer;
             const partnerName = post.selected_offer ? escapeHtml(post.selected_offer.offerer_name) : 'Penawar';
 
-            const ownerReviewContent = revOwner
-                ? `<div class="flex items-center gap-1.5 text-amber-500 text-sm tracking-wide">${renderStars(revOwner.rating)} <span class="text-xs text-slate-500 tracking-normal">${revOwner.rating}/5</span></div>
-                    <p class="text-slate-600 mt-1">${escapeHtml(revOwner.comment)}</p>`
-                : `<p class="text-slate-400">Belum direview</p>
-                    <button type="button" data-action="open-review" data-post-id="${post.id}" data-role="OFFERER_TO_OWNER" class="mt-1 text-[11px] font-semibold text-brand-700 hover:underline">Simulasikan review penawar</button>`;
-
-            const offererReviewContent = revOfferer
+            const reviewContent = revOfferer
                 ? `<div class="flex items-center gap-1.5 text-amber-500 text-sm tracking-wide">${renderStars(revOfferer.rating)} <span class="text-xs text-slate-500 tracking-normal">${revOfferer.rating}/5</span></div>
                     <p class="text-slate-600 mt-1">${escapeHtml(revOfferer.comment)}</p>`
-                : `<p class="text-slate-400">Belum direview</p>
-                    <button type="button" data-action="open-review" data-post-id="${post.id}" data-role="OWNER_TO_OFFERER" class="mt-1 text-[11px] font-semibold text-brand-700 hover:underline">Beri review ke ${partnerName}</button>`;
+                : `<p class="text-slate-500">Anda belum memberi ulasan kepada ${partnerName}.</p>
+                    <button type="button" data-action="open-review" data-post-id="${post.id}" class="mt-1 text-[11px] font-semibold text-brand-700 hover:underline">Beri ulasan</button>`;
 
             extraSectionHtml = `
-                <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
-                    <div class="rounded-lg border border-slate-200 bg-slate-50 p-3">
-                        <div class="font-semibold text-slate-700 mb-1.5">Dari ${partnerName} <span class="font-normal text-slate-400">· untuk Anda</span></div>
-                        ${ownerReviewContent}
-                    </div>
-                    <div class="rounded-lg border border-slate-200 bg-slate-50 p-3">
-                        <div class="font-semibold text-slate-700 mb-1.5">Untuk ${partnerName} <span class="font-normal text-slate-400">· dari Anda</span></div>
-                        ${offererReviewContent}
-                    </div>
+                <div class="mt-3 rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs">
+                    <div class="font-semibold text-slate-700 mb-1.5">Ulasan Anda untuk ${partnerName}</div>
+                    ${reviewContent}
+                    <p class="mt-2 text-slate-400">Ulasan dari pihak penawar belum tersedia.</p>
                 </div>
             `;
         }
@@ -745,12 +745,12 @@
                         </div>
                     </div>
 
-                    <p class="text-sm text-slate-600 line-clamp-2 mb-3">${escapeHtml(post.description)}</p>
+                    <p class="mb-3 text-sm leading-5 text-slate-600 line-clamp-3 break-words [overflow-wrap:anywhere]" title="${escapeHtml(post.description)}">${escapeHtml(post.description)}</p>
 
                     <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-slate-500">
                         <span class="inline-flex items-center gap-1.5" title="Lokasi">${icon('pin', 'w-3.5 h-3.5')}${escapeHtml(post.location)}</span>
+                        ${post.category_label ? `<span class="inline-flex items-center gap-1.5" title="Kategori">${icon('box', 'w-3.5 h-3.5')}${escapeHtml(post.category_label)}</span>` : ''}
                         <span class="inline-flex items-center gap-1.5" title="Kondisi">${icon('tag', 'w-3.5 h-3.5')}${escapeHtml(post.condition_label)}</span>
-                        <span class="inline-flex items-center gap-1.5" title="Pengiriman">${icon('truck', 'w-3.5 h-3.5')}${escapeHtml(post.shipping_label)}</span>
                     </div>
 
                     <div class="mt-3 inline-flex max-w-full items-center gap-2 rounded-lg bg-brand-50 px-3 py-1.5 text-xs text-brand-800 ring-1 ring-inset ring-brand-600/15" title="Barang yang dicari">
@@ -787,7 +787,7 @@
                 window.cancelNegotiation(postId);
                 break;
             case 'open-review':
-                window.openReviewModal(postId, button.dataset.role);
+                window.openReviewModal(postId);
                 break;
         }
     });
@@ -810,7 +810,6 @@
             location_code: state.location_code,
             location: state.location,
             condition: state.condition,
-            shipping: state.shipping,
             status: state.status,
             sort: state.sort,
             page: state.page
@@ -931,12 +930,10 @@
     const reviewModal = document.getElementById('review-modal');
     const reviewForm = document.getElementById('review-form');
 
-    window.openReviewModal = function(postId, role) {
+    window.openReviewModal = function(postId) {
         document.getElementById('review-post-id').value = postId;
-        document.getElementById('review-role').value = role;
         document.getElementById('review-comment').value = '';
-        document.getElementById('review-modal-title').textContent =
-            role === 'OWNER_TO_OFFERER' ? 'Beri Review ke Penawar' : 'Simulasi Review dari Penawar';
+        document.getElementById('review-modal-title').textContent = 'Beri ulasan kepada penawar';
         reviewModal.classList.remove('hidden');
         reviewModal.classList.add('flex');
     };
@@ -953,7 +950,6 @@
         e.preventDefault();
         const postId = document.getElementById('review-post-id').value;
         const formData = new FormData();
-        formData.append('role', document.getElementById('review-role').value);
         formData.append('rating', document.getElementById('review-rating').value);
         formData.append('comment', document.getElementById('review-comment').value);
 
@@ -1003,11 +999,6 @@
         loadPosts(true);
     });
 
-    document.getElementById('filter-shipping').addEventListener('change', (e) => {
-        state.shipping = e.target.value;
-        loadPosts(true);
-    });
-
     document.getElementById('filter-status').addEventListener('change', (e) => {
         state.status = e.target.value;
         loadPosts(true);
@@ -1024,10 +1015,9 @@
         filterLocationCode.value = '';
         btnClearFilterRegion.classList.add('hidden');
         document.getElementById('filter-condition').value = '';
-        document.getElementById('filter-shipping').value = '';
         document.getElementById('filter-status').value = '';
         document.getElementById('sort-select').value = 'newest';
-        Object.assign(state, { q: '', location_code: '', location: '', condition: '', shipping: '', status: '', sort: 'newest' });
+        Object.assign(state, { q: '', location_code: '', location: '', condition: '', status: '', sort: 'newest' });
         loadPosts(true);
     });
 
@@ -1052,6 +1042,7 @@
         document.getElementById('modal-title').textContent = 'Tambah Post Barter';
         document.getElementById('form-post-id').value = '';
         postForm.reset();
+        document.getElementById('form-category').required = true;
         // Pre-fill with inherited account domicile
         formLocationCode.value = DEFAULT_LOCATION_CODE;
         formLocationLabel.value = DEFAULT_LOCATION_LABEL;
@@ -1080,14 +1071,15 @@
 
         document.getElementById('modal-title').textContent = 'Edit Post Barter';
         document.getElementById('form-post-id').value = post.id;
+        document.getElementById('form-category').required = Boolean(post.category_code);
         document.getElementById('form-title').value = post.title;
         document.getElementById('form-description').value = post.description;
         formLocationCode.value = post.location_code || DEFAULT_LOCATION_CODE;
         formLocationLabel.value = post.location || DEFAULT_LOCATION_LABEL;
         formRegionSearch.value = post.location || DEFAULT_LOCATION_LABEL;
         document.getElementById('form-preferred-barter').value = post.preferred_barter;
+        document.getElementById('form-category').value = post.category_code || '';
         document.getElementById('form-condition').value = post.condition_code;
-        document.getElementById('form-shipping').value = post.shipping_code;
         document.getElementById('form-image-url').value = post.image_url;
 
         postModal.classList.remove('hidden');

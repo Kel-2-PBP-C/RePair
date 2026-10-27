@@ -4,7 +4,7 @@ from . import views
 app_name = 'profile_post'
 
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('', views.index, name='show_posts'),
     path('<int:post_id>/', views.post_detail_page, name='post_detail'),
     path('api/regions/', views.search_regions_api, name='search_regions'),
     path('api/stats/', views.get_user_stats, name='get_user_stats'),

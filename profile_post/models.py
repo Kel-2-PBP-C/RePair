@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from accounts.models import Profile
 
 
 class PostQuerySet(models.QuerySet):
@@ -41,6 +42,12 @@ class Post(models.Model):
     )
     title = models.CharField(max_length=150)
     description = models.TextField()
+    category = models.CharField(
+        max_length=20,
+        choices=Profile.CATEGORY_CHOICES,
+        blank=True,
+        default='',
+    )
     image_url = models.URLField(
         max_length=500,
         blank=True,
@@ -108,7 +115,7 @@ class BarterOffer(models.Model):
 
 
 class BarterReview(models.Model):
-    """Stores two-way separated reviews once a barter is completed."""
+    """Stores post-barter feedback, currently submitted by the post owner."""
     class RoleChoices(models.TextChoices):
         OWNER_TO_OFFERER = 'OWNER_TO_OFFERER', 'Review ke Penawar'
         OFFERER_TO_OWNER = 'OFFERER_TO_OWNER', 'Review ke Pembuat Post'

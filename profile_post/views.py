@@ -7,10 +7,13 @@ from django.views.decorators.http import require_POST, require_GET
 from django.core.paginator import Paginator
 from django.db.models import Q, Avg, Count
 from django.utils import timezone
+from django.utils import formats, translation
 from django.utils.timesince import timesince
 from django.utils.html import strip_tags
 from django.urls import reverse, NoReverseMatch
 
+from accounts.models import Profile
+from accounts.utils import profile_initials
 from .models import Post, BarterOffer, BarterReview
 from .forms import PostForm, resolve_region_from_accounts
 
@@ -34,14 +37,25 @@ FALLBACK_REGIONS = [
 
 
 def _get_user_contact(user):
-    """Extracts phone/contact from accounts.Profile if available."""
+    """Returns the user's explicitly saved preferred contact, never their email."""
     profile = getattr(user, 'profile', None)
-    if profile:
-        for attr in ('phone_number', 'phone', 'whatsapp', 'contact'):
-            val = getattr(profile, attr, None)
-            if val:
-                return str(val)
-    return user.email or '0812-3456-7890'
+    return (getattr(profile, 'social_contact', '') or '').strip()
+
+
+def _get_offer_contact(offer):
+    contact = (offer.offerer_contact or '').strip()
+    email = (offer.offerer.email or '').strip()
+    if not contact or contact.casefold() == email.casefold():
+        contact = _get_user_contact(offer.offerer)
+    return contact or 'Kontak belum diatur'
+
+
+def _format_created_at(value):
+    with translation.override('id'):
+        return (
+            formats.date_format(value, 'j F Y, H:i'),
+            f'{timesince(value)} yang lalu',
+        )
 
 
 def _get_user_default_region(user):
@@ -167,9 +181,11 @@ def index(request):
     default_code, default_label = _get_user_default_region(request.user)
     context = {
         'user': request.user,
-        'phone_number': _get_user_contact(request.user),
+        'profile_initials': profile_initials(request.user),
+        'preferred_contact': _get_user_contact(request.user),
         'default_location_code': default_code,
         'default_location_label': default_label,
+        'category_choices': Profile.CATEGORY_CHOICES,
     }
     return render(request, 'profile_post/index.html', context)
 
@@ -178,9 +194,11 @@ def index(request):
 def post_detail_page(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     selected_offer = post.offers.filter(is_selected=True).first()
+    created_at_display, _ = _format_created_at(post.created_at)
     return render(request, 'profile_post/detail.html', {
         'post': post,
         'selected_offer': selected_offer,
+        'created_at_display': created_at_display,
     })
 
 
@@ -204,7 +222,10 @@ def get_user_stats(request):
 
     all_posts = Post.objects.filter(user=request.user)
     all_barters = Post.objects.filter(user=request.user, status=Post.StatusChoices.BARTERED)
-    all_reviews = BarterReview.objects.filter(reviewee=request.user)
+    all_reviews = BarterReview.objects.filter(
+        reviewee=request.user,
+        role=BarterReview.RoleChoices.OWNER_TO_OFFERER,
+    )
 
     if period in ['M', 'Y']:
         days = 30 if period == 'M' else 365
@@ -240,8 +261,7 @@ def get_user_stats(request):
 @require_GET
 def get_posts_json(request):
     queryset = Post.objects.filter(user=request.user).annotate(
-        offers_count=Count('offers'),
-        user_avg_rating=Avg('user__received_reviews__rating')
+        offers_count=Count('offers')
     ).prefetch_related('offers__offerer', 'reviews')
 
     q = request.GET.get('q', '').strip()
@@ -268,10 +288,6 @@ def get_posts_json(request):
     if condition:
         queryset = queryset.filter(condition=condition)
 
-    shipping = request.GET.get('shipping', '').strip()
-    if shipping:
-        queryset = queryset.filter(shipping_duration=shipping)
-
     status = request.GET.get('status', '').strip()
     if status:
         queryset = queryset.filter(status=status)
@@ -279,8 +295,8 @@ def get_posts_json(request):
     sort_by = request.GET.get('sort', 'newest')
     if sort_by == 'oldest':
         queryset = queryset.order_by('created_at')
-    elif sort_by == 'rating':
-        queryset = queryset.order_by('-user_avg_rating', '-created_at')
+    elif sort_by == 'offer':
+        queryset = queryset.order_by('-offers_count', '-created_at')
     else:
         queryset = queryset.order_by('-created_at')
 
@@ -290,9 +306,9 @@ def get_posts_json(request):
 
     posts_data = []
     for post in page_obj:
+        created_at_display, created_at_ago = _format_created_at(post.created_at)
         offers_list = list(_get_offers_for_post(post))
         selected_offer = next((o for o in offers_list if o.is_selected), None)
-        review_to_owner = next((r for r in post.reviews.all() if r.role == BarterReview.RoleChoices.OFFERER_TO_OWNER), None)
         review_to_offerer = next((r for r in post.reviews.all() if r.role == BarterReview.RoleChoices.OWNER_TO_OFFERER), None)
 
         posts_data.append({
@@ -303,28 +319,24 @@ def get_posts_json(request):
             'detail_url': _resolve_detail_url(post.id),
             'location_code': post.location_code,
             'location': post.location,
+            'category_code': post.category,
+            'category_label': post.get_category_display() if post.category else '',
             'condition_code': post.condition,
             'condition_label': post.get_condition_display(),
-            'shipping_code': post.shipping_duration,
-            'shipping_label': post.get_shipping_duration_display(),
             'status_code': post.status,
             'status_label': post.get_status_display(),
             'preferred_barter': post.preferred_barter,
-            'created_at_display': post.created_at.strftime('%d %b %Y, %H:%M'),
-            'created_at_ago': f"{timesince(post.created_at)} yang lalu",
+            'created_at_display': created_at_display,
+            'created_at_ago': created_at_ago,
             'offers_count': len(offers_list),
             'selected_offer': {
                 'id': selected_offer.id,
                 'offerer_name': selected_offer.offerer.get_full_name() or selected_offer.offerer.username,
-                'offerer_contact': selected_offer.offerer_contact or _get_user_contact(selected_offer.offerer),
+                'offerer_contact': _get_offer_contact(selected_offer),
                 'offered_item_title': selected_offer.offered_item_title,
                 'offered_item_description': selected_offer.offered_item_description,
             } if selected_offer else None,
             'reviews': {
-                'to_owner': {
-                    'rating': review_to_owner.rating,
-                    'comment': review_to_owner.comment,
-                } if review_to_owner else None,
                 'to_offerer': {
                     'rating': review_to_offerer.rating,
                     'comment': review_to_offerer.comment,
@@ -349,6 +361,8 @@ def get_forum_posts_json(request):
         'owner': p.user.username,
         'location_code': p.location_code,
         'location': p.location,
+        'category_code': p.category,
+        'category_label': p.get_category_display() if p.category else '',
         'preferred_barter': p.preferred_barter,
         'status': p.get_status_display(),
     } for p in forum_posts]
@@ -435,11 +449,11 @@ def get_post_offers_json(request, post_id):
     offers = [{
         'id': o.id,
         'offerer_name': o.offerer.get_full_name() or o.offerer.username,
-        'offerer_contact': o.offerer_contact or _get_user_contact(o.offerer),
+        'offerer_contact': _get_offer_contact(o),
         'offered_item_title': o.offered_item_title,
         'offered_item_description': o.offered_item_description,
         'is_selected': o.is_selected,
-        'created_at': o.created_at.strftime('%d %b %Y, %H:%M')
+        'created_at': _format_created_at(o.created_at)[0],
     } for o in _get_offers_for_post(post)]
 
     return JsonResponse({'post_title': post.title, 'offers': offers})
@@ -498,25 +512,18 @@ def submit_review_ajax(request, post_id):
     if not selected_offer:
         return JsonResponse({'status': 'error', 'message': 'Data penawar tidak ditemukan.'}, status=400)
 
-    role = request.POST.get('role', BarterReview.RoleChoices.OWNER_TO_OFFERER)
     try:
         rating = max(1, min(5, int(request.POST.get('rating', 5))))
     except ValueError:
         rating = 5
     comment = strip_tags(request.POST.get('comment', '')).strip()
 
-    if role == BarterReview.RoleChoices.OFFERER_TO_OWNER:
-        reviewer, reviewee = selected_offer.offerer, post.user
-    else:
-        role = BarterReview.RoleChoices.OWNER_TO_OFFERER
-        reviewer, reviewee = post.user, selected_offer.offerer
-
     BarterReview.objects.update_or_create(
         post=post,
-        role=role,
+        role=BarterReview.RoleChoices.OWNER_TO_OFFERER,
         defaults={
-            'reviewer': reviewer,
-            'reviewee': reviewee,
+            'reviewer': post.user,
+            'reviewee': selected_offer.offerer,
             'rating': rating,
             'comment': comment
         }
