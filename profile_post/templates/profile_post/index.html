@@ -10,6 +10,9 @@
 
 
 {% block content %}
+    <!-- TOAST FEEDBACK STACK -->
+    <div id="toast-container" role="region" aria-label="Notifikasi" aria-live="polite" class="toast-stack"></div>
+
     <!-- PAGE HEADER -->
     <header class="mb-6">
         <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Unggahan Saya</h1>
@@ -208,7 +211,7 @@
 
     <!-- FLOATING ADD BUTTON -->
     <button id="btn-open-create" type="button" title="Tambah post barter" aria-label="Tambah post barter"
-        class="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 h-12 pl-4 pr-5 rounded-full bg-brand-700 hover:bg-brand-800 text-white shadow-lg shadow-brand-900/20 flex items-center gap-2 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600/50 focus-visible:ring-offset-2 z-40">
+        class="mobile-add-post-button fixed bottom-6 right-6 sm:bottom-8 sm:right-8 h-12 pl-4 pr-5 rounded-full bg-brand-700 hover:bg-brand-800 text-white shadow-lg shadow-brand-900/20 flex items-center gap-2 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600/50 focus-visible:ring-offset-2 z-40">
         <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         Tambah
     </button>
@@ -427,6 +430,136 @@
 
     function icon(name, cls = 'w-4 h-4') {
         return `<svg class="${cls} shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON_PATHS[name] || ''}</svg>`;
+    }
+
+    // ==========================================
+    // TOAST NOTIFICATION FEEDBACK SYSTEM
+    // ==========================================
+    const toastContainer = document.getElementById('toast-container');
+    const TOAST_CONFIG = {
+        add: {
+            variantClass: 'toast-add',
+            iconName: 'check',
+            defaultTitle: 'Post ditambahkan'
+        },
+        edit: {
+            variantClass: 'toast-edit',
+            iconName: 'edit',
+            defaultTitle: 'Post diperbarui'
+        },
+        delete: {
+            variantClass: 'toast-delete',
+            iconName: 'trash',
+            defaultTitle: 'Post dihapus'
+        },
+        error: {
+            variantClass: 'toast-delete',
+            iconName: 'x',
+            defaultTitle: 'Terjadi kesalahan'
+        }
+    };
+
+    function showToast({ type = 'add', title = '', message = '', duration = 3600 } = {}) {
+        if (!toastContainer) return;
+        const cfg = TOAST_CONFIG[type] || TOAST_CONFIG.add;
+        const toastDuration = Number.isFinite(Number(duration)) ? Math.max(0, Number(duration)) : 3600;
+        const toastEl = document.createElement('div');
+        toastEl.setAttribute('role', type === 'error' ? 'alert' : 'status');
+        toastEl.className = `toast-card ${cfg.variantClass}`;
+
+        const resolvedTitle = title || cfg.defaultTitle;
+        const innerHtml = `
+            <div class="toast-icon-wrap w-8 h-8 rounded-lg flex items-center justify-center shrink-0">
+                ${icon(cfg.iconName, 'w-4 h-4')}
+            </div>
+            <div class="flex-1 min-w-0 pr-1">
+                <p class="text-xs font-semibold leading-5 truncate">${escapeHtml(resolvedTitle)}</p>
+                ${message ? `<p class="text-xs opacity-80 leading-relaxed truncate mt-0.5">${escapeHtml(message)}</p>` : ''}
+            </div>
+            <button type="button" data-dismiss-toast aria-label="Tutup notifikasi"
+                class="w-6 h-6 inline-flex items-center justify-center rounded-md text-slate-400 hover:text-slate-700 hover:bg-black/5 transition shrink-0">
+                ${icon('x', 'w-3.5 h-3.5')}
+            </button>
+            <div class="toast-progress-bar" style="animation-duration: ${toastDuration}ms"></div>
+        `;
+        toastEl.innerHTML = DOMPurify.sanitize(innerHtml);
+
+        let remaining = toastDuration;
+        let startedAt = 0;
+        let timeoutId = null;
+        let isPaused = false;
+        let isDismissed = false;
+        let timerInitialized = false;
+        let removalTimeoutId = null;
+        let isPointerInside = false;
+        let hasFocusInside = false;
+
+        function dismissToast() {
+            if (isDismissed) return;
+            isDismissed = true;
+            if (timeoutId !== null) clearTimeout(timeoutId);
+            if (removalTimeoutId !== null) clearTimeout(removalTimeoutId);
+            toastEl.classList.remove('is-visible');
+            toastEl.classList.add('is-leaving');
+            removalTimeoutId = setTimeout(() => toastEl.remove(), 320);
+        }
+
+        function startTimer() {
+            if (isDismissed || isPaused || timeoutId !== null) return;
+            if (remaining <= 0) {
+                dismissToast();
+                return;
+            }
+            startedAt = performance.now();
+            timeoutId = setTimeout(dismissToast, remaining);
+        }
+
+        function syncTimerPauseState() {
+            const shouldPause = isPointerInside || hasFocusInside;
+            if (isDismissed || shouldPause === isPaused) return;
+
+            if (shouldPause) {
+                isPaused = true;
+                if (timeoutId !== null) {
+                    clearTimeout(timeoutId);
+                    timeoutId = null;
+                    remaining = Math.max(0, remaining - (performance.now() - startedAt));
+                }
+            } else {
+                isPaused = false;
+                if (timerInitialized) startTimer();
+            }
+        }
+
+        toastEl.addEventListener('pointerenter', () => {
+            isPointerInside = true;
+            syncTimerPauseState();
+        });
+        toastEl.addEventListener('pointerleave', () => {
+            isPointerInside = false;
+            syncTimerPauseState();
+        });
+        toastEl.addEventListener('focusin', () => {
+            hasFocusInside = true;
+            syncTimerPauseState();
+        });
+        toastEl.addEventListener('focusout', (event) => {
+            if (!toastEl.contains(event.relatedTarget)) {
+                hasFocusInside = false;
+                syncTimerPauseState();
+            }
+        });
+
+        const closeBtn = toastEl.querySelector('[data-dismiss-toast]');
+        if (closeBtn) closeBtn.addEventListener('click', dismissToast);
+
+        toastContainer.appendChild(toastEl);
+        requestAnimationFrame(() => {
+            if (isDismissed) return;
+            toastEl.classList.add('is-visible');
+            timerInitialized = true;
+            startTimer();
+        });
     }
 
     const PERIOD_BTN_ACTIVE = 'period-btn px-3 py-1 rounded-md text-xs font-semibold bg-white text-slate-900 shadow-sm transition';
@@ -1054,33 +1187,74 @@
     postForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const postId = document.getElementById('form-post-id').value;
-        const url = postId ? buildUrl(URL_TEMPLATES.edit, postId) : URL_TEMPLATES.create;
+        const itemTitle = document.getElementById('form-title').value.trim();
+        const isEdit = Boolean(postId);
+        const url = isEdit ? buildUrl(URL_TEMPLATES.edit, postId) : URL_TEMPLATES.create;
         const formData = new FormData(postForm);
 
-        const res = await fetch(url, {
-            method: 'POST',
-            headers: { 'X-CSRFToken': getCsrfToken() },
-            body: formData
-        });
+        try {
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: { 'X-CSRFToken': getCsrfToken() },
+                body: formData
+            });
 
-        if (res.ok) {
-            closeModal();
-            loadPosts(true);
-            fetchStats(state.period);
-        } else {
-            alert('Gagal menyimpan post. Pastikan wilayah telah dipilih dari daftar.');
+            if (res.ok) {
+                closeModal();
+                loadPosts(true);
+                fetchStats(state.period);
+                showToast({
+                    type: isEdit ? 'edit' : 'add',
+                    title: isEdit ? 'Perubahan disimpan' : 'Post barter ditambahkan',
+                    message: itemTitle ? `"${itemTitle}" berhasil ${isEdit ? 'diperbarui' : 'dipublikasikan'}.` : ''
+                });
+            } else {
+                showToast({
+                    type: 'error',
+                    title: 'Gagal menyimpan post',
+                    message: 'Pastikan wilayah telah dipilih dari daftar.'
+                });
+            }
+        } catch (err) {
+            showToast({
+                type: 'error',
+                title: 'Gagal menyimpan post',
+                message: 'Periksa koneksi Anda dan coba lagi.'
+            });
         }
     });
 
     window.deletePost = async function(postId) {
         if (!confirm('Hapus post barter ini?')) return;
-        const res = await fetch(buildUrl(URL_TEMPLATES.delete, postId), {
-            method: 'POST',
-            headers: { 'X-CSRFToken': getCsrfToken() }
-        });
-        if (res.ok) {
-            loadPosts(true);
-            fetchStats(state.period);
+        const cachedPost = state.postsCache[postId];
+        const deletedTitle = cachedPost ? cachedPost.title : '';
+
+        try {
+            const res = await fetch(buildUrl(URL_TEMPLATES.delete, postId), {
+                method: 'POST',
+                headers: { 'X-CSRFToken': getCsrfToken() }
+            });
+            if (res.ok) {
+                loadPosts(true);
+                fetchStats(state.period);
+                showToast({
+                    type: 'delete',
+                    title: 'Post barter dihapus',
+                    message: deletedTitle ? `"${deletedTitle}" telah dihapus dari daftar.` : 'Barang telah dihapus dari daftar.'
+                });
+            } else {
+                showToast({
+                    type: 'error',
+                    title: 'Gagal menghapus post',
+                    message: 'Post tidak dapat dihapus saat ini.'
+                });
+            }
+        } catch (err) {
+            showToast({
+                type: 'error',
+                title: 'Gagal menghapus post',
+                message: 'Periksa koneksi Anda dan coba lagi.'
+            });
         }
     };
 
