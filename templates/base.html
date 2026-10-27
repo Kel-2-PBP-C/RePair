@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
     {% block extra_css %}{% endblock %}
 </head>
-<body class="{% block body_class %}has-responsive-navbar{% endblock %}">
+<body class="{% block body_class %}has-responsive-navbar{% endblock %}" {% block body_attributes %}{% endblock %}>
     <a class="skip-link" href="#content">Lewati ke konten</a>
     {% block navbar %}{% include 'components/navbar.html' %}{% endblock %}
     <main id="content" class="shell {% block main_class %}page-main{% endblock %}">
