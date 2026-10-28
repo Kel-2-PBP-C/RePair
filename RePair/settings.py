@@ -33,6 +33,9 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'barter_details',
     'add_items',
+    'profile_post',
+    'keranjang',
+    'main_page',
 ]
 
 MIDDLEWARE = [
