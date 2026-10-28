@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'main_page/style.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="search-section">
+
+<form method="GET">
+    <input
+        type="text"
+        name="search"
+        placeholder="Cari Barang yang Kamu Inginkan..."
+        value="{{ search }}"
+    >
+
+    <select name="kondisi">
+        <option value="">Semua Kondisi</option>
+        <option value="baik" {% if kondisi == 'baik' %}selected{% endif %}>
+            Kondisi 80–100%
+        </option>
+        <option value="cukup" {% if kondisi == 'cukup' %}selected{% endif %}>
+            Kondisi 50–79%
+        </option>
+        <option value="kurang" {% if kondisi == 'kurang' %}selected{% endif %}>
+            Kondisi di bawah 50%
+        </option>
+    </select>
+
+    <button type="submit">Cari</button>
+</form>
+</div>
+
+<div class="rekomendasi-header">
+    <h2>Rekomendasi Untuk Kamu</h2>
+
+    <a href="{% url 'add_items:create' %}" class="post-barang-link">
+        + Post Barang
+    </a>
+</div>
+
+<div class="barang-container">
+    {% for item in items %}
+        <div class="barang-card">
+            <a href="{% url 'barter_details:barter_detail' item.pk %}">
+                <img src="{{ item.thumbnail }}" alt="{{ item.title }}" width="200">
+                <h3>{{ item.title }}</h3>
+            </a>
+
+            <p>Kondisi: {{ item.condition }}%</p>
+
+            <button type="button">Add to Cart</button>
+        </div>
+    {% empty %}
+        {% if search or kondisi %}
+            <p>Barang yang kamu cari tidak ditemukan.</p>
+        {% else %}
+            <p>Belum ada barang yang diposting.</p>
+        {% endif %}
+    {% endfor %}
+</div>
+
+{% endblock %}
