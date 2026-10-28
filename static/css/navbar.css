@@ -1,6 +1,25 @@
+/* ==========================================================================
+   RePair navbar
+   - Desktop / tablet (>= 768px): fixed top bar, brand left, menu right.
+   - Mobile (< 768px): fixed bottom tab bar (the brand is provided by the page).
+   Icons are alpha PNGs recoloured with a CSS mask, so they follow the text colour
+   and automatically get hover / active / disabled / high-contrast states.
+   ========================================================================== */
+
 :root {
-    --navbar-height: 96px;
-    --navbar-bottom-height: 84px;
+    --navbar-height: 68px;
+    --navbar-bottom-height: 64px;
+
+    --nav-surface: rgb(255 255 255 / 92%);
+    --nav-line: #E5E7EB;
+    --nav-ink: #4B5563;
+    --nav-ink-strong: #111827;
+    --nav-muted: #9CA3AF;
+    --nav-accent: #005A32;
+    --nav-accent-soft: #E6F3EB;
+    --nav-hover: #F3F4F6;
+    --nav-pressed: #E5E7EB;
+    --nav-focus: #238B45;
 }
 
 body.has-responsive-navbar {
@@ -15,16 +34,35 @@ body.has-responsive-navbar > main { flex: 1; }
 body.has-responsive-navbar .page-main { min-height: 0; }
 body.has-responsive-navbar .skip-link { position: fixed; z-index: 120; }
 
+/* ---------- Bar ---------- */
 .repair-navbar {
     position: fixed;
     z-index: 100;
     inset: 0 0 auto;
     height: var(--navbar-height);
-    background-color: #41AB5D;
-    background-image: url('../img/Group%2046.png');
-    background-size: cover;
-    background-position: center 70%;
-    box-shadow: 0 2px 10px rgb(0 90 50 / 8%);
+    background: var(--nav-surface);
+    border-bottom: 1px solid var(--nav-line);
+    -webkit-backdrop-filter: saturate(180%) blur(14px);
+    backdrop-filter: saturate(180%) blur(14px);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .repair-navbar { background: #FFFFFF; }
+}
+
+/* Progressive enhancement: the bar gains a soft shadow once the page scrolls. */
+@supports (animation-timeline: scroll()) {
+    @media (prefers-reduced-motion: no-preference) {
+        .repair-navbar {
+            animation: repair-navbar-elevate linear both;
+            animation-timeline: scroll(root block);
+            animation-range: 0 48px;
+        }
+        @keyframes repair-navbar-elevate {
+            from { box-shadow: 0 0 0 rgb(17 24 39 / 0%); }
+            to { box-shadow: 0 8px 24px -12px rgb(17 24 39 / 22%); }
+        }
+    }
 }
 
 .repair-navbar-inner {
@@ -32,59 +70,95 @@ body.has-responsive-navbar .skip-link { position: fixed; z-index: 120; }
     align-items: center;
     justify-content: space-between;
     gap: 24px;
-    width: min(1440px, 100%);
+    width: min(1280px, 100%);
     height: 100%;
     margin-inline: auto;
-    padding-inline: clamp(20px, 3vw, 48px);
+    padding-inline: clamp(16px, 3vw, 40px);
 }
 
-.repair-navbar-brand { display: block; flex: 0 0 auto; width: clamp(160px, 17vw, 220px); }
+/* ---------- Brand ---------- */
+.repair-navbar-brand {
+    display: block;
+    flex: 0 0 auto;
+    width: clamp(112px, 11vw, 136px);
+    border-radius: 8px;
+}
 .repair-navbar-brand img { display: block; width: 100%; height: auto; }
+a.repair-navbar-brand:focus-visible { outline: 2px solid var(--nav-focus); outline-offset: 4px; }
+
+/* ---------- Menu ---------- */
 .repair-navbar-menu {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    align-items: stretch;
-    flex: 0 1 800px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
     min-width: 0;
     height: 100%;
 }
 
 .repair-navbar-link {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    position: relative;
+    display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: 8px;
     min-width: 0;
-    padding: 8px 4px;
-    border: 0;
-    border-radius: 0;
-    color: #005A32;
-    font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
-    font-size: clamp(12px, 1.1vw, 15px);
+    height: 40px;
+    padding: 0 14px;
+    border-radius: 10px;
+    color: var(--nav-ink);
+    font-family: 'Poppins', 'Plus Jakarta Sans', 'Segoe UI', Arial, sans-serif;
+    font-size: 14px;
     font-weight: 600;
-    line-height: 1.3;
-    text-align: center;
+    line-height: 1;
     text-decoration: none;
     white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
 }
+
+@media (prefers-reduced-motion: no-preference) {
+    .repair-navbar-link,
+    .repair-navbar-icon-box { transition: background-color 0.15s ease, color 0.15s ease; }
+}
+
+.repair-navbar-icon-box { display: grid; flex: 0 0 auto; place-items: center; }
 
 .repair-navbar-icon {
     display: block;
-    flex: 0 0 auto;
-    width: clamp(32px, 3vw, 42px);
-    height: clamp(32px, 3vw, 42px);
-    object-fit: contain;
-    filter: brightness(0) saturate(100%) invert(23%) sepia(38%) saturate(1500%) hue-rotate(108deg) brightness(88%) contrast(104%);
+    width: 20px;
+    height: 20px;
+    background-color: currentColor;
+    -webkit-mask: var(--icon) center / contain no-repeat;
+    mask: var(--icon) center / contain no-repeat;
 }
 
 .repair-navbar-label { display: block; }
-.repair-navbar-link[aria-current='page'] { color: #FFFFFF; }
-.repair-navbar-link[aria-current='page'] .repair-navbar-icon { filter: brightness(0) invert(1); }
-a.repair-navbar-link:hover { background: rgb(255 255 255 / 14%); }
-.repair-navbar-link:focus-visible { outline: 3px solid #FFFFFF; outline-offset: -5px; }
-.repair-navbar-disabled { cursor: default; }
 
+@media (hover: hover) {
+    a.repair-navbar-link:hover { background: var(--nav-hover); color: var(--nav-ink-strong); }
+}
+a.repair-navbar-link:active { background: var(--nav-pressed); }
+
+.repair-navbar-link:focus-visible { outline: 2px solid var(--nav-focus); outline-offset: 2px; }
+
+/* Current page: tinted pill + accent line on the bar's lower edge. */
+.repair-navbar-link[aria-current='page'],
+a.repair-navbar-link[aria-current='page']:hover {
+    background: var(--nav-accent-soft);
+    color: var(--nav-accent);
+}
+.repair-navbar-link[aria-current='page']::after {
+    content: '';
+    position: absolute;
+    inset: auto 14px calc((var(--navbar-height) - 40px) / -2 - 1px);
+    height: 3px;
+    border-radius: 3px 3px 0 0;
+    background: var(--nav-accent);
+}
+
+/* Pages that are not available yet. */
+.repair-navbar-disabled { color: var(--nav-muted); cursor: not-allowed; }
+
+/* ---------- Mobile: bottom tab bar ---------- */
 @media (max-width: 767px) {
     body.has-responsive-navbar {
         padding-top: 0;
@@ -95,20 +169,64 @@ a.repair-navbar-link:hover { background: rgb(255 255 255 / 14%); }
         inset: auto 0 0;
         height: calc(var(--navbar-bottom-height) + env(safe-area-inset-bottom, 0px));
         padding-bottom: env(safe-area-inset-bottom, 0px);
-        border-radius: 28px 28px 0 0;
-        background: #FFFFFF;
-        box-shadow: 0 -3px 18px rgb(0 0 0 / 5%);
+        border-top: 1px solid var(--nav-line);
+        border-bottom: 0;
+        box-shadow: 0 -8px 24px -14px rgb(17 24 39 / 22%);
+        animation: none;
     }
 
-    .repair-navbar-inner { display: block; padding-inline: 8px; }
+    .repair-navbar-inner { display: block; padding-inline: 4px; }
     .repair-navbar-brand { display: none; }
-    .repair-navbar-menu { width: 100%; height: 100%; }
-    .repair-navbar-link { gap: 6px; padding: 10px 2px 8px; color: #909090; font-size: 10px; }
-    .repair-navbar-icon { width: 28px; height: 28px; filter: none; }
-    .repair-navbar-link[aria-current='page'] { color: #005A32; }
-    .repair-navbar-link[aria-current='page'] .repair-navbar-icon {
-        filter: brightness(0) saturate(100%) invert(23%) sepia(38%) saturate(1500%) hue-rotate(108deg) brightness(88%) contrast(104%);
+
+    .repair-navbar-menu {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 0;
+        width: 100%;
     }
-    a.repair-navbar-link:hover { background: #f1f6f2; border-radius: 8px; }
-    .repair-navbar-link:focus-visible { outline-color: #005A32; }
+
+    .repair-navbar-link,
+    .repair-navbar-link[aria-current='page'],
+    a.repair-navbar-link:hover,
+    a.repair-navbar-link:active,
+    a.repair-navbar-link[aria-current='page']:hover {
+        flex-direction: column;
+        justify-content: center;
+        gap: 2px;
+        height: 100%;
+        padding: 6px 2px 4px;
+        border-radius: 12px;
+        background: transparent;
+        font-size: 11px;
+        line-height: 1.2;
+    }
+
+    .repair-navbar-link { color: #6B7280; }
+    .repair-navbar-link[aria-current='page']::after { display: none; }
+
+    /* The icon sits in a pill that fills for the current page and on press. */
+    .repair-navbar-icon-box { width: 56px; height: 30px; border-radius: 15px; }
+    .repair-navbar-icon { width: 22px; height: 22px; }
+
+    .repair-navbar-link[aria-current='page'] { color: var(--nav-accent); }
+    .repair-navbar-link[aria-current='page'] .repair-navbar-icon-box { background: var(--nav-accent-soft); }
+    a.repair-navbar-link:active .repair-navbar-icon-box { background: var(--nav-pressed); }
+    .repair-navbar-disabled { color: var(--nav-muted); }
+
+    .repair-navbar-link:focus-visible { outline-offset: -3px; }
+}
+
+/* ---------- Windows high-contrast / forced colours ---------- */
+@media (forced-colors: active) {
+    .repair-navbar { border-color: CanvasText; }
+    .repair-navbar-icon { forced-color-adjust: none; background-color: CanvasText; }
+    .repair-navbar-disabled .repair-navbar-icon { background-color: GrayText; }
+    .repair-navbar-link[aria-current='page'] { outline: 2px solid Highlight; outline-offset: -2px; }
+    .repair-navbar-link[aria-current='page']::after { forced-color-adjust: none; background: Highlight; }
+    .repair-navbar-disabled { color: GrayText; }
+}
+
+@media print {
+    .repair-navbar { display: none; }
+    body.has-responsive-navbar { padding: 0; }
 }

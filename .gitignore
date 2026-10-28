@@ -23,6 +23,7 @@ dev_middleware.py
 staticfiles/
 .test-artifacts/
 /docs/
+node_modules/
 
 # Linked worktrees are separate checkouts, never application files
 /repair-shared-navbar/

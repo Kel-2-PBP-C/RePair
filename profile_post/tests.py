@@ -2,14 +2,14 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import resolve, reverse
 
-from profile_post.views import show_posts
+from profile_post.views import index
 
 
 class PostsPageTests(TestCase):
     def test_posts_route_renders_shared_layout(self):
         url = reverse("profile_post:show_posts")
         self.assertEqual(url, "/posts/")
-        self.assertEqual(resolve(url).func, show_posts)
+        self.assertEqual(resolve(url).func, index)
 
         response = self.client.get(url)
         self.assertTemplateUsed(response, "profile_post/index.html")

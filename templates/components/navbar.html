@@ -12,12 +12,12 @@
             {% for item in navigation.items %}
                 {% if item.url %}
                 <a class="repair-navbar-link" href="{{ item.url }}"{% if item.active %} aria-current="page"{% endif %}>
-                    <img class="repair-navbar-icon" src="{% static item.icon %}" width="64" height="64" alt="" aria-hidden="true">
+                    <span class="repair-navbar-icon-box" aria-hidden="true"><span class="repair-navbar-icon" style="--icon: url('{% static item.icon %}')"></span></span>
                     <span class="repair-navbar-label">{{ item.label }}</span>
                 </a>
                 {% else %}
                 <span class="repair-navbar-link repair-navbar-disabled" role="link" aria-disabled="true" title="Halaman ini sedang disiapkan">
-                    <img class="repair-navbar-icon" src="{% static item.icon %}" width="64" height="64" alt="" aria-hidden="true">
+                    <span class="repair-navbar-icon-box" aria-hidden="true"><span class="repair-navbar-icon" style="--icon: url('{% static item.icon %}')"></span></span>
                     <span class="repair-navbar-label">{{ item.label }}</span>
                 </span>
                 {% endif %}

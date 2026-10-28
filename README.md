@@ -97,7 +97,39 @@ Pada modul ini, user dapat melihat kembali baarng-barang yang pernah disimpan se
 Create: Simpan barang ke keranjang, Read: Lihat barang yang pernah disimpan, Update:- , Delete: Hapus barang dari keranjang.
 
 5. Modul Daftar Post (PIC: Hafizuddin Dzaki Azzam)
-Pada modul ini, user dapat melihat seluruh post yang pernah dibuat, menghapus post, dan melihat siapa saja yang membuat pengajuan dari barang tersebut beserta detail informasi (Nama User, Domisili, dan Barang/Jasa yang dapat ditawarkan)
+Pada modul ini, user dapat melihat seluruh post yang pernah dibuat, menghapus post, dan melihat siapa saja yang membuat pengajuan dari barang tersebut beserta detail informasi (Nama User, Domisili, dan Barang yang  ditawarkan)
+    1. Alur Pengguna
+        <ul>
+            <li>User menambahkan post barter dengan menekan tombol "tambah" di bagian bawah layar.</li>
+            <li>Post baru akan terbuat dengan status dasar post "tersedia" dan opsi untuk mengubah informasi barang serta menghapus post.</li>
+            <li>User dapat memfilter display post berdasarkan lokasi, status, dan kondisi barang.</li>
+            <li>User dapat mengurutkan  display post berdasarkan post terlama, terbaru, dan tawaran terbanyak.</li>
+            <li>Apabila suatu post sudah terdapat penawar, user dapat memilih penawar untuk mengunci item barter dengan penawar tersebut, mengubah status barang menjadi "dalam negosiasi".</li>
+            <li>Status "dalam negosiasi" dapat dibatalkan atau diubah dengan siapa barter akan dilakukan.</li>
+            <li>Apabila user sudah mencapai melakukan barter dengan penawar, user dapat memperbarui status post menjadi selesai (dibarter) dengan menekan tombol "selesaikan".</li>
+        </ul>
+    2. Detail CRUD
+        1. Create
+            <ul>
+                <li>Menambahkan barang barter dengan informasi nama, deskripsi, lokasi, barang yang diharapkan, kondisi barang, kategori barang, dan url foto barang (opsional).</li>
+            </ul>        
+        2. Update
+            <ul>
+                <li>Update detail barang barter meliputi informasi nama, deskripsi, lokasi, barang yang diharapkan, kondisi barang, kategori barang, dan url foto barang (opsional).</li>
+                <li>Melakukan perubahan pada pilihan pihak kedua barter.</li>
+            </ul>
+        3. Read
+            <ul>
+                <li>Membaca data list barang barter user dari database.</li>
+                <li>Membaca data user yang mengajukan tawaran barter pada barang.</li>
+                <li>Fitur filter status barter, kondisi barang, lokasi barang dan fitur urutkan post berdasarkan terlama, terbaru, dan tawaran terbanyak.</li>
+            </ul>
+        4. Delete
+            <ul>
+                <li>Menghapus barang yang belum dibarter.</li>
+                <li>Barang yang sudah dibarter tidak dapat dihapus supaya data review user tetap dapat dipertahankan.</li>
+            </ul>
+    3. AI Disclosure (to be written)
 
 5. Modul Profil & Setting (PIC: Aisha Ibnaty Zahira)
 Dalam modul ini, user dapat melihat detail akun, mengubah password, dan mengubah preferensi penggunaan aplikasi
