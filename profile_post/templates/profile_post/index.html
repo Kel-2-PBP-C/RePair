@@ -587,40 +587,59 @@
     // ==========================================
     // A. REUSABLE REGION API AUTOCOMPLETE PICKER
     // ==========================================
-    function setupRegionPicker({ searchInput, dropdownEl, onSelect }) {
+    function setupRegionPicker({ searchInput, dropdownEl, onSelect, onInput = () => {}, isSelected = () => false }) {
         let debounceTimer = null;
+        let requestRevision = 0;
+        let displayedQuery = null;
+        let displayedResults = [];
+
+        function selectRegion(region) {
+            if (!region) return;
+            searchInput.value = region.name;
+            dropdownEl.classList.add('hidden');
+            onSelect({ code: region.code, name: region.name });
+        }
 
         async function fetchAndRenderRegions(query) {
+            const currentRevision = ++requestRevision;
             try {
                 const res = await fetch(`${URL_TEMPLATES.regions}?q=${encodeURIComponent(query)}`);
                 const data = await res.json();
-                const results = data.results || [];
+                if (currentRevision !== requestRevision) return [];
+                const results = Array.isArray(data.results) ? data.results : [];
+                displayedQuery = query;
+                displayedResults = results;
 
                 if (results.length === 0) {
                     dropdownEl.innerHTML = `<div class="px-3 py-2 text-slate-400">Wilayah tidak ditemukan</div>`;
                 } else {
                     const itemsHtml = results.map(item => `
                         <button type="button" data-code="${escapeHtml(item.code)}" data-name="${escapeHtml(item.name)}"
-                            class="region-option w-full text-left px-3 py-2 hover:bg-slate-50 text-slate-700 flex justify-between items-center gap-3 transition">
+                            class="region-option w-full text-left px-3 py-2 hover:bg-slate-50 text-slate-700 flex items-center gap-2 transition">
                             <span class="flex items-center gap-2 min-w-0">${icon('pin', 'w-3.5 h-3.5 text-slate-400')}<span class="truncate">${escapeHtml(item.name)}</span></span>
-                            <span class="text-[10px] text-slate-400 tabular-nums">${escapeHtml(item.code)}</span>
                         </button>
                     `).join('');
                     dropdownEl.innerHTML = DOMPurify.sanitize(itemsHtml);
 
                     dropdownEl.querySelectorAll('.region-option').forEach(btn => {
                         btn.addEventListener('click', () => {
-                            const code = btn.getAttribute('data-code');
-                            const name = btn.getAttribute('data-name');
-                            searchInput.value = name;
-                            dropdownEl.classList.add('hidden');
-                            onSelect({ code, name });
+                            selectRegion({
+                                code: btn.getAttribute('data-code'),
+                                name: btn.getAttribute('data-name')
+                            });
                         });
                     });
                 }
                 dropdownEl.classList.remove('hidden');
+                return results;
             } catch (err) {
+                if (currentRevision !== requestRevision) return [];
+                displayedQuery = query;
+                displayedResults = [];
                 console.error('Gagal mengambil daftar wilayah:', err);
+                dropdownEl.innerHTML = `<div class="px-3 py-2 text-slate-400">Pilihan wilayah belum tersedia</div>`;
+                dropdownEl.classList.remove('hidden');
+                return [];
             }
         }
 
@@ -629,10 +648,40 @@
         });
 
         searchInput.addEventListener('input', (e) => {
+            onInput(e.target.value.trim());
             clearTimeout(debounceTimer);
+            requestRevision += 1;
+            displayedQuery = null;
+            displayedResults = [];
+            dropdownEl.innerHTML = `<div class="px-3 py-2 text-slate-400">Mencari wilayah…</div>`;
+            dropdownEl.classList.remove('hidden');
             debounceTimer = setTimeout(() => {
                 fetchAndRenderRegions(e.target.value.trim());
             }, 250);
+        });
+
+        searchInput.addEventListener('keydown', (event) => {
+            if (event.key !== 'Enter' || isSelected(searchInput.value.trim())) return;
+            event.preventDefault();
+            clearTimeout(debounceTimer);
+            const query = searchInput.value.trim();
+            if (displayedQuery === query && displayedResults.length) {
+                const normalizedQuery = query.toLowerCase();
+                const exactMatch = displayedResults.find((region) => region.name.trim().toLowerCase() === normalizedQuery);
+                selectRegion(exactMatch || displayedResults[0]);
+                return;
+            }
+            dropdownEl.innerHTML = `<div class="px-3 py-2 text-slate-400">Mencari wilayah…</div>`;
+            dropdownEl.classList.remove('hidden');
+            fetchAndRenderRegions(query).then((results) => {
+                if (!results.length) {
+                    if (query) searchInput.form?.requestSubmit();
+                    return;
+                }
+                const normalizedQuery = query.toLowerCase();
+                const exactMatch = results.find((region) => region.name.trim().toLowerCase() === normalizedQuery);
+                selectRegion(exactMatch || results[0]);
+            });
         });
 
         document.addEventListener('click', (e) => {
@@ -651,6 +700,12 @@
     setupRegionPicker({
         searchInput: filterRegionSearch,
         dropdownEl: filterRegionDropdown,
+        onInput: () => {
+            filterLocationCode.value = '';
+            state.location_code = '';
+            state.location = '';
+        },
+        isSelected: (query) => Boolean(filterLocationCode.value && state.location.toLowerCase() === query.toLowerCase()),
         onSelect: ({ code, name }) => {
             filterLocationCode.value = code;
             state.location_code = code;
@@ -678,6 +733,11 @@
     setupRegionPicker({
         searchInput: formRegionSearch,
         dropdownEl: formRegionDropdown,
+        onInput: (query) => {
+            formLocationCode.value = '';
+            formLocationLabel.value = query;
+        },
+        isSelected: (query) => Boolean(formLocationCode.value && formLocationLabel.value.trim().toLowerCase() === query.toLowerCase()),
         onSelect: ({ code, name }) => {
             formLocationCode.value = code;
             formLocationLabel.value = name;

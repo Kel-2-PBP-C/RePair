@@ -16,13 +16,13 @@
     pointer-events: none;
   }
 
-  /* .mobile-add-post-button {
+  .mobile-add-post-button {
     transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
   }
 
   .mobile-add-post-button:active {
     transform: translateY(1px);
-  } */
+  }
 
   .toast-card {
     pointer-events: auto;
@@ -121,7 +121,7 @@
       top: calc(env(safe-area-inset-top, 0px) + 1rem);
     }
 
-    /* .mobile-add-post-button {
+    .mobile-add-post-button {
       right: 1rem;
       bottom: calc(var(--navbar-bottom-height, 84px) + env(safe-area-inset-bottom, 0px) + 1rem);
       min-height: 3.25rem;
@@ -143,7 +143,7 @@
     .mobile-add-post-button:active,
     .mobile-add-post-button:hover {
       transform: none;
-    } */
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {

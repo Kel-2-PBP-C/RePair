@@ -31,6 +31,9 @@
     }
     editor.classList.add('settings-summary--enhanced');
     editButton.addEventListener('click', () => setEditing(true, true));
+    locationInput?.addEventListener('focus', () => {
+        if (!editing) setEditing(true);
+    });
     cancelLink.addEventListener('click', (event) => {
         if (hasErrors) return;
         event.preventDefault();

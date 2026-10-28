@@ -86,6 +86,14 @@ class PostFeatureTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["profile_initials"], "JN")
         self.assertEqual(response.context["preferred_contact"], "")
+        self.assertContains(
+            response,
+            f'data-default-location-code="{response.context["default_location_code"]}"',
+        )
+        self.assertContains(
+            response,
+            f'data-default-location-label="{response.context["default_location_label"]}"',
+        )
         self.assertEqual(response.content.decode().count("<body"), 1)
         self.assertContains(response, "Kontak pilihan:")
         self.assertContains(response, "Belum diatur")
@@ -99,6 +107,18 @@ class PostFeatureTests(TestCase):
         self.assertNotContains(response, "cdn.jsdelivr.net/npm/dompurify")
         self.assertNotContains(response, "filter-shipping")
         self.assertNotContains(response, "form-shipping")
+
+    def test_posts_page_exposes_saved_domicile_as_javascript_defaults(self):
+        self.profile.domicile = "Kota Depok, Jawa Barat"
+        self.profile.domicile_code = "32.76"
+        self.profile.save(update_fields=["domicile", "domicile_code"])
+
+        response = self.client.get(reverse("profile_post:show_posts"))
+
+        self.assertEqual(response.context["default_location_code"], "32.76")
+        self.assertEqual(response.context["default_location_label"], "Kota Depok, Jawa Barat")
+        self.assertContains(response, 'data-default-location-code="32.76"')
+        self.assertContains(response, 'data-default-location-label="Kota Depok, Jawa Barat"')
 
     def test_preferred_contact_is_used_and_never_falls_back_to_email(self):
         self.assertEqual(_get_user_contact(self.user), "")
