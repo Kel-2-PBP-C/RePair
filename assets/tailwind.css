@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 @layer components {
+  /* Navbar styles should expose their stacking layer through --navbar-z-index. */
   .toast-stack {
     position: fixed;
     top: calc(var(--navbar-height, 96px) + 1rem);
@@ -17,7 +18,14 @@
   }
 
   .mobile-add-post-button {
+    z-index: 40;
+    right: 1.5rem;
+    bottom: 1.5rem;
     transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+  }
+
+  .post-modal-layer {
+    z-index: calc(var(--navbar-z-index, 100) + 10);
   }
 
   .mobile-add-post-button:active {
@@ -124,6 +132,7 @@
     .mobile-add-post-button {
       right: 1rem;
       bottom: calc(var(--navbar-bottom-height, 84px) + env(safe-area-inset-bottom, 0px) + 1rem);
+      z-index: calc(var(--navbar-z-index, 100) + 1);
       min-height: 3.25rem;
       padding-inline: 1.25rem;
       box-shadow: 0 8px 20px rgba(13, 92, 49, 0.24);
@@ -132,6 +141,13 @@
     .mobile-add-post-button:hover {
       transform: translateY(-2px);
       box-shadow: 0 10px 24px rgba(13, 92, 49, 0.3);
+    }
+  }
+
+  @media (min-width: 640px) {
+    .mobile-add-post-button {
+      right: 2rem;
+      bottom: 2rem;
     }
   }
 

@@ -211,13 +211,13 @@
 
     <!-- FLOATING ADD BUTTON -->
     <button id="btn-open-create" type="button" title="Tambah post barter" aria-label="Tambah post barter"
-        class="mobile-add-post-button fixed bottom-6 right-6 sm:bottom-8 sm:right-8 h-12 pl-4 pr-5 rounded-full bg-brand-700 hover:bg-brand-800 text-white shadow-lg shadow-brand-900/20 flex items-center gap-2 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600/50 focus-visible:ring-offset-2 z-40">
+        class="mobile-add-post-button fixed h-12 pl-4 pr-5 rounded-full bg-brand-700 hover:bg-brand-800 text-white shadow-lg shadow-brand-900/20 flex items-center gap-2 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600/50 focus-visible:ring-offset-2">
         <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         Tambah
     </button>
 
     <!-- MODAL ADD / EDIT POST -->
-    <div id="post-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+    <div id="post-modal" class="post-modal-layer fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4">
         <div class="bg-white rounded-xl max-w-lg w-full shadow-2xl max-h-[90vh] overflow-y-auto border border-slate-200" role="dialog" aria-modal="true" aria-labelledby="modal-title">
             <div class="flex justify-between items-center px-5 sm:px-6 py-4 border-b border-slate-100 sticky top-0 bg-white rounded-t-xl z-10">
                 <h3 id="modal-title" class="text-base font-semibold text-slate-900">Tambah Post Barter</h3>
@@ -304,7 +304,7 @@
     </div>
 
     <!-- MODAL LOCK BARTER -->
-    <div id="offers-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+    <div id="offers-modal" class="post-modal-layer fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4">
         <div class="bg-white rounded-xl max-w-xl w-full shadow-2xl max-h-[90vh] overflow-y-auto border border-slate-200" role="dialog" aria-modal="true">
             <div class="flex justify-between items-start px-5 sm:px-6 py-4 border-b border-slate-100 sticky top-0 bg-white rounded-t-xl z-10">
                 <div class="min-w-0">
@@ -318,7 +318,7 @@
     </div>
 
     <!-- MODAL TWO-WAY REVIEW -->
-    <div id="review-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+    <div id="review-modal" class="post-modal-layer fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4">
         <div class="bg-white rounded-xl max-w-md w-full shadow-2xl border border-slate-200" role="dialog" aria-modal="true">
             <div class="flex justify-between items-center px-5 sm:px-6 py-4 border-b border-slate-100">
                 <h3 id="review-modal-title" class="text-base font-semibold text-slate-900">Beri Review Barter</h3>
