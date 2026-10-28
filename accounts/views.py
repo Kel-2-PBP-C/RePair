@@ -26,6 +26,7 @@ from django.middleware.csrf import rotate_token
 
 from .forms import DeactivateAccountForm, GoogleAccountLinkForm, GoogleCredentialsForm, GoogleProfileCompletionForm, LoginForm, PreferencesForm, ProfileForm, RegistrationForm
 from .models import GoogleIdentity, Profile
+from .utils import profile_initials
 from . import google_auth
 from .deletion import permanently_delete_account
 from .middleware import google_profile_complete
@@ -458,9 +459,7 @@ def profile(request):
         'google_reauth_recent': google_auth.recent_google_auth(request),
         'delete_requires_google_reauth': deactivate_form.requires_google_reauth,
         'profile_stats': {'items_exchanged': None, 'reputation_percent': None},
-        'profile_initials': ''.join(
-            part[0].upper() for part in request.user.get_full_name().split()[:2]
-        ) or request.user.get_username()[:2].upper(),
+        'profile_initials': profile_initials(request.user),
         'google_reauth_url': f"{reverse('accounts:google_login')}?{urlencode({'reauth': '1', 'next': reverse('accounts:profile') + '#account-status'})}",
     })
 
