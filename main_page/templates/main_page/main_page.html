@@ -54,7 +54,10 @@
 
             <p>Kondisi: {{ item.condition }}%</p>
 
-            <button type="button">Add to Cart</button>
+            <form method="POST" action="{% url 'keranjang:tambah_keranjang' item.pk %}">
+                {% csrf_token %}
+                <button type="submit">Add to Cart</button>
+            </form>
         </div>
     {% empty %}
         {% if search or kondisi %}
