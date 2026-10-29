@@ -2,7 +2,9 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
+from accounts.models import Profile
 from barter_details.models import Barter
+from profile_post.models import BarterOffer, BarterReview
 from .models import CartItem
 
 
@@ -23,7 +25,6 @@ class CartActionTests(TestCase):
             item_year=2022,
             condition=Barter.ConditionChoices.GOOD,
             condition_percentage=80,
-            shipping_method=Barter.ShippingChoices.COD,
             item_location='Depok',
         )
         self.client.force_login(self.user)
@@ -62,4 +63,76 @@ class CartActionTests(TestCase):
         response = self.client.get(reverse('keranjang:keranjang'))
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Kondisi: 80%')
+        self.assertContains(response, '(80%)')
+
+    def test_negotiating_cart_item_shows_profile_status_color_and_owner_contact(self):
+        self.barter.is_profile_post = True
+        self.barter.status = Barter.StatusChoices.NEGOTIATING
+        self.barter.save(update_fields=['is_profile_post', 'status'])
+        Profile.objects.create(
+            user=self.barter_owner,
+            social_contact='@owner-contact',
+        )
+        BarterOffer.objects.create(
+            post=self.barter,
+            offerer=self.user,
+            offered_item_title='Buku',
+            offered_item_description='Kondisi bagus',
+            offerer_contact='@bidder-contact',
+            is_selected=True,
+        )
+        CartItem.objects.create(user=self.user, barter=self.barter)
+
+        response = self.client.get(reverse('keranjang:keranjang'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'cart-status-negotiating')
+        self.assertContains(response, 'Dalam Negosiasi')
+        self.assertContains(response, 'barter-owner')
+        self.assertContains(response, '@owner-contact')
+
+    def test_completed_selected_bidder_can_review_owner_and_review_appears_in_profile_posts(self):
+        self.barter.is_profile_post = True
+        self.barter.status = Barter.StatusChoices.BARTERED
+        self.barter.save(update_fields=['is_profile_post', 'status'])
+        BarterOffer.objects.create(
+            post=self.barter,
+            offerer=self.user,
+            offered_item_title='Buku',
+            offered_item_description='Kondisi bagus',
+            offerer_contact='@bidder-contact',
+            is_selected=True,
+        )
+        CartItem.objects.create(user=self.user, barter=self.barter)
+
+        cart_response = self.client.get(reverse('keranjang:keranjang'))
+        self.assertContains(cart_response, 'cart-status-bartered')
+        self.assertContains(cart_response, 'Sudah Dibarter')
+        self.assertContains(
+            cart_response,
+            reverse('profile_post:submit_bidder_review', args=[self.barter.pk]),
+        )
+
+        review_response = self.client.post(
+            reverse('profile_post:submit_bidder_review', args=[self.barter.pk]),
+            {'rating': '5', 'comment': 'Barter berjalan lancar.'},
+        )
+
+        self.assertRedirects(review_response, reverse('keranjang:keranjang'))
+        review = BarterReview.objects.get(post=self.barter)
+        self.assertEqual(review.role, BarterReview.RoleChoices.OFFERER_TO_OWNER)
+        self.assertEqual(review.reviewer, self.user)
+        self.assertEqual(review.reviewee, self.barter_owner)
+
+        self.client.force_login(self.barter_owner)
+        posts_response = self.client.get(reverse('profile_post:get_posts_json'))
+        post_data = next(
+            post for post in posts_response.json()['posts']
+            if post['id'] == str(self.barter.pk)
+        )
+        self.assertEqual(post_data['status_code'], Barter.StatusChoices.BARTERED)
+        self.assertEqual(post_data['reviews']['to_owner']['rating'], 5)
+        self.assertContains(
+            self.client.get(reverse('profile_post:show_posts')),
+            'Ulasan penawar untuk Anda',
+        )

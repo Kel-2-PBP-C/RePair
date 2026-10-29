@@ -3,6 +3,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from accounts.models import Profile
+from profile_post.models import BarterOffer
 from .models import Barter, Bid
 
 
@@ -98,10 +99,29 @@ class BarterDetailTests(TestCase):
         )
 
         self.assertEqual(response.status_code, 201, response.content)
-        bid = Bid.objects.get()
-        self.assertEqual(bid.replacement_item, 'A')
-        self.assertEqual(bid.replacement_location, 'Depok')
-        self.assertEqual(bid.replacement_location_code, '32.76')
-        self.assertEqual(bid.replacement_category, 'buku')
-        self.assertIsNone(bid.item_year)
-        self.assertIsNone(bid.condition_percentage)
+        offer = BarterOffer.objects.get()
+        self.assertEqual(offer.post, self.barter)
+        self.assertEqual(offer.offerer, self.viewer)
+        self.assertEqual(offer.offered_item_title, 'A')
+        self.assertEqual(offer.offered_item_location, 'Depok')
+        self.assertEqual(offer.offered_item_location_code, '32.76')
+        self.assertEqual(offer.offered_item_category, 'buku')
+        self.assertEqual(offer.offered_item_condition, Bid.ConditionChoices.GOOD)
+        self.assertFalse(Bid.objects.exists())
+
+        self.client.force_login(self.owner)
+        self.barter.refresh_from_db()
+        self.assertTrue(self.barter.is_profile_post)
+        owner_posts_response = self.client.get(
+            reverse('profile_post:get_posts_json')
+        )
+        self.assertIn(
+            str(self.barter.pk),
+            [post['id'] for post in owner_posts_response.json()['posts']],
+        )
+        inbox_response = self.client.get(
+            reverse('profile_post:get_post_offers', args=[self.barter.pk])
+        )
+        self.assertEqual(inbox_response.status_code, 200)
+        self.assertEqual(len(inbox_response.json()['offers']), 1)
+        self.assertEqual(inbox_response.json()['offers'][0]['offered_item_title'], 'A')

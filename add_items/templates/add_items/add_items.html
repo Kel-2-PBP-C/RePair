@@ -25,10 +25,22 @@
               data-url="{% if is_edit %}{% url 'add_items:edit_ajax' barter.pk %}{% else %}{% url 'add_items:create_ajax' %}{% endif %}">
             {% csrf_token %}
             {% for field in form %}
-                <div class="field">
-                    {{ field.label_tag }}
+                {% if field.name == 'item_location' %}
                     {{ field }}
-                </div>
+                    <div class="field region-field">
+                        <label for="edit-region-search">Lokasi</label>
+                        <input type="text" id="edit-region-search" autocomplete="off"
+                               value="{{ field.value|default:'' }}" required>
+                        <div id="edit-region-dropdown" class="region-dropdown" hidden></div>
+                    </div>
+                {% elif field.is_hidden %}
+                    {{ field }}
+                {% else %}
+                    <div class="field">
+                        {{ field.label_tag }}
+                        {{ field }}
+                    </div>
+                {% endif %}
             {% endfor %}
             <div class="bid-actions">
                 <button type="submit" class="bid-confirm">Simpan</button>
@@ -45,6 +57,64 @@
             if (!form) return;
 
             const submitButton = form.querySelector('button[type="submit"]');
+            const regionSearch = document.getElementById('edit-region-search');
+            const regionCode = form.elements['location_code'];
+            const regionName = form.elements['item_location'];
+            const regionDropdown = document.getElementById('edit-region-dropdown');
+            let regionTimer;
+            let regionSearchRevision = 0;
+
+            if (regionSearch) {
+                async function searchRegions(query) {
+                    const revision = ++regionSearchRevision;
+                    try {
+                        const url = new URL("{% url 'profile_post:search_regions' %}", window.location.origin);
+                        url.searchParams.set('q', query);
+                        const response = await fetch(url);
+                        if (!response.ok) throw new Error('Region search failed');
+                        const data = await response.json();
+                        if (revision !== regionSearchRevision) return;
+
+                        regionDropdown.replaceChildren();
+                        (data.results || []).forEach((region) => {
+                            const option = document.createElement('button');
+                            option.type = 'button';
+                            option.className = 'region-option';
+                            option.textContent = region.name;
+                            option.addEventListener('click', () => {
+                                regionSearch.value = region.name;
+                                regionName.value = region.name;
+                                regionCode.value = region.code;
+                                regionDropdown.hidden = true;
+                            });
+                            regionDropdown.appendChild(option);
+                        });
+                        if (!regionDropdown.childElementCount) {
+                            const empty = document.createElement('p');
+                            empty.textContent = 'Wilayah tidak ditemukan.';
+                            regionDropdown.appendChild(empty);
+                        }
+                        regionDropdown.hidden = false;
+                    } catch (error) {
+                        if (revision !== regionSearchRevision) return;
+                        showToast('Daftar wilayah belum tersedia. Coba lagi nanti.', 'error');
+                        regionDropdown.hidden = true;
+                    }
+                }
+
+                regionSearch.addEventListener('input', () => {
+                    regionCode.value = '';
+                    regionName.value = '';
+                    clearTimeout(regionTimer);
+                    regionTimer = setTimeout(
+                        () => searchRegions(regionSearch.value.trim()),
+                        250
+                    );
+                });
+                regionSearch.addEventListener('focus', () => {
+                    searchRegions(regionSearch.value.trim());
+                });
+            }
 
             function clearErrors() {
                 form.querySelectorAll('.field-error').forEach((el) => el.remove());
@@ -59,10 +129,18 @@
                         showToast(text, 'error');
                         return;
                     }
+                    const field = input.closest('.field')
+                        || (['item_location', 'location_code'].includes(name)
+                            ? form.querySelector('.region-field')
+                            : null);
+                    if (!field) {
+                        showToast(text, 'error');
+                        return;
+                    }
                     const div = document.createElement('div');
                     div.className = 'field-error';
                     div.textContent = text;
-                    input.closest('.field').appendChild(div);
+                    field.appendChild(div);
                 });
             }
 

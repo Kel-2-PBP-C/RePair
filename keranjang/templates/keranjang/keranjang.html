@@ -90,6 +90,11 @@
                         </a>
                     </h2>
 
+                    <p class="cart-status cart-status-{{ item.barter.status|lower }}"
+                       aria-label="Status barang: {{ item.barter.get_status_display }}">
+                        {{ item.barter.get_status_display }}
+                    </p>
+
                     <!-- Tombol favorit -->
                     <form
                         class="favorite-form"
@@ -125,18 +130,75 @@
 
                     <p class="cart-detail">
                         <span class="detail-icon" aria-hidden="true">✓</span>
-                        <span>Kondisi: {{ item.barter.get_condition_display|default:"-" }}</span>
+                        <span>
+                            Kondisi: {{ item.barter.get_condition_display|default:"-" }}
+                            {% if item.barter.condition_percentage != None %}
+                                ({{ item.barter.condition_percentage }}%)
+                            {% endif %}
+                        </span>
                     </p>
+
+                    {% if item.barter.status == "NEGOTIATING" and item.user_selected_offer %}
+                        <section class="cart-negotiation-contact" aria-label="Kontak pengunggah barang">
+                            <strong>Barter sedang dinegosiasikan dengan:</strong>
+                            <span>{{ item.barter.owner.get_full_name|default:item.barter.owner.username }}</span>
+                            <span>Kontak: {{ item.owner_contact|default:"Kontak belum diatur" }}</span>
+                        </section>
+                    {% endif %}
+
+                    {% if item.barter.status == "BARTERED" and item.user_selected_offer %}
+                        {% if item.user_barter_review %}
+                            <section class="cart-review-summary">
+                                <strong>Ulasan Anda untuk {{ item.barter.owner.get_full_name|default:item.barter.owner.username }}</strong>
+                                <span aria-label="Rating {{ item.user_barter_review.rating }} dari 5">
+                                    {% for _ in "12345" %}
+                                        {% if forloop.counter <= item.user_barter_review.rating %}★{% else %}☆{% endif %}
+                                    {% endfor %}
+                                </span>
+                                {% if item.user_barter_review.comment %}
+                                    <p>{{ item.user_barter_review.comment }}</p>
+                                {% endif %}
+                            </section>
+                        {% elif item.barter.is_profile_post %}
+                            <form class="cart-review-form" method="post"
+                                  action="{% url 'profile_post:submit_bidder_review' item.barter.pk %}">
+                                {% csrf_token %}
+                                <strong>Ulasan untuk pengunggah</strong>
+                                <label>
+                                    Rating
+                                    <select name="rating" required>
+                                        <option value="5">★★★★★ 5 · Sangat puas</option>
+                                        <option value="4">★★★★☆ 4 · Bagus</option>
+                                        <option value="3">★★★☆☆ 3 · Cukup</option>
+                                        <option value="2">★★☆☆☆ 2 · Kurang</option>
+                                        <option value="1">★☆☆☆☆ 1 · Mengecewakan</option>
+                                    </select>
+                                </label>
+                                <label>
+                                    Komentar
+                                    <textarea name="comment" rows="3" maxlength="1000"
+                                              placeholder="Ceritakan pengalaman barter"></textarea>
+                                </label>
+                                <button type="submit" class="cart-review-submit">Kirim ulasan</button>
+                            </form>
+                        {% endif %}
+                    {% endif %}
 
                     <!-- Tombol penawaran dan hapus -->
                     <div class="cart-actions">
 
-                        <a
-                            class="offer-button"
-                            href="{% url 'barter_details:barter_detail' item.barter.id %}"
-                        >
-                            Ajukan Penawaran
-                        </a>
+                        {% if item.barter.status == "AVAILABLE" %}
+                            <a
+                                class="offer-button"
+                                href="{% url 'barter_details:barter_detail' item.barter.id %}"
+                            >
+                                Ajukan Penawaran
+                            </a>
+                        {% elif item.barter.status == "NEGOTIATING" %}
+                            <a class="offer-button" href="{% url 'barter_details:barter_detail' item.barter.id %}">
+                                Lihat detail barter
+                            </a>
+                        {% endif %}
 
                         <form
                             class="delete-form"

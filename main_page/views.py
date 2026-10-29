@@ -7,7 +7,7 @@ from barter_details.models import Barter
 # @login_required
 @require_GET
 def show_main(request):
-    items = Barter.objects.filter(status=Barter.StatusChoices.AVAILABLE)
+    items = Barter.objects.filter(status=Barter.StatusChoices.AVAILABLE).exclude(owner=request.user)
 
     # Mengambil input pencarian dan filter dari user
     search = request.GET.get('search', '').strip()

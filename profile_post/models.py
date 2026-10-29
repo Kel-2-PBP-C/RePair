@@ -17,9 +17,14 @@ class BarterOffer(models.Model):
         on_delete=models.CASCADE,
         related_name='barter_offers',
     )
-    offered_item_title = models.CharField(max_length=150)
+    offered_item_title = models.CharField(max_length=255)
     offered_item_description = models.TextField()
-    offerer_contact = models.CharField(max_length=100, help_text="Kontak penawar")
+    offered_item_thumbnail = models.URLField(max_length=500, blank=True, default='')
+    offered_item_location = models.CharField(max_length=150, blank=True, default='')
+    offered_item_location_code = models.CharField(max_length=32, blank=True, default='')
+    offered_item_category = models.CharField(max_length=20, blank=True, default='')
+    offered_item_condition = models.CharField(max_length=10, blank=True, default='')
+    offerer_contact = models.CharField(max_length=100, blank=True, default='', help_text="Kontak penawar")
     is_selected = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 

@@ -153,6 +153,9 @@ class EditBarterViewTest(BaseTestCase):
         self.assertTrue(response.context['is_edit'])
         self.assertEqual(response.context['barter'], self.barter)
         self.assertEqual(response.context['form'].instance, self.barter)
+        self.assertContains(response, 'id="edit-region-search"')
+        self.assertContains(response, 'name="item_replacement"')
+        self.assertNotContains(response, 'name="item_year"')
  
     def test_non_owner_gets_404(self):
         self.login(self.other)
@@ -177,14 +180,26 @@ class EditBarterAjaxTests(BaseTestCase):
         self.login()
         response = self.client.post(
             self.url,
-            valid_data(title='Jakang Arung', condition_percentage=90),
+            {
+                'title': 'Jakang Arung',
+                'description': 'Jaket kuning',
+                'thumbnail': 'https://example.test/jaket.jpg',
+                'location_code': '32.76',
+                'item_location': 'Kota Depok, Jawa Barat',
+                'category': 'pakaian',
+                'condition': Barter.ConditionChoices.GOOD,
+                'item_replacement': '',
+            },
         )
         self.assertEqual(response.status_code, 200)
  
         self.barter.refresh_from_db()
         self.assertEqual(self.barter.title, 'Jakang Arung')
         self.assertEqual(self.barter.condition, Barter.ConditionChoices.GOOD)
-        self.assertEqual(self.barter.condition_percentage, 90)
+        self.assertEqual(self.barter.condition_percentage, 78)
+        self.assertEqual(self.barter.category, 'pakaian')
+        self.assertEqual(self.barter.location_code, '32.76')
+        self.assertFalse(self.barter.is_profile_post)
         self.assertEqual(
             response.json()['redirect_url'],
             reverse('barter_details:barter_detail', args=[self.barter.pk]),
@@ -199,9 +214,21 @@ class EditBarterAjaxTests(BaseTestCase):
  
     def test_invalid_data_returns_400(self):
         self.login()
-        response = self.client.post(self.url, valid_data(item_year=1800))
+        response = self.client.post(
+            self.url,
+            {
+                'title': '',
+                'description': 'Keterangan',
+                'thumbnail': 'https://example.test/jaket.jpg',
+                'location_code': '32.76',
+                'item_location': 'Kota Depok, Jawa Barat',
+                'category': 'pakaian',
+                'condition': Barter.ConditionChoices.GOOD,
+                'item_replacement': '',
+            },
+        )
         self.assertEqual(response.status_code, 400)
-        self.assertIn('item_year', response.json()['errors'])
+        self.assertIn('title', response.json()['errors'])
         self.barter.refresh_from_db()
         self.assertEqual(self.barter.item_year, 2025)
 

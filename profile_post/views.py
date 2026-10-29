@@ -2,8 +2,9 @@ from datetime import timedelta
 import uuid
 
 from django.http import Http404
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
+from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST, require_GET
@@ -151,7 +152,7 @@ def _get_offers_for_post(post):
 
 
 def _resolve_detail_url(post_id):
-    for route_name in ('barter_details:details', 'barter_details:detail', 'profile_post:post_detail'):
+    for route_name in ('barter_details:barter_detail', 'barter_details:detail', 'profile_post:post_detail'):
         try:
             return reverse(route_name, args=[post_id])
         except NoReverseMatch:
@@ -258,10 +259,8 @@ def get_user_stats(request):
     now = timezone.now()
 
     all_posts = Post.objects.filter(owner=request.user, is_profile_post=True)
-    all_barters = all_posts.filter(status=Post.StatusChoices.BARTERED)
     all_reviews = BarterReview.objects.filter(
         reviewee=request.user,
-        role=BarterReview.RoleChoices.OWNER_TO_OFFERER,
     )
 
     if period in ['M', 'Y']:
@@ -270,11 +269,9 @@ def get_user_stats(request):
         prev_start = now - timedelta(days=days * 2)
 
         curr_posts = all_posts.filter(created_at__gte=curr_start).count()
-        curr_barters = all_barters.filter(completed_at__gte=curr_start).count()
         curr_rating = all_reviews.filter(created_at__gte=curr_start).aggregate(avg=Avg('rating'))['avg'] or 0.0
 
         prev_posts = all_posts.filter(created_at__gte=prev_start, created_at__lt=curr_start).count()
-        prev_barters = all_barters.filter(completed_at__gte=prev_start, completed_at__lt=curr_start).count()
         prev_rating = all_reviews.filter(created_at__gte=prev_start, created_at__lt=curr_start).aggregate(avg=Avg('rating'))['avg'] or 0.0
 
         return JsonResponse({
@@ -282,7 +279,6 @@ def get_user_stats(request):
             'show_delta': True,
             'rating': _calc_delta(curr_rating, prev_rating, is_float=True),
             'posts': _calc_delta(curr_posts, prev_posts),
-            'barters': _calc_delta(curr_barters, prev_barters),
         })
 
     return JsonResponse({
@@ -290,7 +286,6 @@ def get_user_stats(request):
         'show_delta': False,
         'rating': {'value': round(all_reviews.aggregate(avg=Avg('rating'))['avg'] or 0.0, 1)},
         'posts': {'value': all_posts.count()},
-        'barters': {'value': all_barters.count()},
     })
 
 
@@ -349,7 +344,15 @@ def get_posts_json(request):
         created_at_display, created_at_ago = _format_created_at(post.created_at)
         offers_list = list(_get_offers_for_post(post))
         selected_offer = next((o for o in offers_list if o.is_selected), None)
-        review_to_offerer = next((r for r in post.reviews.all() if r.role == BarterReview.RoleChoices.OWNER_TO_OFFERER), None)
+        post_reviews = list(post.reviews.all())
+        review_to_offerer = next(
+            (r for r in post_reviews if r.role == BarterReview.RoleChoices.OWNER_TO_OFFERER),
+            None,
+        )
+        review_to_owner = next(
+            (r for r in post_reviews if r.role == BarterReview.RoleChoices.OFFERER_TO_OWNER),
+            None,
+        )
 
         posts_data.append({
             'id': post.id,
@@ -381,6 +384,10 @@ def get_posts_json(request):
                     'rating': review_to_offerer.rating,
                     'comment': review_to_offerer.comment,
                 } if review_to_offerer else None,
+                'to_owner': {
+                    'rating': review_to_owner.rating,
+                    'comment': review_to_owner.comment,
+                } if review_to_owner else None,
             }
         })
 
@@ -474,24 +481,6 @@ def delete_post_ajax(request, post_id):
 def get_post_offers_json(request, post_id):
     post = _get_post_or_404(post_id, owner=request.user, is_profile_post=True)
 
-    if not _get_offers_for_post(post).exists():
-        dummy_user1, _ = User.objects.get_or_create(username='budi_barter', defaults={'first_name': 'Budi Santoso'})
-        dummy_user2, _ = User.objects.get_or_create(username='siti_kolektor', defaults={'first_name': 'Siti Rahma'})
-        BarterOffer.objects.create(
-            post=post,
-            offerer=dummy_user1,
-            offered_item_title=f"{post.preferred_barter} (Kondisi 95%)",
-            offered_item_description="Pemakaian pribadi 3 bulan, fungsi normal semua, kelengkapan fullset.",
-            offerer_contact=_get_user_contact(dummy_user1)
-        )
-        BarterOffer.objects.create(
-            post=post,
-            offerer=dummy_user2,
-            offered_item_title=f"Alternatif: {post.preferred_barter} + Aksesoris",
-            offered_item_description="Kondisi terawat, siap COD atau kirim via kurir instan.",
-            offerer_contact=_get_user_contact(dummy_user2)
-        )
-
     offers = [{
         'id': o.id,
         'offerer_name': o.offerer.get_full_name() or o.offerer.username,
@@ -543,6 +532,8 @@ def complete_barter_ajax(request, post_id):
     post = _get_post_or_404(post_id, owner=request.user, is_profile_post=True)
     if post.status != Post.StatusChoices.NEGOTIATING:
         return JsonResponse({'status': 'error', 'message': 'Hanya post dalam negosiasi yang bisa diselesaikan.'}, status=400)
+    if not post.offers.filter(is_selected=True).exists():
+        return JsonResponse({'status': 'error', 'message': 'Pilih penawar sebelum menyelesaikan barter.'}, status=400)
 
     post.status = Post.StatusChoices.BARTERED
     post.completed_at = timezone.now()
@@ -580,3 +571,46 @@ def submit_review_ajax(request, post_id):
         }
     )
     return JsonResponse({'status': 'success'})
+
+
+@login_required
+@require_POST
+def submit_bidder_review_ajax(request, post_id):
+    post = _get_post_or_404(
+        post_id,
+        is_profile_post=True,
+        status=Post.StatusChoices.BARTERED,
+    )
+    selected_offer = get_object_or_404(
+        BarterOffer,
+        post=post,
+        offerer=request.user,
+        is_selected=True,
+    )
+    existing_review = BarterReview.objects.filter(
+        post=post,
+        role=BarterReview.RoleChoices.OFFERER_TO_OWNER,
+    ).first()
+    if existing_review:
+        messages.info(request, 'Kamu sudah mengirim ulasan untuk barter ini.')
+        return redirect('keranjang:keranjang')
+
+    try:
+        rating = int(request.POST.get('rating', ''))
+    except (TypeError, ValueError):
+        messages.error(request, 'Pilih rating dari 1 sampai 5.')
+        return redirect('keranjang:keranjang')
+    if not 1 <= rating <= 5:
+        messages.error(request, 'Pilih rating dari 1 sampai 5.')
+        return redirect('keranjang:keranjang')
+
+    BarterReview.objects.create(
+        post=post,
+        reviewer=request.user,
+        reviewee=post.owner,
+        role=BarterReview.RoleChoices.OFFERER_TO_OWNER,
+        rating=rating,
+        comment=strip_tags(request.POST.get('comment', '')).strip(),
+    )
+    messages.success(request, 'Ulasan berhasil dikirim.')
+    return redirect('keranjang:keranjang')

@@ -24,6 +24,42 @@
     margin: 0 0 14px;
 }
 
+.create-page .region-field {
+    position: relative;
+}
+
+.create-page .region-dropdown {
+    position: absolute;
+    top: calc(100% - 14px);
+    left: 0;
+    right: 0;
+    z-index: 20;
+    max-height: 12rem;
+    overflow-y: auto;
+    border: 1px solid var(--green-3);
+    border-radius: 8px;
+    background: var(--white);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.create-page .region-option {
+    display: block;
+    width: 100%;
+    padding: 0.65rem 0.75rem;
+    border: 0;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+}
+
+.create-page .region-option:hover {
+    background: var(--green-1);
+}
+
+.create-page .region-dropdown p {
+    padding: 0.65rem 0.75rem;
+}
+
 .create-page label {
     font-size: 1rem;
     font-weight: 500;

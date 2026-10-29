@@ -3,9 +3,11 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_GET, require_POST
+from django.db.models import Prefetch
 
 from .models import CartItem
 from barter_details.models import Barter
+from profile_post.models import BarterOffer, BarterReview
 
 
 @login_required
@@ -14,7 +16,25 @@ def keranjang(request):
     cart_items = (
         CartItem.objects
         .filter(user=request.user)
-        .select_related("barter")
+        .select_related("barter", "barter__owner", "barter__owner__profile")
+        .prefetch_related(
+            Prefetch(
+                "barter__offers",
+                queryset=BarterOffer.objects.filter(
+                    offerer=request.user,
+                    is_selected=True,
+                ),
+                to_attr="cart_user_selected_offers",
+            ),
+            Prefetch(
+                "barter__reviews",
+                queryset=BarterReview.objects.filter(
+                    reviewer=request.user,
+                    role=BarterReview.RoleChoices.OFFERER_TO_OWNER,
+                ),
+                to_attr="cart_user_reviews",
+            ),
+        )
     )
 
     # Pencarian barang berdasarkan nama.
@@ -36,6 +56,20 @@ def keranjang(request):
         "-is_favorite",
         "-created_at",
     )
+    for cart_item in cart_items:
+        barter = cart_item.barter
+        cart_item.owner_contact = (
+            getattr(getattr(barter.owner, "profile", None), "social_contact", "")
+            or ""
+        ).strip()
+        cart_item.user_selected_offer = next(
+            iter(barter.cart_user_selected_offers),
+            None,
+        )
+        cart_item.user_barter_review = next(
+            iter(barter.cart_user_reviews),
+            None,
+        )
 
     return render(
         request,

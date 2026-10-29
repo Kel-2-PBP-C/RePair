@@ -6,6 +6,11 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/profile-post.css' %}">
+<style>
+    #toast-container {
+        z-index: calc(var(--navbar-z-index, 100) + 30);
+    }
+</style>
 {% endblock %}
 
 
@@ -72,7 +77,7 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-3 gap-3">
+            <div class="grid grid-cols-2 gap-3">
                 <div class="rounded-lg border border-slate-200 bg-white p-3 sm:p-4">
                     <div class="flex items-center gap-1.5 text-xs font-medium text-slate-500">
                         <svg class="w-3.5 h-3.5 text-amber-500" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
@@ -93,16 +98,6 @@
                     <div class="mt-2 flex flex-col">
                         <span id="stat-posts-val" class="text-2xl font-semibold tabular-nums text-slate-900">0</span>
                         <span id="stat-posts-delta" class="text-[11px] font-medium mt-0.5 hidden"></span>
-                    </div>
-                </div>
-                <div class="rounded-lg border border-slate-200 bg-white p-3 sm:p-4">
-                    <div class="flex items-center gap-1.5 text-xs font-medium text-slate-500">
-                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
-                        Barters
-                    </div>
-                    <div class="mt-2 flex flex-col">
-                        <span id="stat-barters-val" class="text-2xl font-semibold tabular-nums text-slate-900">0</span>
-                        <span id="stat-barters-delta" class="text-[11px] font-medium mt-0.5 hidden"></span>
                     </div>
                 </div>
             </div>
@@ -790,7 +785,6 @@
             const data = await res.json();
             updateStatBox('rating', data.rating, data.show_delta, true);
             updateStatBox('posts', data.posts, data.show_delta, false);
-            updateStatBox('barters', data.barters, data.show_delta, false);
         } catch (err) {
             console.error('Gagal memuat statistik:', err);
         }
@@ -864,12 +858,20 @@
                     <p class="text-slate-600 mt-1">${escapeHtml(revOfferer.comment)}</p>`
                 : `<p class="text-slate-500">Anda belum memberi ulasan kepada ${partnerName}.</p>
                     <button type="button" data-action="open-review" data-post-id="${post.id}" class="mt-1 text-[11px] font-semibold text-brand-700 hover:underline">Beri ulasan</button>`;
+            const reviewFromOfferer = post.reviews.to_owner;
+            const reviewFromOffererHtml = reviewFromOfferer
+                ? `<div class="mt-3 border-t border-slate-200 pt-2">
+                    <div class="font-semibold text-slate-700 mb-1">Ulasan penawar untuk Anda</div>
+                    <div class="flex items-center gap-1.5 text-amber-500 text-sm tracking-wide">${renderStars(reviewFromOfferer.rating)} <span class="text-xs text-slate-500 tracking-normal">${reviewFromOfferer.rating}/5</span></div>
+                    <p class="text-slate-600 mt-1">${escapeHtml(reviewFromOfferer.comment)}</p>
+                </div>`
+                : `<p class="mt-3 border-t border-slate-200 pt-2 text-slate-500">Penawar belum mengirim ulasan.</p>`;
 
             extraSectionHtml = `
                 <div class="mt-3 rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs">
                     <div class="font-semibold text-slate-700 mb-1.5">Ulasan Anda untuk ${partnerName}</div>
                     ${reviewContent}
-                    <p class="mt-2 text-slate-400">Ulasan dari pihak penawar belum tersedia.</p>
+                    ${reviewFromOffererHtml}
                 </div>
             `;
         }
@@ -1009,6 +1011,11 @@
             const res = await fetch(buildUrl(URL_TEMPLATES.offers, postId));
             const data = await res.json();
             document.getElementById('offers-modal-subtitle').textContent = data.post_title;
+
+            if (!data.offers.length) {
+                offersListContainer.innerHTML = '<p class="text-sm text-center py-8 text-slate-500">Belum ada tawaran untuk barang ini.</p>';
+                return;
+            }
 
             const offersHtml = data.offers.map(off => `
                 <div class="p-4 rounded-lg border ${off.is_selected ? 'border-amber-300 bg-amber-50/60' : 'border-slate-200 bg-white hover:border-slate-300'} flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 transition">

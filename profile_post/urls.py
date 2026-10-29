@@ -18,4 +18,5 @@ urlpatterns = [
     path('api/cancel-negotiation/<str:post_id>/', views.cancel_negotiation_ajax, name='cancel_negotiation'),
     path('api/complete/<str:post_id>/', views.complete_barter_ajax, name='complete_barter'),
     path('api/review/<str:post_id>/', views.submit_review_ajax, name='submit_review'),
+    path('api/review-as-offerer/<str:post_id>/', views.submit_bidder_review_ajax, name='submit_bidder_review'),
 ]

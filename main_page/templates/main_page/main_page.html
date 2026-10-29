@@ -50,7 +50,7 @@
 <div class="barang-container">
     {% for item in items %}
         <div class="barang-card">
-            <a href="{% url 'barter_details:barter_detail' item.pk %}">
+            <a href="{% url 'barter_details:barter_detail' item.pk %}" class="barang-link">
                 <img src="{{ item.thumbnail }}" alt="{{ item.title }}" width="200">
                 <h3>{{ item.title }}</h3>
             </a>

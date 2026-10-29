@@ -30,7 +30,11 @@ def resolve_region_from_accounts(code: str, fallback_label: str = ''):
 
 
 class PostForm(forms.ModelForm):
-    location_code = forms.CharField(max_length=32, required=False)
+    location_code = forms.CharField(
+        max_length=32,
+        required=False,
+        widget=forms.HiddenInput(),
+    )
     category = forms.ChoiceField(choices=Profile.CATEGORY_CHOICES, required=False)
 
     class Meta:
@@ -50,8 +54,12 @@ class PostForm(forms.ModelForm):
             'location_code', 'item_location', 'category', 'condition',
             'item_replacement',
         ]
+        widgets = {
+            'item_location': forms.HiddenInput(),
+        }
 
     def __init__(self, *args, **kwargs):
+        self.mark_as_profile_post = kwargs.pop('mark_as_profile_post', True)
         data = kwargs.get('data')
         positional_data = args[0] if args else None
         bound_data = data if data is not None else positional_data
@@ -93,7 +101,8 @@ class PostForm(forms.ModelForm):
 
     def save(self, commit=True):
         post = super().save(commit=False)
-        post.is_profile_post = True
+        if self.mark_as_profile_post:
+            post.is_profile_post = True
         if commit:
             post.save()
             self.save_m2m()
