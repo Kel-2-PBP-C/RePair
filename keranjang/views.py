@@ -1,3 +1,4 @@
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
@@ -17,17 +18,25 @@ def keranjang(request):
         .select_related("barter")
     )
 
+    # Pencarian barang berdasarkan nama.
     search_query = request.GET.get("q", "").strip()
     if search_query:
         cart_items = cart_items.filter(
             barter__title__icontains=search_query
         )
 
+    # Filter barang berdasarkan lokasi.
     location_query = request.GET.get("location", "").strip()
     if location_query:
         cart_items = cart_items.filter(
             barter__item_location__icontains=location_query
         )
+
+    # Barang favorit ditampilkan lebih dahulu.
+    cart_items = cart_items.order_by(
+        "-is_favorite",
+        "-created_at",
+    )
 
     return render(
         request,
@@ -45,6 +54,7 @@ def keranjang(request):
 def tambah_keranjang(request, barter_id):
     barter = get_object_or_404(Barter, pk=barter_id)
 
+    # Pengguna tidak boleh menyimpan barang miliknya sendiri.
     if barter.owner_id == request.user.id:
         messages.warning(
             request,
@@ -77,6 +87,7 @@ def tambah_keranjang(request, barter_id):
 @login_required
 @require_POST
 def hapus_keranjang(request, item_id):
+    # Item hanya dapat dihapus oleh pemilik keranjangnya.
     item = get_object_or_404(
         CartItem,
         pk=item_id,
@@ -89,4 +100,32 @@ def hapus_keranjang(request, item_id):
         request,
         "Barang berhasil dihapus dari keranjang.",
     )
+    return redirect("keranjang:keranjang")
+
+
+@login_required
+@require_POST
+def toggle_favorit(request, item_id):
+    # User hanya dapat mengubah favorit barang miliknya sendiri.
+    item = get_object_or_404(
+        CartItem,
+        pk=item_id,
+        user=request.user,
+    )
+
+    # Mengubah status favorit.
+    item.is_favorite = not item.is_favorite
+    item.save(update_fields=["is_favorite"])
+
+    if item.is_favorite:
+        messages.success(
+            request,
+            "Barang berhasil ditambahkan ke favorit.",
+        )
+    else:
+        messages.info(
+            request,
+            "Barang dihapus dari favorit.",
+        )
+
     return redirect("keranjang:keranjang")

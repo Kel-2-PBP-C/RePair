@@ -57,7 +57,7 @@
 
             <article class="cart-card">
 
-                <!-- Gambar barang: klik untuk membuka detail -->
+                <!-- Gambar barang -->
                 <a
                     class="cart-image-link"
                     href="{% url 'barter_details:barter_detail' item.barter.id %}"
@@ -80,7 +80,7 @@
                 <!-- Informasi barang -->
                 <div class="cart-info">
 
-                    <!-- Nama barang: klik untuk membuka detail -->
+                    <!-- Nama barang -->
                     <h2 class="cart-item-title">
                         <a
                             class="cart-item-link"
@@ -89,6 +89,29 @@
                             {{ item.barter.title }}
                         </a>
                     </h2>
+
+                    <!-- Tombol favorit -->
+                    <form
+                        class="favorite-form"
+                        method="post"
+                        action="{% url 'keranjang:toggle_favorit' item.id %}"
+                    >
+                        {% csrf_token %}
+
+                        <button
+                            type="submit"
+                            class="favorite-button {% if item.is_favorite %}is-favorite{% endif %}"
+                            aria-pressed="{% if item.is_favorite %}true{% else %}false{% endif %}"
+                            aria-label="{% if item.is_favorite %}Hapus {{ item.barter.title }} dari favorit{% else %}Tambahkan {{ item.barter.title }} ke favorit{% endif %}"
+                            title="{% if item.is_favorite %}Hapus dari favorit{% else %}Tambahkan ke favorit{% endif %}"
+                        >
+                            {% if item.is_favorite %}
+                                ♥ Favorit
+                            {% else %}
+                                ♡ Tambah Favorit
+                            {% endif %}
+                        </button>
+                    </form>
 
                     <p class="cart-detail">
                         <span class="detail-icon" aria-hidden="true">▣</span>
