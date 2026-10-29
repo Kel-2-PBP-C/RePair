@@ -38,8 +38,8 @@ class RegistrationForm(ProfileFieldsMixin, UserCreationForm):
         label="Tanggal lahir", widget=forms.DateInput(attrs={"type": "date"})
     )
     social_contact = forms.CharField(
-        label="Kontak media sosial", max_length=200, required=False,
-        help_text="Opsional, contoh: Instagram @nama atau nomor WhatsApp.",
+        label="Kontak pilihan", max_length=200, required=False,
+        help_text="Opsional. Isi kontak yang Anda pilih, misalnya WhatsApp, LINE, atau username media sosial.",
     )
 
     class Meta(UserCreationForm.Meta):
@@ -161,6 +161,13 @@ class ProfileForm(ProfileFieldsMixin, RegionSelectionMixin, forms.ModelForm):
             "username", "full_name", "email", "domicile", "domicile_code",
             "preferred_categories", "birth_date", "social_contact",
         )
+        labels = {"social_contact": "Kontak pilihan"}
+        help_texts = {
+            "social_contact": (
+                "Opsional. Isi kontak yang Anda pilih, misalnya WhatsApp, LINE, "
+                "atau username media sosial."
+            )
+        }
         widgets = {"birth_date": forms.DateInput(format="%Y-%m-%d", attrs={"type": "date"})}
 
     def __init__(self, *args, user, **kwargs):

@@ -17,6 +17,7 @@
         let revision = 0;
         let timer = null;
         let controller = null;
+        let pendingEnter = false;
         const cachedResults = new Map();
 
         input.setAttribute('role', 'combobox');
@@ -69,6 +70,7 @@
             toggle.setAttribute('aria-label', open ? 'Tutup pilihan kota' : 'Tampilkan pilihan kota');
             if (open) resizePopup();
             else {
+                pendingEnter = false;
                 cancelSearch();
                 setActive(-1);
                 list.removeAttribute('aria-busy');
@@ -87,11 +89,18 @@
         function selectResult(index) {
             const result = results[index];
             if (!result) return;
+            pendingEnter = false;
             input.value = result.label;
             codeInput.value = result.code;
             setOpen(false);
             input.focus();
             input.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+
+        function selectRecommendedResult() {
+            const query = input.value.trim().toLowerCase();
+            const exactIndex = results.findIndex((result) => result.label.trim().toLowerCase() === query);
+            selectResult(exactIndex >= 0 ? exactIndex : 0);
         }
 
         function showResults(payload) {
@@ -100,6 +109,7 @@
                 result && typeof result.code === 'string' && typeof result.label === 'string'
             ));
             if (!results.length) {
+                pendingEnter = false;
                 status.textContent = 'Kota tidak ditemukan. Kamu tetap bisa mengetik lokasi sendiri.';
                 status.hidden = false;
                 return;
@@ -121,6 +131,10 @@
             if (payload.has_more) {
                 status.textContent = 'Ketik nama kota untuk mempersempit pilihan.';
                 status.hidden = false;
+            }
+            if (pendingEnter) {
+                pendingEnter = false;
+                selectRecommendedResult();
             }
         }
 
@@ -151,6 +165,7 @@
                 showResults(payload);
             } catch (error) {
                 if (requestRevision !== revision || !isOpen || error.name === 'AbortError') return;
+                pendingEnter = false;
                 const message = error instanceof SyntaxError || error instanceof TypeError
                     ? 'Pilihan kota belum tersedia.' : error.message;
                 clearOptions(`${message} Kamu tetap bisa mengetik lokasi sendiri.`);
@@ -168,17 +183,25 @@
             search(codeInput.value ? '' : input.value.trim());
         }
 
+        input.addEventListener('focus', () => {
+            if (!isOpen) openWithResults();
+        });
         toggle.addEventListener('pointerdown', (event) => event.preventDefault());
         toggle.addEventListener('click', () => {
-            if (isOpen) setOpen(false);
-            else openWithResults();
-            input.focus();
+            if (isOpen) {
+                setOpen(false);
+                toggle.focus();
+            } else {
+                openWithResults();
+                input.focus();
+            }
         });
         input.addEventListener('click', () => {
             if (!isOpen) openWithResults();
         });
         input.addEventListener('input', () => {
             if (input.readOnly || input.disabled) return;
+            pendingEnter = false;
             codeInput.value = '';
             cancelSearch();
             setOpen(true);
@@ -188,7 +211,20 @@
         });
         input.addEventListener('keydown', (event) => {
             if ((input.readOnly || input.disabled) && event.key !== 'Escape') return;
-            if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+            if (event.key === 'Enter') {
+                if (!isOpen) {
+                    event.preventDefault();
+                    pendingEnter = true;
+                    openWithResults();
+                } else if (results.length) {
+                    event.preventDefault();
+                    if (activeIndex >= 0) selectResult(activeIndex);
+                    else selectRecommendedResult();
+                } else if (list.getAttribute('aria-busy') === 'true') {
+                    event.preventDefault();
+                    pendingEnter = true;
+                }
+            } else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
                 event.preventDefault();
                 if (!isOpen) {
                     openWithResults();
@@ -201,9 +237,6 @@
                         : (activeIndex + direction + results.length) % results.length;
                     setActive(nextIndex);
                 }
-            } else if (event.key === 'Enter' && isOpen && activeIndex >= 0) {
-                event.preventDefault();
-                selectResult(activeIndex);
             } else if (event.key === 'Escape' && isOpen) {
                 event.preventDefault();
                 setOpen(false);
