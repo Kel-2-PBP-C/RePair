@@ -129,7 +129,24 @@ Pada modul ini, user dapat melihat seluruh post yang pernah dibuat, menghapus po
                 <li>Menghapus barang yang belum dibarter.</li>
                 <li>Barang yang sudah dibarter tidak dapat dihapus supaya data review user tetap dapat dipertahankan.</li>
             </ul>
-    3. AI Disclosure (to be written)
+    3. AI Disclosure
+        1. Tools
+            <ul>
+                <li>Gemini 4 Argon (web)</li>
+                <li>Claude Sonnet 5.5 (web)</li>
+                <li>GPT-6 Luna (VS Code)</li>
+            </ul>
+        2. Prompt Strategy
+            <ul>
+                <li>Merancang keseluruhan alur modul serta komponen-komponen yang hendak dibuat terlebih dahulu kemudian menggunakan AI untuk membantu merealisasikan pondasi dari modul.</li>
+                <li>Integrasi antar perbaikan yang diberikan oleh AI dilakukan secara manual.</li>
+                <li>Bug Fixing bersifat detail kecil (salah satu poin terbesarnya pada bug karena hierarchy CSS) diselesaikan dengan bantuan AI supaya pengembangan dapat berfokus ke scope yang lebih besar.  </li>
+            </ul>
+        3. Prompting Log
+            1. Membentuk struktur proyek: https://share.gemini.google/DpZbZ8UDxCgI
+            2. Menambah toast: https://share.gemini.google/lfVTLD3xBQXU
+            3. Memperbaiki UI: https://claude.ai/share/56659c6d-aa10-4961-b9fb-f088c00cd4ee
+            4. Bug fixing: GPT-6 Luna (dalam session VS Code)
 
 5. Modul Profil & Setting (PIC: Aisha Ibnaty Zahira)
 Dalam modul ini, user dapat melihat detail akun, mengubah password, dan mengubah preferensi penggunaan aplikasi
