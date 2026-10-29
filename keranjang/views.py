@@ -1,13 +1,16 @@
 
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.db import IntegrityError
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_GET, require_POST
 
 from .models import CartItem
 from barter_details.models import Barter
 
 
 @login_required
+@require_GET
 def keranjang(request):
     cart_items = (
         CartItem.objects
@@ -15,51 +18,81 @@ def keranjang(request):
         .select_related("barter")
     )
 
+    # Pencarian barang berdasarkan nama.
+    search_query = request.GET.get("q", "").strip()
+    if search_query:
+        cart_items = cart_items.filter(
+            barter__title__icontains=search_query
+        )
+
+    # Filter barang berdasarkan lokasi.
+    location_query = request.GET.get("location", "").strip()
+    if location_query:
+        cart_items = cart_items.filter(
+            barter__item_location__icontains=location_query
+        )
+
     return render(
         request,
         "keranjang/keranjang.html",
-        {"cart_items": cart_items},
+        {
+            "cart_items": cart_items,
+            "search_query": search_query,
+            "location_query": location_query,
+        },
     )
 
 
 @login_required
+@require_POST
 def tambah_keranjang(request, barter_id):
-    if request.method != "POST":
-        return redirect("keranjang")
-
     barter = get_object_or_404(Barter, pk=barter_id)
 
+    # Pengguna tidak boleh menyimpan barang miliknya sendiri.
     if barter.owner_id == request.user.id:
         messages.warning(
             request,
-            "Kamu tidak perlu menyimpan barang milikmu sendiri.",
+            "Kamu tidak dapat menyimpan barang milikmu sendiri.",
         )
         return redirect("keranjang")
 
-    _, created = CartItem.objects.get_or_create(
-        user=request.user,
-        barter=barter,
-    )
+    try:
+        _, created = CartItem.objects.get_or_create(
+            user=request.user,
+            barter=barter,
+        )
+    except IntegrityError:
+        # Menangani kemungkinan duplikasi akibat permintaan bersamaan.
+        created = False
 
     if created:
-        messages.success(request, "Barang berhasil ditambahkan ke keranjang.")
+        messages.success(
+            request,
+            "Barang berhasil ditambahkan ke keranjang.",
+        )
     else:
-        messages.info(request, "Barang sudah ada di keranjang.")
+        messages.info(
+            request,
+            "Barang tersebut sudah ada di keranjang.",
+        )
 
     return redirect("keranjang")
 
 
 @login_required
+@require_POST
 def hapus_keranjang(request, item_id):
-    if request.method != "POST":
-        return redirect("keranjang")
-
+    # Item hanya dapat dihapus oleh pemilik keranjangnya.
     item = get_object_or_404(
         CartItem,
         pk=item_id,
         user=request.user,
     )
+
     item.delete()
 
-    messages.success(request, "Barang berhasil dihapus dari keranjang.")
+    messages.success(
+        request,
+        "Barang berhasil dihapus dari keranjang.",
+    )
     return redirect("keranjang")
