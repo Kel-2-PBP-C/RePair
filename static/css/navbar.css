@@ -179,10 +179,10 @@ a.repair-navbar-link[aria-current='page']:hover {
     .repair-navbar-brand { display: none; }
 
     .repair-navbar-menu {
-        display: grid;
-        grid-template-columns: repeat(5, minmax(0, 1fr));
-        gap: 0;
-        width: 100%;
+        display: flex;
+        justify-content: center;
+        width: min(100%, 560px);
+        margin-inline: auto;
     }
 
     .repair-navbar-link,
@@ -201,7 +201,7 @@ a.repair-navbar-link[aria-current='page']:hover {
         line-height: 1.2;
     }
 
-    .repair-navbar-link { color: #6B7280; }
+    .repair-navbar-link { flex: 1 1 0; max-width: 112px; color: #6B7280; }
     .repair-navbar-link[aria-current='page']::after { display: none; }
 
     /* The icon sits in a pill that fills for the current page and on press. */

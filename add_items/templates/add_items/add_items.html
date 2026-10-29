@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="{% static 'add.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/toast.css' %}">
+    <script src="{% static 'js/toast.js' %}" defer></script>
 </head>
 
 <body>
@@ -164,10 +166,10 @@
                     } else if (response.status === 400 && data.errors) {
                         showFieldErrors(data.errors);
                     } else {
-                        showToast(data.message || 'Terjadi kesalahan.', 'error');
+                        showToast(data.message || 'Barang gagal disimpan. Periksa kembali data dan coba lagi.', 'error');
                     }
                 } catch (err) {
-                    showToast('Tidak dapat terhubung ke server. Coba lagi.', 'error');
+                    showToast('Koneksi ke server terputus. Periksa jaringan dan coba lagi.', 'error');
                 } finally {
                     submitButton.disabled = false;
                     submitButton.textContent = 'Simpan';

@@ -7,8 +7,129 @@
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/profile-post.css' %}">
 <style>
-    #toast-container {
-        z-index: calc(var(--navbar-z-index, 100) + 30);
+    .profile-confirm-dialog {
+        width: min(100% - 2rem, 28rem);
+        margin: auto;
+        padding: 0;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+        border-radius: 1rem;
+        background: #fff;
+        color: #0f172a;
+        box-shadow: 0 24px 60px rgba(15, 23, 42, 0.24);
+    }
+
+    .profile-confirm-dialog::backdrop {
+        background: rgba(15, 23, 42, 0.58);
+        backdrop-filter: blur(4px);
+    }
+
+    .profile-confirm-content {
+        padding: 1.5rem;
+    }
+
+    .profile-confirm-icon {
+        display: grid;
+        width: 2.75rem;
+        height: 2.75rem;
+        margin-bottom: 1rem;
+        place-items: center;
+        border-radius: 0.875rem;
+        background: #eff6ff;
+        color: #1d4ed8;
+    }
+
+    .profile-confirm-dialog[data-variant="danger"] .profile-confirm-icon {
+        background: #fef2f2;
+        color: #b91c1c;
+    }
+
+    .profile-confirm-icon svg {
+        width: 1.35rem;
+        height: 1.35rem;
+    }
+
+    .profile-confirm-eyebrow {
+        margin-bottom: 0.35rem;
+        color: #64748b;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+
+    .profile-confirm-title {
+        font-size: 1.125rem;
+        font-weight: 700;
+        line-height: 1.4;
+    }
+
+    .profile-confirm-message {
+        margin-top: 0.5rem;
+        color: #475569;
+        font-size: 0.875rem;
+        line-height: 1.6;
+    }
+
+    .profile-confirm-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.625rem;
+        padding: 1rem 1.5rem;
+        border-top: 1px solid #e2e8f0;
+        background: #f8fafc;
+    }
+
+    .profile-confirm-button {
+        min-height: 2.5rem;
+        padding: 0.625rem 1rem;
+        border: 1px solid transparent;
+        border-radius: 0.625rem;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .profile-confirm-cancel {
+        border-color: #cbd5e1;
+        background: #fff;
+        color: #334155;
+    }
+
+    .profile-confirm-cancel:hover {
+        background: #f1f5f9;
+    }
+
+    .profile-confirm-submit {
+        background: #166534;
+        color: #fff;
+    }
+
+    .profile-confirm-submit:hover {
+        background: #14532d;
+    }
+
+    .profile-confirm-dialog[data-variant="danger"] .profile-confirm-submit {
+        background: #b91c1c;
+    }
+
+    .profile-confirm-dialog[data-variant="danger"] .profile-confirm-submit:hover {
+        background: #991b1b;
+    }
+
+    .profile-confirm-button:focus-visible {
+        outline: 3px solid rgba(37, 99, 235, 0.35);
+        outline-offset: 2px;
+    }
+
+    @media (max-width: 480px) {
+        .profile-confirm-actions {
+            flex-direction: column-reverse;
+        }
+
+        .profile-confirm-button {
+            width: 100%;
+        }
     }
 </style>
 {% endblock %}
@@ -16,7 +137,6 @@
 
 {% block content %}
     <!-- TOAST FEEDBACK STACK -->
-    <div id="toast-container" role="region" aria-label="Notifikasi" aria-live="polite" class="toast-stack"></div>
 
     <!-- PAGE HEADER -->
     <header class="mb-6">
@@ -346,6 +466,29 @@
             </form>
         </div>
     </div>
+
+    <dialog id="profile-confirm-dialog" class="profile-confirm-dialog"
+            aria-labelledby="profile-confirm-title" aria-describedby="profile-confirm-message">
+        <div class="profile-confirm-content">
+            <div class="profile-confirm-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 9v4"/>
+                    <path d="M12 17h.01"/>
+                    <path d="M10.3 3.9 1.8 18.2A2 2 0 0 0 3.5 21h17a2 2 0 0 0 1.7-2.8L13.7 3.9a2 2 0 0 0-3.4 0Z"/>
+                </svg>
+            </div>
+            <p class="profile-confirm-eyebrow">Konfirmasi tindakan</p>
+            <h2 id="profile-confirm-title" class="profile-confirm-title"></h2>
+            <p id="profile-confirm-message" class="profile-confirm-message"></p>
+        </div>
+        <div class="profile-confirm-actions">
+            <button type="button" class="profile-confirm-button profile-confirm-cancel"
+                    id="profile-confirm-cancel" autofocus>Batal</button>
+            <button type="button" class="profile-confirm-button profile-confirm-submit"
+                    id="profile-confirm-submit">Lanjutkan</button>
+        </div>
+    </dialog>
 {% endblock %}
 
 
@@ -425,136 +568,6 @@
 
     function icon(name, cls = 'w-4 h-4') {
         return `<svg class="${cls} shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON_PATHS[name] || ''}</svg>`;
-    }
-
-    // ==========================================
-    // TOAST NOTIFICATION FEEDBACK SYSTEM
-    // ==========================================
-    const toastContainer = document.getElementById('toast-container');
-    const TOAST_CONFIG = {
-        add: {
-            variantClass: 'toast-add',
-            iconName: 'check',
-            defaultTitle: 'Post ditambahkan'
-        },
-        edit: {
-            variantClass: 'toast-edit',
-            iconName: 'edit',
-            defaultTitle: 'Post diperbarui'
-        },
-        delete: {
-            variantClass: 'toast-delete',
-            iconName: 'trash',
-            defaultTitle: 'Post dihapus'
-        },
-        error: {
-            variantClass: 'toast-delete',
-            iconName: 'x',
-            defaultTitle: 'Terjadi kesalahan'
-        }
-    };
-
-    function showToast({ type = 'add', title = '', message = '', duration = 3600 } = {}) {
-        if (!toastContainer) return;
-        const cfg = TOAST_CONFIG[type] || TOAST_CONFIG.add;
-        const toastDuration = Number.isFinite(Number(duration)) ? Math.max(0, Number(duration)) : 3600;
-        const toastEl = document.createElement('div');
-        toastEl.setAttribute('role', type === 'error' ? 'alert' : 'status');
-        toastEl.className = `toast-card ${cfg.variantClass}`;
-
-        const resolvedTitle = title || cfg.defaultTitle;
-        const innerHtml = `
-            <div class="toast-icon-wrap w-8 h-8 rounded-lg flex items-center justify-center shrink-0">
-                ${icon(cfg.iconName, 'w-4 h-4')}
-            </div>
-            <div class="flex-1 min-w-0 pr-1">
-                <p class="text-xs font-semibold leading-5 truncate">${escapeHtml(resolvedTitle)}</p>
-                ${message ? `<p class="text-xs opacity-80 leading-relaxed mt-0.5">${escapeHtml(message)}</p>` : ''}
-            </div>
-            <button type="button" data-dismiss-toast aria-label="Tutup notifikasi"
-                class="w-6 h-6 inline-flex items-center justify-center rounded-md text-slate-400 hover:text-slate-700 hover:bg-black/5 transition shrink-0">
-                ${icon('x', 'w-3.5 h-3.5')}
-            </button>
-            <div class="toast-progress-bar" style="animation-duration: ${toastDuration}ms"></div>
-        `;
-        toastEl.innerHTML = DOMPurify.sanitize(innerHtml);
-
-        let remaining = toastDuration;
-        let startedAt = 0;
-        let timeoutId = null;
-        let isPaused = false;
-        let isDismissed = false;
-        let timerInitialized = false;
-        let removalTimeoutId = null;
-        let isPointerInside = false;
-        let hasFocusInside = false;
-
-        function dismissToast() {
-            if (isDismissed) return;
-            isDismissed = true;
-            if (timeoutId !== null) clearTimeout(timeoutId);
-            if (removalTimeoutId !== null) clearTimeout(removalTimeoutId);
-            toastEl.classList.remove('is-visible');
-            toastEl.classList.add('is-leaving');
-            removalTimeoutId = setTimeout(() => toastEl.remove(), 320);
-        }
-
-        function startTimer() {
-            if (isDismissed || isPaused || timeoutId !== null) return;
-            if (remaining <= 0) {
-                dismissToast();
-                return;
-            }
-            startedAt = performance.now();
-            timeoutId = setTimeout(dismissToast, remaining);
-        }
-
-        function syncTimerPauseState() {
-            const shouldPause = isPointerInside || hasFocusInside;
-            if (isDismissed || shouldPause === isPaused) return;
-
-            if (shouldPause) {
-                isPaused = true;
-                if (timeoutId !== null) {
-                    clearTimeout(timeoutId);
-                    timeoutId = null;
-                    remaining = Math.max(0, remaining - (performance.now() - startedAt));
-                }
-            } else {
-                isPaused = false;
-                if (timerInitialized) startTimer();
-            }
-        }
-
-        toastEl.addEventListener('pointerenter', () => {
-            isPointerInside = true;
-            syncTimerPauseState();
-        });
-        toastEl.addEventListener('pointerleave', () => {
-            isPointerInside = false;
-            syncTimerPauseState();
-        });
-        toastEl.addEventListener('focusin', () => {
-            hasFocusInside = true;
-            syncTimerPauseState();
-        });
-        toastEl.addEventListener('focusout', (event) => {
-            if (!toastEl.contains(event.relatedTarget)) {
-                hasFocusInside = false;
-                syncTimerPauseState();
-            }
-        });
-
-        const closeBtn = toastEl.querySelector('[data-dismiss-toast]');
-        if (closeBtn) closeBtn.addEventListener('click', dismissToast);
-
-        toastContainer.appendChild(toastEl);
-        requestAnimationFrame(() => {
-            if (isDismissed) return;
-            toastEl.classList.add('is-visible');
-            timerInitialized = true;
-            startTimer();
-        });
     }
 
     const PERIOD_BTN_ACTIVE = 'period-btn px-3 py-1 rounded-md text-xs font-semibold bg-white text-slate-900 shadow-sm transition';
@@ -1054,6 +1067,41 @@
         offersModal.classList.remove('flex');
     });
 
+    function confirmAction({ title, message, confirmLabel, variant = 'default' }) {
+        const dialog = document.getElementById('profile-confirm-dialog');
+        const cancelButton = document.getElementById('profile-confirm-cancel');
+        const confirmButton = document.getElementById('profile-confirm-submit');
+
+        return new Promise((resolve) => {
+            dialog.dataset.variant = variant;
+            document.getElementById('profile-confirm-title').textContent = title;
+            document.getElementById('profile-confirm-message').textContent = message;
+            confirmButton.textContent = confirmLabel;
+
+            const finish = (result) => {
+                if (dialog.open) dialog.close(result ? 'confirm' : 'cancel');
+            };
+            const handleClose = () => {
+                cancelButton.removeEventListener('click', cancelAction);
+                confirmButton.removeEventListener('click', confirmActionClick);
+                dialog.removeEventListener('click', handleBackdropClick);
+                resolve(dialog.returnValue === 'confirm');
+            };
+            const cancelAction = () => finish(false);
+            const confirmActionClick = () => finish(true);
+            const handleBackdropClick = (event) => {
+                if (event.target === dialog) finish(false);
+            };
+
+            dialog.addEventListener('close', handleClose, { once: true });
+            cancelButton.addEventListener('click', cancelAction);
+            confirmButton.addEventListener('click', confirmActionClick);
+            dialog.addEventListener('click', handleBackdropClick);
+            dialog.showModal();
+            cancelButton.focus();
+        });
+    }
+
     window.selectOfferForLock = async function(postId, offerId) {
         const formData = new FormData();
         formData.append('offer_id', offerId);
@@ -1072,7 +1120,12 @@
     };
 
     window.cancelNegotiation = async function(postId) {
-        if (!confirm('Batalkan negosiasi ini? Status barang akan kembali menjadi Tersedia.')) return;
+        if (!await confirmAction({
+            title: 'Batalkan negosiasi?',
+            message: 'Status barang akan kembali menjadi Tersedia dan penawar terpilih tidak lagi dikunci.',
+            confirmLabel: 'Batalkan negosiasi',
+            variant: 'danger'
+        })) return;
         const res = await fetch(buildUrl(URL_TEMPLATES.cancel, postId), {
             method: 'POST',
             headers: { 'X-CSRFToken': getCsrfToken() }
@@ -1081,7 +1134,11 @@
     };
 
     window.completeBarter = async function(postId) {
-        if (!confirm('Selesaikan barter ini sekarang? Status akan dikunci menjadi Sudah Dibarter.')) return;
+        if (!await confirmAction({
+            title: 'Selesaikan barter?',
+            message: 'Status barang akan menjadi Sudah Dibarter dan tidak dapat dikembalikan ke status sebelumnya.',
+            confirmLabel: 'Selesaikan barter'
+        })) return;
         const res = await fetch(buildUrl(URL_TEMPLATES.complete, postId), {
             method: 'POST',
             headers: { 'X-CSRFToken': getCsrfToken() }
@@ -1305,7 +1362,12 @@
     }
 
     window.deletePost = async function(postId) {
-        if (!confirm('Hapus post barter ini?')) return;
+        if (!await confirmAction({
+            title: 'Hapus post barter?',
+            message: 'Post ini akan dihapus secara permanen dan tidak dapat dipulihkan.',
+            confirmLabel: 'Hapus post',
+            variant: 'danger'
+        })) return;
         const cachedPost = state.postsCache[postId];
         const deletedTitle = cachedPost ? cachedPost.title : '';
 

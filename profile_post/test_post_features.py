@@ -241,7 +241,14 @@ class PostFeatureTests(TestCase):
         response = self.client.get(reverse("profile_post:show_posts"))
 
         self.assertContains(response, "Belum ada tawaran untuk barang ini.")
-        self.assertContains(response, "z-index: calc(var(--navbar-z-index, 100) + 30);")
+        self.assertContains(response, 'id="toast-container"')
+        self.assertContains(response, 'href="/static/css/toast.css"')
+        self.assertContains(response, 'id="profile-confirm-dialog"')
+        self.assertContains(response, "Konfirmasi tindakan")
+        self.assertContains(response, "Batalkan negosiasi")
+        self.assertContains(response, "Selesaikan barter")
+        self.assertContains(response, "Hapus post")
+        self.assertNotContains(response, "if (!confirm(")
 
     def test_category_is_returned_by_posts_api_and_shown_on_detail(self):
         post = Post.objects.create(

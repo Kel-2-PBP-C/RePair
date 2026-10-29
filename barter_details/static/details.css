@@ -7,7 +7,7 @@
 
 :root {
     --white: #ffffff;
-    --off-white: #efefef;
+    --off-white: #f5f7f2;
     --green-1: #f7fcf5;
     --green-2: #e5f5e0;
     --green-3: #c7e9c0;
@@ -70,6 +70,7 @@ body {
     max-width: calc(100% + 3rem);
     padding: 1.5rem;
     background-color: var(--white);
+    border: 1px solid #e4e9e2;
     display: flex;
     flex-direction: row;
     gap: 2rem;
@@ -202,6 +203,7 @@ body {
     max-width: 100%;
     min-height: 300px;
     background-color: var(--white);
+    border: 1px solid #e4e9e2;
     border-radius: 2rem;
     padding: 2rem;
     margin-bottom: 100px;

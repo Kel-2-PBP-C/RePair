@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
     <link rel="stylesheet" href="{% static 'details.css' %}">
     <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/toast.css' %}">
+    <script src="{% static 'js/toast.js' %}" defer></script>
 </head>
 
 <body>
@@ -377,10 +379,10 @@
                     } else if (response.status === 400 && data.errors) {
                         showFieldErrors(data.errors);
                     } else {
-                        showToast(data.message || 'Terjadi kesalahan.', 'error');
+                        showToast(data.message || 'Penawaran gagal dikirim. Periksa kembali data dan coba lagi.', 'error');
                     }
                 } catch (err) {
-                    showToast('Tidak dapat terhubung ke server. Coba lagi.', 'error');
+                    showToast('Koneksi ke server terputus. Periksa jaringan dan coba lagi.', 'error');
                 } finally {
                     submitButton.disabled = false;
                     submitButton.textContent = 'Konfirmasi';
@@ -422,9 +424,7 @@
         async function handleConfirm() {
             confirmButton.disabled = true;
 
-            // TODO: sambungin ke endpoint keranjang
-
-            showToast('Barang ditambahkan ke keranjang!', 'success');
+            showToast('Penambahan barang ke keranjang dari halaman detail belum tersedia.', 'warning');
             setTimeout(closeModal, 1000);
         }
 
@@ -477,11 +477,11 @@
                     modal.close();
                     setTimeout(() => { window.location.href = getBackUrl(data.redirect_url); }, 800);
                 } else {
-                    showToast(data.message || 'Gagal menghapus.', 'error');
+                    showToast(data.message || 'Barang gagal dihapus. Silakan coba lagi.', 'error');
                     confirmButton.disabled = false;
                 }
             } catch (err) {
-                showToast('Tidak dapat terhubung ke server. Coba lagi.', 'error');
+                showToast('Koneksi ke server terputus. Periksa jaringan dan coba lagi.', 'error');
                 confirmButton.disabled = false;
             }
         });
