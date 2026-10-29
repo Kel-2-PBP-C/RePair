@@ -1,4 +1,3 @@
-
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
@@ -18,14 +17,12 @@ def keranjang(request):
         .select_related("barter")
     )
 
-    # Pencarian barang berdasarkan nama.
     search_query = request.GET.get("q", "").strip()
     if search_query:
         cart_items = cart_items.filter(
             barter__title__icontains=search_query
         )
 
-    # Filter barang berdasarkan lokasi.
     location_query = request.GET.get("location", "").strip()
     if location_query:
         cart_items = cart_items.filter(
@@ -48,13 +45,12 @@ def keranjang(request):
 def tambah_keranjang(request, barter_id):
     barter = get_object_or_404(Barter, pk=barter_id)
 
-    # Pengguna tidak boleh menyimpan barang miliknya sendiri.
     if barter.owner_id == request.user.id:
         messages.warning(
             request,
             "Kamu tidak dapat menyimpan barang milikmu sendiri.",
         )
-        return redirect("keranjang")
+        return redirect("keranjang:keranjang")
 
     try:
         _, created = CartItem.objects.get_or_create(
@@ -62,7 +58,6 @@ def tambah_keranjang(request, barter_id):
             barter=barter,
         )
     except IntegrityError:
-        # Menangani kemungkinan duplikasi akibat permintaan bersamaan.
         created = False
 
     if created:
@@ -76,13 +71,12 @@ def tambah_keranjang(request, barter_id):
             "Barang tersebut sudah ada di keranjang.",
         )
 
-    return redirect("keranjang")
+    return redirect("keranjang:keranjang")
 
 
 @login_required
 @require_POST
 def hapus_keranjang(request, item_id):
-    # Item hanya dapat dihapus oleh pemilik keranjangnya.
     item = get_object_or_404(
         CartItem,
         pk=item_id,
@@ -95,4 +89,4 @@ def hapus_keranjang(request, item_id):
         request,
         "Barang berhasil dihapus dari keranjang.",
     )
-    return redirect("keranjang")
+    return redirect("keranjang:keranjang")
