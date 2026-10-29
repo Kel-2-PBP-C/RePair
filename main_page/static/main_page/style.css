@@ -237,3 +237,85 @@ a[href*="create"] button:hover {
         width: auto;
     }
 }
+
+/* ===== TOMBOL AKSI BARANG ===== */
+
+.barang-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 22px;
+    border-radius: 16px;
+    background: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.barang-card > a:first-child {
+    text-decoration: none;
+    color: #24533c;
+}
+
+.barang-card h3 {
+    margin: 10px 0 0;
+}
+
+.barang-card p {
+    margin: 0;
+    color: #24533c;
+}
+
+/* Semua tombol punya ukuran konsisten */
+.barang-card > a:not(:first-child),
+.barang-card form button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 46px;
+    padding: 12px 16px;
+    box-sizing: border-box;
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.barang-card form {
+    margin: 0;
+    width: 100%;
+}
+
+/* Tombol Edit */
+.barang-card > a:not(:first-child) {
+    background: #e8f5ec;
+    color: #08783e;
+    border: 1px solid #08783e;
+}
+
+.barang-card > a:not(:first-child):hover {
+    background: #d4ebdc;
+}
+
+/* Tombol Hapus */
+.barang-card .delete-barang-form button {
+    background: #fff0ee;
+    color: #c0392b;
+    border: 1px solid #e5a39c;
+}
+
+.barang-card .delete-barang-form button:hover {
+    background: #ffe0dc;
+}
+
+/* Tombol Add to Cart */
+.barang-card form:not(.delete-barang-form) button {
+    background: #008e49;
+    color: white;
+    border: none;
+}
+
+.barang-card form:not(.delete-barang-form) button:hover {
+    background: #006e38;
+}

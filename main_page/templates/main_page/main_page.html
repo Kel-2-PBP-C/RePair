@@ -52,7 +52,20 @@
                 <h3>{{ item.title }}</h3>
             </a>
 
-            <p>Kondisi: {{ item.condition }}%</p>
+            <p>Kondisi: {{ item.condition_percentage }}%</p>
+
+            {% if user.is_authenticated and item.owner_id == user.id %}
+                <a href="{% url 'add_items:edit' item.pk %}">
+                    ✏️ Edit Barang
+                </a>
+
+                <form class="delete-barang-form"
+                    action="{% url 'add_items:delete' item.pk %}"
+                    method="POST">
+                    {% csrf_token %}
+                    <button type="submit">🗑️ Hapus Barang</button>
+                </form>
+            {% endif %}
 
             <form method="POST" action="{% url 'keranjang:tambah_keranjang' item.pk %}">
                 {% csrf_token %}
@@ -67,5 +80,45 @@
         {% endif %}
     {% endfor %}
 </div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script>
+
+document.querySelectorAll('.delete-barang-form').forEach(form => {
+    form.addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        if (!confirm('Yakin mau hapus barang ini?')) {
+            return;
+        }
+
+        const button = form.querySelector('button');
+        button.disabled = true;
+
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                credentials: 'same-origin'
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Gagal menghapus barang.');
+            }
+
+            form.closest('.barang-card').remove();
+            alert('Barang berhasil dihapus!');
+        } catch (error) {
+            alert(error.message);
+            button.disabled = false;
+        }
+    });
+});
+</script>
 
 {% endblock %}

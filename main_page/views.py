@@ -1,10 +1,8 @@
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.views.decorators.http import require_GET
 from barter_details.models import Barter
 
 
-# @login_required
 @require_GET
 def show_main(request):
     items = Barter.objects.all()
@@ -19,11 +17,17 @@ def show_main(request):
 
     # Filter berdasarkan persentase kondisi barang
     if kondisi == 'baik':
-        items = items.filter(condition__gte=80, condition__lte=100)
+        items = items.filter(
+            condition_percentage__gte=80,
+            condition_percentage__lte=100
+        )
     elif kondisi == 'cukup':
-        items = items.filter(condition__gte=50, condition__lt=80)
+        items = items.filter(
+            condition_percentage__gte=50,
+            condition_percentage__lt=80
+        )
     elif kondisi == 'kurang':
-        items = items.filter(condition__lt=50)
+        items = items.filter(condition_percentage__lt=50)
 
     context = {
         'items': items,
