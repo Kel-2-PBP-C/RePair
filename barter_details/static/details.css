@@ -120,6 +120,12 @@ body {
 
 .item-description {
     width: 60%;
+    min-width: 0;
+}
+
+.item-description p {
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
 }
 
 .owner {
@@ -319,6 +325,43 @@ body {
     flex-direction: column;
     gap: 6px;
     margin-bottom: 14px;
+    position: relative;
+}
+
+.region-dropdown {
+    position: absolute;
+    top: calc(100% - 14px);
+    left: 0;
+    right: 0;
+    z-index: 5;
+    max-height: 11rem;
+    overflow-y: auto;
+    padding: 0.25rem 0;
+    background: var(--white);
+    border: 1px solid var(--off-white);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.region-option {
+    display: block;
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    border: 0;
+    background: transparent;
+    color: var(--ink);
+    text-align: left;
+    cursor: pointer;
+}
+
+.region-option:hover {
+    background: var(--green-1);
+}
+
+.region-dropdown p {
+    padding: 0.6rem 0.75rem;
+    color: var(--ink);
+    font-size: 0.85rem;
 }
 
 .bid-modal label {

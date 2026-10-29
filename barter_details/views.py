@@ -18,8 +18,8 @@ def barter_detail(request, pk):
     other_items = Barter.objects.filter(owner=barter.owner).exclude(pk=pk)[:6]
     return render(request, 'barter_details/details.html', {
         'barter': barter,
-        'profile_initials': profile_initials(request.user),
-        'preferred_contact': _get_user_contact(request.user),
+        'profile_initials': profile_initials(barter.owner),
+        'preferred_contact': _get_user_contact(barter.owner),
         'other_items': other_items,
         'bid_form': BidForm(auto_id='%'),
     })
@@ -34,7 +34,7 @@ def submit_bid_ajax(request, pk):
     if target.owner == request.user:
         return JsonResponse({'message': 'Kamu tidak bisa membuat Bid untuk barang sendiri!'}, status=403)
     
-    form=BidForm(request.POST)
+    form = BidForm(request.POST)
     if request.method == "POST":
         if form.is_valid():
             bid = form.save(commit=False)

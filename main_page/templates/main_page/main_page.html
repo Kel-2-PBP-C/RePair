@@ -21,14 +21,14 @@
 
     <select name="kondisi">
         <option value="">Semua Kondisi</option>
-        <option value="baik" {% if kondisi == 'baik' %}selected{% endif %}>
-            Kondisi 80–100%
+        <option value="NEW" {% if kondisi == 'NEW' %}selected{% endif %}>
+            Baru
         </option>
-        <option value="cukup" {% if kondisi == 'cukup' %}selected{% endif %}>
-            Kondisi 50–79%
+        <option value="GOOD" {% if kondisi == 'GOOD' %}selected{% endif %}>
+            Bekas - Layak Pakai
         </option>
-        <option value="kurang" {% if kondisi == 'kurang' %}selected{% endif %}>
-            Kondisi di bawah 50%
+        <option value="REPAIR" {% if kondisi == 'REPAIR' %}selected{% endif %}>
+            Butuh Perbaikan
         </option>
     </select>
 
@@ -37,9 +37,12 @@
 </div>
 
 <div class="rekomendasi-header">
-    <h2>Rekomendasi Untuk Kamu</h2>
-
-    <a href="{% url 'add_items:create' %}" class="post-barang-link">
+    <div>
+        <h2>Rekomendasi Untuk Kamu</h2>
+        <span>Telusuri barang-barang untuk ditukar.</span>
+    </div>
+    
+    <a href="{% url 'profile_post:show_posts' %}?create=1" class="post-barang-link">
         + Post Barang
     </a>
 </div>
@@ -52,11 +55,11 @@
                 <h3>{{ item.title }}</h3>
             </a>
 
-            <p>Kondisi: {{ item.condition }}%</p>
+            <p>Kondisi: {{ item.get_condition_display }}</p>
 
             <form method="POST" action="{% url 'keranjang:tambah_keranjang' item.pk %}">
                 {% csrf_token %}
-                <button type="submit">Add to Cart</button>
+                <button type="submit">Tambah ke Keranjang</button>
             </form>
         </div>
     {% empty %}

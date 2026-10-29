@@ -23,7 +23,8 @@ def valid_data(**overrides):
         'description': 'Jaket Kuning',
         'thumbnail': 'https://img.lazcdn.com/g/ff/kf/S1d679a22be3b4a65bc6d6565a9b3f030j.jpg_720x720q80.jpg',
         'item_year': '2025',
-        'condition': '78',
+        'condition': Barter.ConditionChoices.GOOD,
+        'condition_percentage': '78',
         'item_location': 'Depok',
         'item_replacement': 'Jamal ITB',
     }
@@ -174,12 +175,16 @@ class EditBarterAjaxTests(BaseTestCase):
  
     def test_owner_can_update(self):
         self.login()
-        response = self.client.post(self.url, valid_data(title='Jakang Arung', condition=90))
+        response = self.client.post(
+            self.url,
+            valid_data(title='Jakang Arung', condition_percentage=90),
+        )
         self.assertEqual(response.status_code, 200)
  
         self.barter.refresh_from_db()
         self.assertEqual(self.barter.title, 'Jakang Arung')
-        self.assertEqual(self.barter.condition, 90)
+        self.assertEqual(self.barter.condition, Barter.ConditionChoices.GOOD)
+        self.assertEqual(self.barter.condition_percentage, 90)
         self.assertEqual(
             response.json()['redirect_url'],
             reverse('barter_details:barter_detail', args=[self.barter.pk]),

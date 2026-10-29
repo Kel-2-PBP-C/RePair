@@ -114,11 +114,6 @@
                     </form>
 
                     <p class="cart-detail">
-                        <span class="detail-icon" aria-hidden="true">▣</span>
-                        <span>{{ item.barter.item_year }}</span>
-                    </p>
-
-                    <p class="cart-detail">
                         <span class="detail-icon" aria-hidden="true">↻</span>
                         <span>{{ item.barter.item_replacement }}</span>
                     </p>
@@ -130,7 +125,7 @@
 
                     <p class="cart-detail">
                         <span class="detail-icon" aria-hidden="true">✓</span>
-                        <span>Kondisi: {{ item.barter.condition }}%</span>
+                        <span>Kondisi: {{ item.barter.get_condition_display|default:"-" }}</span>
                     </p>
 
                     <!-- Tombol penawaran dan hapus -->

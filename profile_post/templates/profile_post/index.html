@@ -474,7 +474,7 @@
             </div>
             <div class="flex-1 min-w-0 pr-1">
                 <p class="text-xs font-semibold leading-5 truncate">${escapeHtml(resolvedTitle)}</p>
-                ${message ? `<p class="text-xs opacity-80 leading-relaxed truncate mt-0.5">${escapeHtml(message)}</p>` : ''}
+                ${message ? `<p class="text-xs opacity-80 leading-relaxed mt-0.5">${escapeHtml(message)}</p>` : ''}
             </div>
             <button type="button" data-dismiss-toast aria-label="Tutup notifikasi"
                 class="w-6 h-6 inline-flex items-center justify-center rounded-md text-slate-400 hover:text-slate-700 hover:bg-black/5 transition shrink-0">
@@ -1258,6 +1258,7 @@
                 headers: { 'X-CSRFToken': getCsrfToken() },
                 body: formData
             });
+            const responseData = await res.json().catch(() => ({}));
 
             if (res.ok) {
                 closeModal();
@@ -1269,10 +1270,18 @@
                     message: itemTitle ? `"${itemTitle}" berhasil ${isEdit ? 'diperbarui' : 'dipublikasikan'}.` : ''
                 });
             } else {
+                const fieldErrors = responseData.errors
+                    ? Object.entries(responseData.errors)
+                        .flatMap(([, errors]) => {
+                            const messages = Array.isArray(errors) ? errors : [errors];
+                            return messages;
+                        })
+                        .join(' ')
+                    : '';
                 showToast({
                     type: 'error',
                     title: 'Gagal menyimpan post',
-                    message: 'Pastikan wilayah telah dipilih dari daftar.'
+                    message: fieldErrors || responseData.message || `Server menolak data post (kode ${res.status}).`
                 });
             }
         } catch (err) {
@@ -1283,6 +1292,10 @@
             });
         }
     });
+
+    if (new URLSearchParams(window.location.search).get('create') === '1') {
+        document.getElementById('btn-open-create').click();
+    }
 
     window.deletePost = async function(postId) {
         if (!confirm('Hapus post barter ini?')) return;

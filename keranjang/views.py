@@ -1,7 +1,6 @@
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db import IntegrityError
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_GET, require_POST
 
@@ -60,15 +59,12 @@ def tambah_keranjang(request, barter_id):
             request,
             "Kamu tidak dapat menyimpan barang milikmu sendiri.",
         )
-        return redirect("keranjang:keranjang")
+        return redirect("main_page:show_main")
 
-    try:
-        _, created = CartItem.objects.get_or_create(
-            user=request.user,
-            barter=barter,
-        )
-    except IntegrityError:
-        created = False
+    _, created = CartItem.objects.get_or_create(
+        user=request.user,
+        barter=barter,
+    )
 
     if created:
         messages.success(
@@ -81,7 +77,7 @@ def tambah_keranjang(request, barter_id):
             "Barang tersebut sudah ada di keranjang.",
         )
 
-    return redirect("keranjang:keranjang")
+    return redirect("main_page:show_main")
 
 
 @login_required

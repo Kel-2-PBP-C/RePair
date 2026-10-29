@@ -7,6 +7,7 @@ from django.utils import timezone
 
 from accounts.forms import ProfileForm
 from accounts.models import Profile
+from barter_details.models import Barter
 from profile_post.forms import PostForm
 from profile_post.models import BarterOffer, BarterReview, Post
 from profile_post.views import _format_created_at, _get_user_contact
@@ -38,6 +39,21 @@ class PostFeatureTests(TestCase):
             "preferred_barter": "A houseplant",
         }
 
+    def test_profile_post_uses_the_canonical_barter_model(self):
+        self.assertIs(Post, Barter)
+
+        post = Post.objects.create(
+            user=self.user,
+            title="A well-loved book",
+            description="In good condition",
+            location="Depok",
+            preferred_barter="A houseplant",
+        )
+
+        self.assertTrue(
+            Barter.objects.filter(pk=post.pk, is_profile_post=True).exists()
+        )
+
     def test_new_posts_require_a_category_and_legacy_posts_can_remain_uncategorized(self):
         self.assertFalse(PostForm(self.post_data(category="")).is_valid())
         self.assertTrue(PostForm(self.post_data()).is_valid())
@@ -61,6 +77,51 @@ class PostFeatureTests(TestCase):
 
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Post.objects.get().category, "elektronik")
+
+    def test_create_endpoint_accepts_a_selected_region_code_and_label(self):
+        response = self.client.post(
+            reverse("profile_post:create_post"),
+            {
+                **self.post_data(),
+                "location_code": "32.76",
+                "location": "Kota Depok, Jawa Barat",
+            },
+        )
+
+        self.assertEqual(response.status_code, 201)
+        post = Post.objects.get()
+        self.assertEqual(post.location_code, "32.76")
+        self.assertEqual(post.location, "Kota Depok, Jawa Barat")
+
+    def test_create_endpoint_accepts_single_character_title_and_description(self):
+        response = self.client.post(
+            reverse("profile_post:create_post"),
+            {
+                **self.post_data(),
+                "title": "A",
+                "description": "B",
+            },
+        )
+
+        self.assertEqual(response.status_code, 201)
+        post = Post.objects.get()
+        self.assertEqual(post.title, "A")
+        self.assertEqual(post.description, "B")
+
+    def test_create_validation_toast_errors_include_indonesian_field_labels(self):
+        response = self.client.post(
+            reverse("profile_post:create_post"),
+            {
+                **self.post_data(),
+                "title": "A" * 256,
+            },
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json()["errors"]["Nama barang"],
+            ["Nama barang: Maksimal 255 karakter."],
+        )
 
     def test_edit_endpoint_updates_the_selected_category(self):
         post = Post.objects.create(
@@ -224,7 +285,7 @@ class PostFeatureTests(TestCase):
 
         self.assertEqual(
             [post["id"] for post in response.json()["posts"]],
-            [more_offers.id, fewer_offers.id],
+            [str(more_offers.id), str(fewer_offers.id)],
         )
 
     def test_created_at_uses_indonesian_date_and_relative_time(self):
