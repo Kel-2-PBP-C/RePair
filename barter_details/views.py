@@ -8,6 +8,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 
+from accounts.utils import profile_initials
+from profile_post.views import _get_user_contact
 from .forms import BidForm
 from .models import Barter
 
@@ -16,6 +18,8 @@ def barter_detail(request, pk):
     other_items = Barter.objects.filter(owner=barter.owner).exclude(pk=pk)[:6]
     return render(request, 'barter_details/details.html', {
         'barter': barter,
+        'profile_initials': profile_initials(request.user),
+        'preferred_contact': _get_user_contact(request.user),
         'other_items': other_items,
         'bid_form': BidForm(auto_id='%'),
     })
