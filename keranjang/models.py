@@ -21,8 +21,11 @@ class CartItem(models.Model):
     # Waktu barang ditambahkan ke keranjang.
     created_at = models.DateTimeField(auto_now_add=True)
 
+    # Status favorit barang.
+    is_favorite = models.BooleanField(default=False)
+
     class Meta:
-        ordering = ["-created_at"]
+        ordering = ["-is_favorite", "-created_at"]
         constraints = [
             models.UniqueConstraint(
                 fields=["user", "barter"],

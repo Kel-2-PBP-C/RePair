@@ -32,6 +32,12 @@ def keranjang(request):
             barter__item_location__icontains=location_query
         )
 
+    # Barang favorit ditampilkan lebih dahulu.
+    cart_items = cart_items.order_by(
+        "-is_favorite",
+        "-created_at",
+    )
+
     return render(
         request,
         "keranjang/keranjang.html",
@@ -54,7 +60,7 @@ def tambah_keranjang(request, barter_id):
             request,
             "Kamu tidak dapat menyimpan barang milikmu sendiri.",
         )
-        return redirect("keranjang")
+        return redirect("keranjang:keranjang")
 
     try:
         _, created = CartItem.objects.get_or_create(
@@ -62,7 +68,6 @@ def tambah_keranjang(request, barter_id):
             barter=barter,
         )
     except IntegrityError:
-        # Menangani kemungkinan duplikasi akibat permintaan bersamaan.
         created = False
 
     if created:
@@ -76,7 +81,7 @@ def tambah_keranjang(request, barter_id):
             "Barang tersebut sudah ada di keranjang.",
         )
 
-    return redirect("keranjang")
+    return redirect("keranjang:keranjang")
 
 
 @login_required
@@ -95,4 +100,32 @@ def hapus_keranjang(request, item_id):
         request,
         "Barang berhasil dihapus dari keranjang.",
     )
-    return redirect("keranjang")
+    return redirect("keranjang:keranjang")
+
+
+@login_required
+@require_POST
+def toggle_favorit(request, item_id):
+    # User hanya dapat mengubah favorit barang miliknya sendiri.
+    item = get_object_or_404(
+        CartItem,
+        pk=item_id,
+        user=request.user,
+    )
+
+    # Mengubah status favorit.
+    item.is_favorite = not item.is_favorite
+    item.save(update_fields=["is_favorite"])
+
+    if item.is_favorite:
+        messages.success(
+            request,
+            "Barang berhasil ditambahkan ke favorit.",
+        )
+    else:
+        messages.info(
+            request,
+            "Barang dihapus dari favorit.",
+        )
+
+    return redirect("keranjang:keranjang")

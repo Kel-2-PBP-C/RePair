@@ -2,113 +2,116 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Keranjang | Re&Pair{% endblock %}
+{% block title %}Keranjang{% endblock %}
 {% block main_class %}cart-page{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/keranjang.css' %}">
 {% endblock %}
 
-{% block navbar %}
-<header class="repair-header">
-    <div class="header-top">
-        <a class="repair-brand" href="/" aria-label="Re&Pair Home">
-            <span class="brand-symbol" aria-hidden="true">
-                <svg viewBox="0 0 60 60" fill="none">
-                    <path d="M26 7C15 8 7 17 7 28c0 8 5 15 12 18"
-                          stroke="#39A96B" stroke-width="7" stroke-linecap="round"/>
-                    <path d="M8 19l-1 10 10-2"
-                          stroke="#39A96B" stroke-width="5"
-                          stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M34 53c11-1 19-10 19-21 0-8-5-15-12-18"
-                          stroke="#D7D900" stroke-width="7" stroke-linecap="round"/>
-                    <path d="M52 41l1-10-10 2"
-                          stroke="#D7D900" stroke-width="5"
-                          stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M20 19l19 22M40 18L20 42"
-                          stroke="#168447" stroke-width="5" stroke-linecap="round"/>
-                </svg>
-            </span>
-            <span class="brand-name">RePair<span>.</span></span>
-        </a>
+{% block content %}
+<section class="cart-container" aria-labelledby="cart-heading">
 
-        <nav class="desktop-nav" aria-label="Navigasi utama">
-            <a href="/" class="nav-link">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>
-                </svg>
-                <span>Home</span>
-            </a>
-
-            <a href="{% url 'keranjang' %}" class="nav-link active" aria-current="page">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M3 3h2l2.2 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 1.9-1.4L22 7H6"/>
-                    <circle cx="10" cy="20" r="1.5"/>
-                    <circle cx="19" cy="20" r="1.5"/>
-                </svg>
-                <span>Cart</span>
-            </a>
-
-            <a href="#" class="nav-link">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M4 4h16v13H8l-4 3z"/>
-                </svg>
-                <span>Forum</span>
-            </a>
-
-            <a href="#" class="nav-link">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <rect x="3" y="3" width="18" height="18" rx="2"/>
-                    <circle cx="8.5" cy="8.5" r="1.5"/>
-                    <path d="m21 15-5-5L5 21"/>
-                </svg>
-                <span>Posts</span>
-            </a>
-
-            <a href="#" class="nav-link">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <circle cx="12" cy="12" r="3"/>
-                    <path d="M19 13a7 7 0 0 0 0-2l2-1.5-2-3.5-2.3 1a7 7 0 0 0-2-1L14.3 3h-4.6l-.4 3a7 7 0 0 0-2 1L5 6 3 9.5 5 11a7 7 0 0 0 0 2l-2 1.5L5 18l2.3-1a7 7 0 0 0 2 1l.4 3h4.6l.4-3a7 7 0 0 0 2-1l2.3 1 2-3.5z"/>
-                </svg>
-                <span>Settings</span>
-            </a>
-        </nav>
+    <div class="cart-header">
+        <div>
+            <h1 class="cart-heading" id="cart-heading">Keranjang</h1>
+            <p class="cart-subtitle">
+                Barang yang kamu simpan untuk ditukar.
+            </p>
+        </div>
     </div>
 
-    <form class="header-search" method="get" action="{% url 'keranjang' %}">
-        <label class="sr-only" for="header-search-input">Cari barang</label>
+    <!-- Pencarian barang -->
+    <form
+        class="cart-search"
+        method="get"
+        action="{% url 'keranjang:keranjang' %}"
+    >
+        <label class="sr-only" for="cart-search-input">
+            Cari barang di keranjang
+        </label>
+
         <input
-            id="header-search-input"
+            id="cart-search-input"
             type="search"
             name="q"
             value="{{ search_query|default:'' }}"
-            placeholder="Search"
+            placeholder="Cari barang di keranjang..."
         >
-    </form>
-</header>
-{% endblock %}
 
-{% block content %}
-<section class="cart-container" aria-labelledby="cart-heading">
-    <h1 class="cart-heading" id="cart-heading">TES DESAIN BARU</h1>
+        <button type="submit">Cari</button>
+
+        {% if search_query %}
+            <a
+                class="clear-search"
+                href="{% url 'keranjang:keranjang' %}"
+            >
+                Reset
+            </a>
+        {% endif %}
+    </form>
+
+    <!-- Daftar barang -->
     <div class="cart-grid">
         {% for item in cart_items %}
-            <article class="cart-card">
-                {% if item.barter.thumbnail %}
-                    <img
-                        class="cart-image"
-                        src="{{ item.barter.thumbnail }}"
-                        alt="{{ item.barter.title }}"
-                        loading="lazy"
-                    >
-                {% else %}
-                    <div class="cart-image cart-image-empty">
-                        Gambar tidak tersedia
-                    </div>
-                {% endif %}
 
+            <article class="cart-card">
+
+                <!-- Gambar barang -->
+                <a
+                    class="cart-image-link"
+                    href="{% url 'barter_details:barter_detail' item.barter.id %}"
+                    aria-label="Lihat detail {{ item.barter.title }}"
+                >
+                    {% if item.barter.thumbnail %}
+                        <img
+                            class="cart-image"
+                            src="{{ item.barter.thumbnail }}"
+                            alt="{{ item.barter.title }}"
+                            loading="lazy"
+                        >
+                    {% else %}
+                        <div class="cart-image cart-image-empty">
+                            Gambar tidak tersedia
+                        </div>
+                    {% endif %}
+                </a>
+
+                <!-- Informasi barang -->
                 <div class="cart-info">
-                    <h2 class="cart-item-title">{{ item.barter.title }}</h2>
+
+                    <!-- Nama barang -->
+                    <h2 class="cart-item-title">
+                        <a
+                            class="cart-item-link"
+                            href="{% url 'barter_details:barter_detail' item.barter.id %}"
+                        >
+                            {{ item.barter.title }}
+                        </a>
+                    </h2>
+
+                    <!-- Tombol favorit -->
+                    <form
+                        class="favorite-form"
+                        method="post"
+                        action="{% url 'keranjang:toggle_favorit' item.id %}"
+                    >
+                        {% csrf_token %}
+
+                        <button
+                            type="submit"
+                            class="favorite-button {% if item.is_favorite %}is-favorite{% endif %}"
+                            aria-pressed="{% if item.is_favorite %}true{% else %}false{% endif %}"
+                            aria-label="{% if item.is_favorite %}Hapus {{ item.barter.title }} dari favorit{% else %}Tambahkan {{ item.barter.title }} ke favorit{% endif %}"
+                            title="{% if item.is_favorite %}Hapus dari favorit{% else %}Tambahkan ke favorit{% endif %}"
+                        >
+                            {% if item.is_favorite %}
+                                ♥ Favorit
+                            {% else %}
+                                ♡ Tambah Favorit
+                            {% endif %}
+                        </button>
+                    </form>
 
                     <p class="cart-detail">
                         <span class="detail-icon" aria-hidden="true">▣</span>
@@ -126,28 +129,28 @@
                     </p>
 
                     <p class="cart-detail">
-                        <span class="detail-icon" aria-hidden="true">?</span>
-                        <span>{{ item.barter.condition }}%</span>
+                        <span class="detail-icon" aria-hidden="true">✓</span>
+                        <span>Kondisi: {{ item.barter.condition }}%</span>
                     </p>
 
+                    <!-- Tombol penawaran dan hapus -->
                     <div class="cart-actions">
-                        {% if item.barter.get_absolute_url %}
-                            <a
-                                class="offer-button"
-                                href="{{ item.barter.get_absolute_url }}"
-                            >
-                                <span aria-hidden="true">▢</span>
-                                Ajukan Penawaran
-                            </a>
-                        {% endif %}
+
+                        <a
+                            class="offer-button"
+                            href="{% url 'barter_details:barter_detail' item.barter.id %}"
+                        >
+                            Ajukan Penawaran
+                        </a>
 
                         <form
                             class="delete-form"
                             method="post"
-                            action="{% url 'hapus_keranjang' item.id %}"
+                            action="{% url 'keranjang:hapus_keranjang' item.id %}"
                             data-item-title="{{ item.barter.title }}"
                         >
                             {% csrf_token %}
+
                             <button
                                 class="delete-button"
                                 type="button"
@@ -155,10 +158,15 @@
                                 aria-label="Hapus {{ item.barter.title }}"
                                 title="Hapus barang"
                             >
-                                <svg viewBox="0 0 24 24" fill="none"
-                                     stroke="currentColor" stroke-width="2"
-                                     stroke-linecap="round" stroke-linejoin="round"
-                                     aria-hidden="true">
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    aria-hidden="true"
+                                >
                                     <path d="M3 6h18"/>
                                     <path d="M8 6V4h8v2"/>
                                     <path d="m19 6-1 14H6L5 6"/>
@@ -167,10 +175,14 @@
                                 </svg>
                             </button>
                         </form>
+
                     </div>
                 </div>
             </article>
+
         {% empty %}
+
+            <!-- Tampilan ketika keranjang kosong -->
             <div class="empty-cart">
                 <h2>
                     {% if search_query %}
@@ -179,6 +191,7 @@
                         Keranjang kamu masih kosong
                     {% endif %}
                 </h2>
+
                 <p>
                     {% if search_query %}
                         Coba kata kunci pencarian yang berbeda.
@@ -186,59 +199,32 @@
                         Simpan barang yang kamu minati agar mudah ditemukan lagi.
                     {% endif %}
                 </p>
+
+                <a class="back-home" href="/landing/">
+                    Jelajahi Barang
+                </a>
             </div>
+
         {% endfor %}
     </div>
 </section>
 
-<nav class="mobile-nav" aria-label="Navigasi mobile">
-    <a href="/" class="mobile-nav-link">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>
-        </svg>
-        <span>Home</span>
-    </a>
-
-    <a href="{% url 'keranjang' %}" class="mobile-nav-link active" aria-current="page">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M3 3h2l2.2 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 1.9-1.4L22 7H6"/>
-            <circle cx="10" cy="20" r="1.5"/>
-            <circle cx="19" cy="20" r="1.5"/>
-        </svg>
-        <span>Cart</span>
-    </a>
-
-    <a href="#" class="mobile-nav-link">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M4 4h16v13H8l-4 3z"/>
-        </svg>
-        <span>Forum</span>
-    </a>
-
-    <a href="#" class="mobile-nav-link">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-            <rect x="3" y="3" width="18" height="18" rx="2"/>
-            <circle cx="8.5" cy="8.5" r="1.5"/>
-            <path d="m21 15-5-5L5 21"/>
-        </svg>
-        <span>Posts</span>
-    </a>
-
-    <a href="#" class="mobile-nav-link">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-            <circle cx="12" cy="12" r="3"/>
-            <path d="M19 13a7 7 0 0 0 0-2l2-1.5-2-3.5-2.3 1a7 7 0 0 0-2-1L14.3 3h-4.6l-.4 3a7 7 0 0 0-2 1L5 6 3 9.5 5 11a7 7 0 0 0 0 2l-2 1.5L5 18l2.3-1a7 7 0 0 0 2 1l.4 3h4.6l.4-3a7 7 0 0 0 2-1l2.3 1 2-3.5z"/>
-        </svg>
-        <span>Settings</span>
-    </a>
-</nav>
-
-<dialog class="delete-dialog" id="delete-dialog"
-        aria-labelledby="delete-title"
-        aria-describedby="delete-description">
+<!-- Dialog konfirmasi hapus -->
+<dialog
+    class="delete-dialog"
+    id="delete-dialog"
+    aria-labelledby="delete-title"
+    aria-describedby="delete-description"
+>
     <div class="dialog-icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+        >
             <path d="M3 6h18"/>
             <path d="M8 6V4h8v2"/>
             <path d="m19 6-1 14H6L5 6"/>
@@ -246,15 +232,25 @@
     </div>
 
     <h2 id="delete-title">Hapus Barang?</h2>
+
     <p id="delete-description">
         Apakah kamu yakin ingin menghapus barang ini?
     </p>
 
     <div class="dialog-actions">
-        <button type="button" class="cancel-delete" data-cancel-delete>
+        <button
+            type="button"
+            class="cancel-delete"
+            data-cancel-delete
+        >
             Batal
         </button>
-        <button type="button" class="confirm-delete" data-confirm-delete>
+
+        <button
+            type="button"
+            class="confirm-delete"
+            data-confirm-delete
+        >
             Ya, hapus
         </button>
     </div>
