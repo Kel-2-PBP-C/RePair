@@ -173,7 +173,7 @@ body {
     height: 3.5rem;
     border-radius: 1rem;
     background: var(--green-7);
-    font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+    font-family: inherit;
     font-weight: 600;
     border: 0;
     display: inline-flex;
@@ -253,7 +253,7 @@ body {
     background-color: var(--white);
     border: 2px solid var(--green-8);
     color: var(--green-8);
-    font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+    font-family: inherit;
     font-weight: 600;
 }
 
@@ -273,7 +273,7 @@ body {
     border: none;
     background: linear-gradient(90deg, #41AB5D 0%, #005A32 100%);
     color: var(--white);
-    font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+    font-family: inherit;
     font-weight: 600;
     line-height: 1;
     letter-spacing: 0;
@@ -291,7 +291,7 @@ body {
     border-radius: 16px;
     padding: 24px;
     width: 70%;
-    font-family: 'Poppins', sans-serif;
+    font-family: inherit;
     margin: auto;
 }
 

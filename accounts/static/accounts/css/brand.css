@@ -47,7 +47,7 @@ a { text-underline-offset: 3px; }
     padding: 8px 16px;
     background: linear-gradient(90deg, var(--brand-green-light) 0%, var(--brand-green-dark) 100%);
     color: #FFFFFF;
-    font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+    font-family: inherit;
     font-size: 13px;
     font-weight: 600;
     line-height: 1;
@@ -55,12 +55,17 @@ a { text-underline-offset: 3px; }
     text-align: center;
     text-decoration: none;
     cursor: pointer;
-    transition: box-shadow .16s ease, filter .16s ease;
+    transition: box-shadow .16s ease, filter .16s ease, transform .16s ease;
 }
 .brand-button:hover { filter: brightness(1.05); box-shadow: 0 3px 10px #005a3226; }
+.brand-button:active { filter: brightness(.8); transform: scale(.97); box-shadow: inset 0 2px 5px #00000038, 0 1px 3px #0000001f; }
 .brand-button:focus-visible { outline-color: #FCF9EA; box-shadow: 0 0 0 6px #005A32; }
 .brand-button[aria-busy='true'] { cursor: progress; }
 .brand-button:disabled { opacity: .65; cursor: not-allowed; }
+
+@media (prefers-reduced-motion: reduce) {
+    .brand-button { transition: none; }
+}
 
 .brand-landing {
     display: flex;
@@ -106,7 +111,7 @@ a { text-underline-offset: 3px; }
 .brand-notifications { position: fixed; z-index: 1000; top: calc(env(safe-area-inset-top, 0px) + 16px); right: 16px; width: min(440px, calc(100% - 32px)); }
 .brand-toast { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border-left: 4px solid #41AB5D; border-radius: 8px; background: #FAFAFA; color: #4C4541; box-shadow: 0 4px 18px #133c2226; }
 .brand-toast p { flex: 1; min-width: 0; margin: 0; font-size: 13px; line-height: 1.55; overflow-wrap: anywhere; }
-.brand-toast-close { display: grid; flex: 0 0 24px; place-items: center; width: 24px; height: 24px; margin: -2px -4px 0 0; border: 0; border-radius: 4px; padding: 0; background: transparent; color: #4C4541; font-family: 'Poppins', 'Segoe UI', Arial, sans-serif; font-size: 20px; font-weight: 600; line-height: 1; cursor: pointer; }
+.brand-toast-close { display: grid; flex: 0 0 24px; place-items: center; width: 24px; height: 24px; margin: -2px -4px 0 0; border: 0; border-radius: 4px; padding: 0; background: transparent; color: #4C4541; font-family: inherit; font-size: 20px; font-weight: 600; line-height: 1; cursor: pointer; }
 .brand-toast-close[hidden] { display: none; }
 .brand-toast-close:hover { background: #E5F4E9; }
 
@@ -117,7 +122,7 @@ a { text-underline-offset: 3px; }
 .brand-form-note { margin: 0 0 14px; color: #5e685e; font-size: 11px; line-height: 1.5; text-align: center; }
 .brand-form { display: grid; gap: 18px; }
 .brand-field { min-width: 0; }
-.brand-field > label { display: block; margin-bottom: 9px; font-family: 'Poppins', 'Segoe UI', Arial, sans-serif; font-size: 14px; font-weight: 600; line-height: 1.2; letter-spacing: 0; }
+.brand-field > label { display: block; margin-bottom: 9px; font-family: inherit; font-size: 14px; font-weight: 600; line-height: 1.2; letter-spacing: 0; }
 .brand-field input:not([type='checkbox']) {
     display: block;
     width: 100%;
@@ -163,7 +168,7 @@ a { text-underline-offset: 3px; }
     margin-bottom: 6px;
     padding: 0;
     color: #4C4541;
-    font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+    font-family: inherit;
     font-size: 12px;
     font-weight: 600;
     line-height: 1.4;
@@ -203,13 +208,13 @@ fieldset.brand-profile-field { margin: 0; padding: 0; border: 0; }
 .brand-profile-categories { display: flex; flex-wrap: wrap; gap: 8px; }
 .brand-category-chip { position: relative; display: block; max-width: 100%; cursor: pointer; text-transform: none; }
 .brand-category-chip input { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-.brand-category-chip span { display: block; padding: 8px 12px; border: 1px solid #9B9793; border-radius: 8px; background: #FAFAFA; color: #4C4541; font-family: 'Poppins', 'Segoe UI', Arial, sans-serif; font-size: 12px; font-weight: 600; line-height: 1.3; text-align: center; overflow-wrap: anywhere; }
+.brand-category-chip span { display: block; padding: 8px 12px; border: 1px solid #9B9793; border-radius: 8px; background: #FAFAFA; color: #4C4541; font-family: inherit; font-size: 12px; font-weight: 600; line-height: 1.3; text-align: center; overflow-wrap: anywhere; }
 .brand-category-chip input:checked + span { border-color: #005A32; background: linear-gradient(90deg, #41AB5D 0%, #005A32 100%); color: #FFFFFF; }
 .brand-category-chip input:focus-visible + span { outline: 3px solid #005A32; outline-offset: 3px; }
 .brand-category-chip input:disabled + span { opacity: .6; cursor: not-allowed; }
 .brand-profile-actions { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-top: 6px; }
 .brand-profile-actions .brand-button { width: min(100%, 260px); min-height: 44px; font-size: 15px; }
-.brand-profile-skip { display: inline-block; border: 0; padding: 4px 8px; background: transparent; color: #4C4541; font-family: 'Poppins', 'Segoe UI', Arial, sans-serif; font-size: 14px; font-weight: 600; line-height: 1.4; text-align: center; text-decoration: none; cursor: pointer; }
+.brand-profile-skip { display: inline-block; border: 0; padding: 4px 8px; background: transparent; color: #4C4541; font-family: inherit; font-size: 14px; font-weight: 600; line-height: 1.4; text-align: center; text-decoration: none; cursor: pointer; }
 .brand-profile-skip:hover { text-decoration: underline; }
 
 .brand-legal { width: min(850px, calc(100% - 48px)); margin-inline: auto; padding-block: 36px 48px; }

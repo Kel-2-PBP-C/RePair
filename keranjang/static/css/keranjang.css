@@ -483,16 +483,17 @@ main.cart-page + .site-footer {
 }
 
 .cancel-delete:hover {
-    background: #daddd8;
+    background: #f5f7f2;
 }
 
 .confirm-delete {
-    background: #d9363e;
+    border: 1px solid #a92c36;
+    background: #c0392b;
     color: #fff;
 }
 
 .confirm-delete:hover {
-    background: #b92730;
+    background: #a92c36;
 }
 
 /* ========================================
@@ -517,82 +518,80 @@ main.cart-page + .site-footer {
 
 @media (max-width: 1000px) {
     .cart-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 16px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
     }
 
     .cart-image {
-        height: 155px;
+        height: 200px;
     }
 }
 
-/* ========================================
-   RESPONSIVE MOBILE
-======================================== */
-
-@media (max-width: 700px) {
+@media (max-width: 680px) {
     .cart-container {
-        padding: 24px 16px 40px;
+        padding-block: 4px 32px;
+    }
+
+    .cart-header {
+        margin-bottom: 18px;
     }
 
     .cart-heading {
-        font-size: 23px;
+        font-size: 30px;
+    }
+
+    .cart-search {
+        gap: 8px;
+        margin-bottom: 20px;
+    }
+
+    .cart-search button,
+    .clear-search {
+        padding-inline: 12px;
     }
 
     .cart-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
+        gap: 14px;
     }
 
     .cart-card {
-        padding: 9px;
-        border-radius: 10px;
+        border-radius: 13px;
     }
 
     .cart-image {
-        height: 125px;
-        margin-bottom: 10px;
+        height: 160px;
+    }
+
+    .cart-info {
+        padding: 13px;
     }
 
     .cart-item-title {
-        margin-bottom: 9px;
-        font-size: 13px;
-    }
-
-    .favorite-button {
-        padding: 6px 9px;
-        font-size: 11px;
+        font-size: 16px;
     }
 
     .cart-detail {
-        gap: 5px;
-        font-size: 11px;
+        font-size: 12px;
     }
 
     .cart-actions {
-        gap: 5px;
-        padding-top: 12px;
+        gap: 7px;
+        padding-top: 14px;
     }
 
     .offer-button {
-        min-height: 35px;
-        padding: 7px 5px;
-        font-size: 10px;
+        min-height: 40px;
+        padding-inline: 8px;
+        font-size: 12px;
     }
 
     .delete-button {
-        width: 32px;
-        height: 35px;
-        padding: 6px;
-    }
-
-    .delete-button svg {
-        width: 18px;
-        height: 18px;
+        width: 40px;
+        height: 40px;
     }
 
     .delete-dialog {
-        padding: 24px 18px;
+        padding: 24px 20px;
     }
 }
 
@@ -600,20 +599,29 @@ main.cart-page + .site-footer {
    RESPONSIVE LAYAR KECIL
 ======================================== */
 
-@media (max-width: 360px) {
+@media (max-width: 420px) {
     .cart-grid {
         grid-template-columns: minmax(0, 1fr);
     }
 
     .cart-image {
-        height: 190px;
+        height: 210px;
+    }
+
+    .cart-info {
+        padding: 16px;
     }
 
     .cart-item-title {
-        font-size: 15px;
+        font-size: 18px;
     }
+}
 
-    .cart-detail {
-        font-size: 12px;
+@media (prefers-reduced-motion: reduce) {
+    .cart-card,
+    .cart-image,
+    .cart-image-link:hover .cart-image {
+        transition: none;
+        transform: none;
     }
 }
