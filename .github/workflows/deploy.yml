@@ -40,7 +40,7 @@ jobs:
         PWS_URL: ${{ secrets.PWS_URL }}
         PWS_USERNAME: ${{ secrets.PWS_USERNAME }}
         PWS_PASSWORD: ${{ secrets.PWS_PASSWORD }}
-        PWS_REPO: pws.cs.ui.ac.id/rasya.azyan/repair
+        PWS_REPO: pws.cs.ui.ac.id/noe.andrew/repair
       shell: bash
       run: |
         set -euo pipefail

@@ -19,7 +19,7 @@ if not SECRET_KEY:
 
 DEBUG = os.getenv('DEBUG', str(not PRODUCTION)).lower() == 'true'
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "rasya-azyan-repair.pws.cs.ui.ac.id"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "noe-andrew-repair.pws.cs.ui.ac.id"]
 
 
 INSTALLED_APPS = [
@@ -156,7 +156,7 @@ SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_SECURE = PRODUCTION
 CSRF_COOKIE_SECURE = PRODUCTION
-CSRF_TRUSTED_ORIGINS = ['https://rasya-azyan-repair.pws.cs.ui.ac.id']
+CSRF_TRUSTED_ORIGINS = ['https://noe-andrew-repair.pws.cs.ui.ac.id']
 # Hanya aktifkan jika proxy tepercaya menimpa header ini.
 if os.getenv('DJANGO_TRUST_PROXY_HTTPS', 'False').lower() == 'true':
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
