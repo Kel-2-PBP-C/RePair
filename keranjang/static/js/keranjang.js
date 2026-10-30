@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const cancelButton = document.querySelector("[data-cancel-delete]");
     const confirmButton = document.querySelector("[data-confirm-delete]");
 
+    // Hentikan jika elemen dialog tidak tersedia di halaman.
     if (!dialog || !description || !cancelButton || !confirmButton) {
         return;
     }
@@ -12,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let selectedForm = null;
     let previousButton = null;
 
-    // Buka dialog saat ikon hapus ditekan.
+    // Buka dialog saat ikon hapus diklik.
     document.querySelectorAll("[data-open-delete]").forEach((button) => {
         button.addEventListener("click", () => {
             const form = button.closest(".delete-form");
@@ -25,6 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
             previousButton = button;
 
             const title = form.dataset.itemTitle || "barang ini";
+
             description.textContent =
                 `Apakah kamu yakin ingin menghapus "${title}" dari keranjang?`;
 
@@ -32,26 +34,32 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Batal: tutup dialog tanpa menghapus barang.
+    // Tutup dialog tanpa menghapus barang.
     cancelButton.addEventListener("click", () => {
         dialog.close();
     });
 
-    // Konfirmasi: kirim form POST ke Django.
+    // Kirim form POST setelah pengguna mengonfirmasi.
     confirmButton.addEventListener("click", () => {
-        if (selectedForm) {
+        if (!selectedForm) {
+            return;
+        }
+
+        if (typeof selectedForm.requestSubmit === "function") {
             selectedForm.requestSubmit();
+        } else {
+            selectedForm.submit();
         }
     });
 
-    // Klik di luar kotak dialog menutup dialog, bukan menghapus barang.
+    // Klik backdrop menutup dialog.
     dialog.addEventListener("click", (event) => {
         if (event.target === dialog) {
             dialog.close();
         }
     });
 
-    // Kembalikan fokus setelah dialog ditutup.
+    // Bersihkan pilihan dan kembalikan fokus setelah dialog ditutup.
     dialog.addEventListener("close", () => {
         selectedForm = null;
 

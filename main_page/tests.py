@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
 
+from barter_details.models import Barter
 from .views import show_main
 
 
@@ -42,3 +43,66 @@ class MainPageIntegrationTests(TestCase):
         response = show_main(request)
         self.assertContains(response, "<p>semangat ngerjainnya guys-noe</p>", html=True)
         self.assertNotContains(response, "Rekomendasi Barang")
+
+
+class MainPageBarterTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.owner = get_user_model().objects.create_user(username="main-page-owner")
+        for condition, status in (
+            (Barter.ConditionChoices.NEW, Barter.StatusChoices.AVAILABLE),
+            (Barter.ConditionChoices.GOOD, Barter.StatusChoices.AVAILABLE),
+            (Barter.ConditionChoices.REPAIR, Barter.StatusChoices.AVAILABLE),
+            (Barter.ConditionChoices.NEW, Barter.StatusChoices.NEGOTIATING),
+            (Barter.ConditionChoices.GOOD, Barter.StatusChoices.BARTERED),
+        ):
+            Barter.objects.create(
+                owner=cls.owner,
+                title=f"{condition} {status}",
+                description="Listing for main page filter test",
+                condition=condition,
+                status=status,
+                item_location="Depok",
+            )
+
+    def get_main_page(self, query_string=""):
+        request = RequestFactory().get(f"/landing/{query_string}")
+        request.user = self.owner
+        return show_main(request)
+
+    def test_only_available_items_are_displayed(self):
+        response = self.get_main_page()
+
+        self.assertContains(response, "NEW AVAILABLE")
+        self.assertContains(response, "GOOD AVAILABLE")
+        self.assertContains(response, "REPAIR AVAILABLE")
+        self.assertNotContains(response, "NEW NEGOTIATING")
+        self.assertNotContains(response, "GOOD BARTERED")
+
+    def test_condition_filter_uses_item_condition_choices(self):
+        for condition in Barter.ConditionChoices.values:
+            with self.subTest(condition=condition):
+                response = self.get_main_page(f"?kondisi={condition}")
+                self.assertContains(response, f"{condition} AVAILABLE")
+                for other_condition in Barter.ConditionChoices.values:
+                    if other_condition != condition:
+                        self.assertNotContains(response, f"{other_condition} AVAILABLE")
+                self.assertNotContains(response, "NEGOTIATING")
+                self.assertNotContains(response, "BARTERED")
+
+    def test_add_item_link_opens_the_profile_post_creation_form(self):
+        response = self.get_main_page()
+
+        self.assertContains(
+            response,
+            f'href="{reverse("profile_post:show_posts")}?create=1"',
+        )
+        self.client.force_login(self.owner)
+        profile_posts_response = self.client.get(
+            f'{reverse("profile_post:show_posts")}?create=1'
+        )
+        self.assertEqual(profile_posts_response.status_code, 200)
+        self.assertContains(
+            profile_posts_response,
+            "new URLSearchParams(window.location.search).get('create') === '1'",
+        )

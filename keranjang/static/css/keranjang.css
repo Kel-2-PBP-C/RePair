@@ -1,428 +1,18 @@
-
-/* ===== RESET KHUSUS HALAMAN KERANJANG ===== */
-.cart-page,
-.cart-page * {
-    box-sizing: border-box;
-}
-
-main.shell.cart-page {
-    width: 100%;
-    max-width: none;
-    margin: 0;
-    padding: 0;
-    background: #eeeeee;
-}
-
-main.cart-page + .site-footer {
-    display: none;
-}
-
-/* ===== HEADER DAN LOGO ===== */
-.repair-header {
-    width: 100%;
-    padding: 24px 3.3% 18px;
-    background:
-        linear-gradient(
-            90deg,
-            rgba(255,255,255,.08) 0,
-            transparent 10%,
-            rgba(255,255,255,.08) 20%,
-            transparent 30%,
-            rgba(255,255,255,.08) 40%,
-            transparent 50%,
-            rgba(255,255,255,.08) 60%,
-            transparent 70%,
-            rgba(255,255,255,.08) 80%,
-            transparent 90%
-        ),
-        linear-gradient(180deg, #dff7df 0%, #70d98e 43%, #07913e 100%);
-}
-
-.header-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 32px;
-    width: 100%;
-    max-width: 1500px;
-    margin: 0 auto 16px;
-}
-
-.repair-brand {
-    display: inline-flex;
-    flex-shrink: 0;
-    align-items: center;
-    gap: 8px;
-    color: #168447;
-    text-decoration: none;
-}
-
-.brand-symbol {
-    display: inline-flex;
-    width: 82px;
-    height: 82px;
-}
-
-.brand-symbol svg {
-    display: block;
-    width: 100%;
-    height: 100%;
-}
-
-.brand-name {
-    color: #168447;
-    font-size: clamp(30px, 3.2vw, 48px);
-    font-weight: 800;
-    letter-spacing: -1.5px;
-}
-
-.brand-name span {
-    color: #e1dc00;
-}
-
-/* ===== NAVBAR DESKTOP ===== */
-.desktop-nav {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(90px, 1fr));
-    align-items: stretch;
-    flex: 1;
-    max-width: 900px;
-}
-
-.nav-link {
-    display: flex;
-    min-height: 88px;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    padding: 10px;
-    color: #fff;
-    font-size: 19px;
-    font-weight: 600;
-    text-decoration: none;
-    text-align: center;
-    transition: background .2s ease;
-}
-
-.nav-link svg {
-    width: 42px;
-    height: 42px;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2.3;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-
-.nav-link:first-child svg {
-    fill: currentColor;
-    stroke: currentColor;
-}
-
-.nav-link.active {
-    color: #075c34;
-    background: rgba(255, 255, 255, .25);
-}
-
-.nav-link:hover {
-    background: rgba(255, 255, 255, .2);
-}
-
-/* ===== KOLOM SEARCH ===== */
-.header-search {
-    width: 88%;
-    max-width: 1450px;
-    margin: 0 auto;
-}
-
-.header-search input {
-    display: block;
-    width: 100%;
-    height: 58px;
-    padding: 0 22px;
-    border: 0;
-    border-radius: 13px;
-    outline-color: #08783e;
-    background: #fff;
-    color: #222;
-    font-family: inherit;
-    font-size: 23px;
-    font-weight: 500;
-}
-
-.header-search input::placeholder {
-    color: #d1d1d1;
-    opacity: 1;
-}
-
-/* ===== KONTEN KERANJANG ===== */
-.cart-container {
-    width: 100%;
-    max-width: 1450px;
-    margin: 0 auto;
-    padding: 26px 0 60px;
-}
-
-.cart-heading {
-    margin: 0 0 14px;
-    color: #080808;
-    font-size: 28px;
-    font-weight: 700;
-    line-height: 1.3;
-}
-
-.cart-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: 19%;
-    row-gap: 38px;
-    align-items: stretch;
-}
-
-.cart-card {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    min-width: 0;
-    min-height: 210px;
-    padding: 20px 16px;
-    border-radius: 9px;
-    background: #fff;
-}
-
-/* ===== GAMBAR ===== */
-.cart-image {
-    display: block;
-    flex: 0 0 44%;
-    width: 44%;
-    height: 160px;
-    object-fit: contain;
-    border: 1px solid #e5e5e5;
-    background: #fff;
-}
-
-.cart-image-empty {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px;
-    color: #777;
-    font-size: 12px;
-    text-align: center;
-}
-
-/* ===== DETAIL BARANG ===== */
-.cart-info {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    align-items: stretch;
-    min-width: 0;
-}
-
-.cart-item-title {
-    margin: 2px 0 8px;
-    color: #080808;
-    font-size: 16px;
-    font-weight: 800;
-    line-height: 1.3;
-    overflow-wrap: anywhere;
-}
-
-.cart-detail {
-    display: flex;
-    align-items: flex-start;
-    gap: 7px;
-    margin: 7px 0;
-    color: #08783e;
-    font-size: 10px;
-    line-height: 1.4;
-    overflow-wrap: anywhere;
-}
-
-.detail-icon {
-    flex-shrink: 0;
-    color: #333;
-    font-weight: 700;
-}
-
-/* ===== TOMBOL AKSI ===== */
-.cart-actions {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: auto;
-    padding-top: 12px;
-}
-
-.offer-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    padding: 6px 9px;
-    border-radius: 5px;
-    background: #08783e;
-    color: #fff;
-    font-size: 10px;
-    font-weight: 600;
-    line-height: 1.3;
-    text-align: center;
-    text-decoration: none;
-}
-
-.offer-button:hover {
-    background: #065c30;
-}
-
-.delete-form {
-    display: inline-flex;
-    margin: 0;
-}
-
-.delete-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 26px;
-    height: 26px;
-    padding: 4px;
-    border: 0;
-    border-radius: 5px;
-    background: transparent;
-    color: #ff4148;
-    cursor: pointer;
-}
-
-.delete-button:hover {
-    background: #fff0f0;
-}
-
-.delete-button svg {
-    display: block;
-    width: 19px;
-    height: 19px;
-}
-
-/* ===== KERANJANG KOSONG ===== */
-.empty-cart {
-    grid-column: 1 / -1;
-    padding: 32px 20px;
-    color: #555;
-    text-align: center;
-}
-
-.empty-cart h2 {
-    margin: 0 0 10px;
-    color: #080808;
-    font-size: 21px;
-}
-
-.empty-cart p {
-    margin: 0;
-    line-height: 1.6;
-}
-
-/* ===== FILTER LOKASI OPSIONAL ===== */
-.location-filter {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 20px;
-}
-
-.location-filter input {
-    min-height: 38px;
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font: inherit;
-}
-
-.location-filter button,
-.location-filter a {
-    padding: 9px 12px;
-    border: 0;
-    border-radius: 6px;
-    background: #08783e;
-    color: #fff;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-/* ===== NAVBAR BAWAH MOBILE ===== */
-.mobile-nav {
-    display: none;
-}
-
-/* ===== DIALOG HAPUS ===== */
-.delete-dialog {
-    width: min(400px, calc(100% - 32px));
-    padding: 28px 24px;
-    border: 0;
-    border-radius: 15px;
-    background: #fff;
-    color: #080808;
-    text-align: center;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, .2);
-}
-
-.delete-dialog::backdrop {
-    background: rgba(0, 0, 0, .72);
-}
-
-.dialog-icon {
-    color: #ff4148;
-}
-
-.dialog-icon svg {
-    width: 36px;
-    height: 36px;
-}
-
-.delete-dialog h2 {
-    margin: 12px 0 8px;
-    font-size: 23px;
-    font-weight: 700;
-}
-
-.delete-dialog p {
-    margin: 0 0 18px;
-    color: #929292;
-    line-height: 1.5;
-}
-
-.dialog-actions {
-    display: flex;
-    gap: 12px;
-}
-
-.dialog-actions button {
-    flex: 1;
-    min-height: 41px;
-    padding: 10px;
-    border: 0;
-    border-radius: 6px;
-    font: inherit;
-    font-weight: 700;
-    cursor: pointer;
-}
-
-.cancel-delete {
-    background: #a3a3a3;
-    color: #080808;
+.cancel-delete:hover {
+    background: #daddd8;
 }
 
 .confirm-delete {
-    background: #df5757;
+    background: #d9363e;
     color: #fff;
 }
 
-/* ===== LABEL AKSESIBILITAS ===== */
+.confirm-delete:hover {
+    background: #b92730;
+}
+
+   AKSESIBILITAS
+
 .sr-only {
     position: absolute;
     width: 1px;
@@ -435,81 +25,94 @@ main.cart-page + .site-footer {
     border: 0;
 }
 
-/* ===== RESPONSIVE MOBILE ===== */
-@media (max-width: 700px) {
-    .repair-header {
-        padding: 0 0 24px;
-        border-radius: 0 0 30px 30px;
-        background: linear-gradient(
-            120deg,
-            #36bd64 0%,
-            #169d48 55%,
-            #00672d 100%
-        );
-    }
+   RESPONSIVE TABLET
 
-    .header-top {
-        display: block;
-        margin: 0 0 42px;
-        padding: 14px 18px;
-        border-radius: 0 0 30px 30px;
-        background: #fff;
-    }
-
-    .repair-brand {
-        gap: 5px;
-    }
-
-    .brand-symbol {
-        width: 56px;
-        height: 56px;
-    }
-
-    .brand-name {
-        font-size: 34px;
-        letter-spacing: -1px;
-    }
-
-    .desktop-nav {
-        display: none;
-    }
-
-    .header-search {
-        width: 86%;
-    }
-
-    .header-search input {
-        height: 60px;
-        padding: 0 22px;
-        border-radius: 40px;
-        font-size: 20px;
-    }
-
-    .cart-container {
-        padding: 28px 6.5% 90px;
-    }
-
-    .cart-heading {
-        margin-bottom: 14px;
-        font-size: 21px;
-    }
-
+@media (max-width: 1000px) {
     .cart-grid {
-        grid-template-columns: minmax(0, 1fr);
-        gap: 22px;
-    }
-
-    .cart-card {
-        gap: 10px;
-        min-height: 0;
-        padding: 16px;
-        border-radius: 15px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
     }
 
     .cart-image {
-        flex-basis: 44%;
-        width: 44%;
-        height: 160px;
+        height: 155px;
+    }
+}
+
+   RESPONSIVE MOBILE
+
+@media (max-width: 700px) {
+    .cart-container {
+        padding: 24px 16px 40px;
+    }
+
+    .cart-heading {
+        font-size: 23px;
+    }
+
+    .cart-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .cart-card {
+        padding: 9px;
+        border-radius: 10px;
+    }
+
+    .cart-image {
+        height: 125px;
+        margin-bottom: 10px;
+    }
+
+    .cart-item-title {
+        margin-bottom: 9px;
+        font-size: 13px;
+    }
+
+    .favorite-button {
+        padding: 6px 9px;
+        font-size: 11px;
+    }
+
+    .cart-detail {
+        gap: 5px;
+        font-size: 11px;
+    }
+
+    .cart-actions {
+        gap: 5px;
+        padding-top: 12px;
+    }
+
+    .offer-button {
+        min-height: 35px;
+        padding: 7px 5px;
+        font-size: 10px;
+    }
+
+    .delete-button {
+        width: 32px;
+        height: 35px;
+        padding: 6px;
+    }
+
+    .delete-button svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .delete-dialog {
+        padding: 24px 18px;
+    }
+}
+
+@media (max-width: 360px) {
+    .cart-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .cart-image {
+        height: 190px;
     }
 
     .cart-item-title {
@@ -517,75 +120,6 @@ main.cart-page + .site-footer {
     }
 
     .cart-detail {
-        gap: 6px;
-        margin: 7px 0;
-        font-size: 10px;
-    }
-
-    .cart-actions {
-        gap: 4px;
-        padding-top: 10px;
-    }
-
-    .offer-button {
-        padding: 6px 7px;
-        font-size: 9px;
-    }
-
-    .delete-button {
-        width: 24px;
-        height: 24px;
-    }
-
-    .mobile-nav {
-        position: fixed;
-        z-index: 100;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        display: grid;
-        grid-template-columns: repeat(5, minmax(0, 1fr));
-        align-items: center;
-        min-height: 76px;
-        padding: 9px 8px calc(9px + env(safe-area-inset-bottom));
-        border-radius: 25px 25px 0 0;
-        background: #fff;
-        box-shadow: 0 -3px 16px rgba(0, 0, 0, .04);
-    }
-
-    .mobile-nav-link {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 4px;
-        min-width: 0;
-        color: #888;
-        font-size: 10px;
-        font-weight: 500;
-        text-decoration: none;
-    }
-
-    .mobile-nav-link svg {
-        width: 27px;
-        height: 27px;
-        fill: none;
-        stroke: currentColor;
-        stroke-width: 2.2;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-    }
-
-    .mobile-nav-link:first-child svg {
-        fill: currentColor;
-    }
-
-    .mobile-nav-link.active {
-        color: #006b3b;
-        font-weight: 700;
-    }
-
-    .delete-dialog {
-        padding: 25px 20px;
+        font-size: 12px;
     }
 }

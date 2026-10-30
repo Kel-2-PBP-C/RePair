@@ -18,23 +18,15 @@
         }
     </style>
     {% block extra_css %}{% endblock %}
+    <link rel="stylesheet" href="{% static 'css/toast.css' %}">
 </head>
 <body class="brand-page {% block body_class %}{% endblock %}">
     <a class="brand-skip-link" href="#content">Lewati ke konten</a>
-    {% include 'accounts/notifications.html' %}
+    {% include 'components/toast.html' %}
     <main id="content" class="brand-main">
-        {% block messages %}
-        {% for message in messages %}
-        {% if 'account-deleted' not in message.tags %}
-        <ul class="brand-messages" aria-label="Pemberitahuan" aria-live="polite">
-            <li class="brand-message{% if message.level_tag %} brand-message-{{ message.level_tag }}{% endif %}"{% if 'error' in message.tags %} role="alert"{% endif %}>{{ message }}</li>
-        </ul>
-        {% endif %}
-        {% endfor %}
-        {% endblock %}
         {% block content %}{% endblock %}
     </main>
-    <script src="{% static 'accounts/js/notifications.js' %}" defer></script>
+    <script src="{% static 'js/toast.js' %}" defer></script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>
