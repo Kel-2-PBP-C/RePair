@@ -4,6 +4,10 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
+    # 0002_cartitem_is_favorite berisi operasi yang identik. `replaces` membuat graph
+    # migrasi tidak bercabang (tidak perlu makemigrations --merge) dan tetap aman untuk
+    # database yang sudah menerapkan salah satu dari kedua file tersebut.
+    replaces = [('keranjang', '0002_cartitem_is_favorite')]
 
     dependencies = [
         ('keranjang', '0001_initial'),

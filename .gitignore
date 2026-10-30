@@ -39,3 +39,11 @@ node_modules/
 *.key
 *.p12
 *.pfx
+
+# Test reports and dependencies left by other branches
+.coverage
+.coverage.*
+coverage.xml
+coverage.json
+htmlcov/
+node_modules/

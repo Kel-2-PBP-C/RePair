@@ -1,0 +1,72 @@
+name: Tests and coverage
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+      - Halaman-Login/Register-dan-Profil-dan-Setting
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-test.txt
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-test.txt
+      - name: Run every Python app and Git safety tests
+        run: python -m coverage run manage.py test accounts core barter_details keranjang main_page profile_post RePair scripts --settings=accounts.test_settings --noinput
+      - name: Require at least 90 percent overall and for each app
+        run: |
+          python -m coverage report --fail-under=90
+          for app in accounts core barter_details keranjang main_page profile_post RePair scripts; do
+            python -m coverage report --include="$app/*" --fail-under=90
+          done
+      - name: Generate reports
+        if: always()
+        run: |
+          python -m coverage html --fail-under=0
+          python -m coverage xml --fail-under=0
+          python -m coverage json --fail-under=0
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-reports
+          path: |
+            htmlcov/
+            coverage.xml
+            coverage.json
+          if-no-files-found: error
+
+  browser-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      SE_AVOID_STATS: 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-test.txt
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-test.txt
+      - name: Run desktop and mobile browser journeys
+        run: python manage.py test functional_tests --settings=accounts.test_settings --noinput
