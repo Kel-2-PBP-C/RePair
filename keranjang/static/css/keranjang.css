@@ -138,9 +138,20 @@ main.cart-page + .site-footer {
     box-shadow: 0 6px 16px rgba(31, 65, 42, 0.1);
 }
 
+/* Kartu barang favorit */
+
+.cart-card:has(.favorite-button.is-favorite) {
+    border-color: #c5dfce;
+}
+
 /* ========================================
    GAMBAR BARANG
    ======================================== */
+
+.cart-image-link {
+    display: block;
+    text-decoration: none;
+}
 
 .cart-image {
     display: block;
@@ -184,6 +195,67 @@ main.cart-page + .site-footer {
     line-height: 1.4;
     overflow-wrap: anywhere;
 }
+
+.cart-item-link {
+    color: inherit;
+    text-decoration: none;
+}
+
+.cart-item-link:hover {
+    color: #168447;
+}
+
+/* ========================================
+   TOMBOL FAVORIT
+   ======================================== */
+
+.favorite-form {
+    display: flex;
+    margin: 0 0 12px;
+}
+
+.favorite-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    min-height: 34px;
+    padding: 7px 12px;
+    border: 1px solid #dce4dc;
+    border-radius: 20px;
+    background: #fff;
+    color: #596a5e;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.4;
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.favorite-button:hover {
+    border-color: #8dc6a0;
+    background: #edf7ef;
+    color: #17663c;
+}
+
+.favorite-button.is-favorite {
+    border-color: #a7d4b5;
+    background: #e8f5eb;
+    color: #17663c;
+}
+
+.favorite-button:focus-visible {
+    outline: 2px solid #168447;
+    outline-offset: 3px;
+}
+
+/* ========================================
+   DETAIL BARANG
+   ======================================== */
 
 .cart-detail {
     display: flex;
@@ -443,6 +515,11 @@ main.cart-page + .site-footer {
     .cart-item-title {
         margin-bottom: 9px;
         font-size: 13px;
+    }
+
+    .favorite-button {
+        padding: 6px 9px;
+        font-size: 11px;
     }
 
     .cart-detail {
