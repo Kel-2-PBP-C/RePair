@@ -257,9 +257,15 @@
                     {% endif %}
                 </p>
 
-                <a class="back-home" href="/landing/">
-                    Jelajahi Barang
-                </a>
+                {% if search_query %}
+                    <a class="button button-primary back-home" href="{% url 'keranjang:keranjang' %}">
+                        Hapus pencarian
+                    </a>
+                {% else %}
+                    <a class="button button-primary back-home" href="{{ navigation.home_url }}">
+                        Cari Barang untuk Barter
+                    </a>
+                {% endif %}
             </div>
 
         {% endfor %}

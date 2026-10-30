@@ -66,7 +66,7 @@ c. Update
     Edit profil, preferensi, dan password
     - Mengubah username, nama, lokasi, tanggal lahir, dan kontak media sosial. Email Google tidak dapat diubah melalui form profil.
     - Memilih kota/kabupaten dari dropdown pencarian BogorTech atau mengetik lokasi secara manual. Pilihan API menyimpan kode wilayah dan nama daerah beserta provinsinya.
-    - Mengubah kategori barang pilihan, preferensi notifikasi email, visibilitas profil, dan bahasa aplikasi. Pengiriman email dan terjemahan antarmuka belum diterapkan.
+    - Mengubah kategori barang pilihan, pr eferensi notifikasi email, visibilitas profil, dan bahasa aplikasi. Pengiriman email dan terjemahan antarmuka belum diterapkan.
     - Mengubah password dengan memasukkan password lama; sesi login tetap dipertahankan setelah perubahan.
     - Tombol Edit Profil, Simpan Profil, dan Batal tersedia pada Settings.
 
@@ -78,7 +78,7 @@ d. Delete
     - Email dan akun Google yang sama dapat dipakai untuk mendaftar kembali.
     - Tombol Keluar dari Akun tersedia di Settings.
 
-Tampilan landing, login, Lengkapi Profil, dan Settings menyesuaikan layar HP dan laptop. Navbar bersama menampilkan Home, Cart, Forum, Posts, dan Settings; berada di bawah pada HP dan di atas pada laptop.
+Tampilan landing, login, Lengkapi Profil, dan Settings menyesuaikan layar HP dan laptop. Navbar bersama menampilkan Home, Cart, Posts, dan Settings; berada di bawah pada HP dan di atas pada laptop.
 
 
 2. Modul Barter / Main Page (PIC: Aisha Ibnaty Zahira)
@@ -162,9 +162,9 @@ Dengan modul ini, harapannya user bisa berinteraksi dengan user lainnya untuk me
 ## List API
 - OpenStreetMap: Untuk memudahkan pencarian titik temu
 - Cloudinary: Upload & kompresi foto barang bekas
-- emsifa/api-wilayah-indonesia Standarisasi input domisili kota/kecamatan
+- emsifa/api-wilayah-indonesia Standarisasi input domisili kota/kecamatan (Memakai API Serupa lainnya karena API ini tidak dapat digunakan)
 - Nominatim (OSM): Konversi titik temu ke nama lokasi
-- Firebase Auth & FCM: Login cepat & notifikasi
+- Firebase Auth & FCM (Menggunakan Google Oauth Service): Login cepat & notifikasi
 - Overpass API (OSM): Sumber data lokasi tempat reparasi/servis barang
 - Sightengine: Moderasi foto barang otomatis
 - Google OAuth 2.0 / OpenID Connect (Baru): Autentikasi akun Google untuk pendaftaran dan login RePair

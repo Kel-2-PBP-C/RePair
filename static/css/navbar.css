@@ -10,7 +10,7 @@
     --navbar-height: 68px;
     --navbar-bottom-height: 64px;
 
-    --nav-surface: rgb(255 255 255 / 92%);
+    --nav-surface: #FFFFFF;
     --nav-line: #E5E7EB;
     --nav-ink: #4B5563;
     --nav-ink-strong: #111827;
@@ -106,7 +106,7 @@ a.repair-navbar-brand:focus-visible { outline: 2px solid var(--nav-focus); outli
     padding: 0 14px;
     border-radius: 10px;
     color: var(--nav-ink);
-    font-family: 'Poppins', 'Plus Jakarta Sans', 'Segoe UI', Arial, sans-serif;
+    font-family: inherit;
     font-size: 14px;
     font-weight: 600;
     line-height: 1;
