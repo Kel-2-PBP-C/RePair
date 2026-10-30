@@ -1,22 +1,24 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ barter.title }} - Detail Barter</title>
+    <meta name="theme-color" content="#244b37">
+    <title>{% block title %}RePair{% endblock %} | RePair</title>
+    <title>{{ barter.title }} - Detail Barter | RePair</title>
+    <link rel="stylesheet" href="{% static 'css/site.css' %}">
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
     <link rel="stylesheet" href="{% static 'details.css' %}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Poppins:wght@600&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/toast.css' %}">
+    <script src="{% static 'js/toast.js' %}" defer></script>
 </head>
 
 <body>
-    <!-- TODO: Akan diganti dari base.html -->
-    <header class="site-header">
-        <div class="logo">
-            <img src="{% static 'RePair..svg' %}" alt="RePair">
-        </div>
+    <header>
+        {% include "components/navbar.html" %}
     </header>
 
     {% if user.is_authenticated %}
@@ -27,8 +29,8 @@
                         <path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                 </a>
+                <a href="{% url 'add_items:create' %}" class="add-button floating" id="open-add-item">+ Tambah Barang</a>
             {% endif %}
-            <a href="{% url 'add_items:create' %}" class="add-button floating" id="open-add-item">+ Tambah Barang</a>
         </div>
 
         <div class="mobile-actions">
@@ -38,12 +40,12 @@
                         <path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                 </a>
+                <a href="{% url 'add_items:create' %}" class="add-button mobile" id="open-add-item-mobile" aria-label="Tambah Barang">
+                    <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+                        <path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                    </svg>
+                </a>
             {% endif %}
-            <a href="{% url 'add_items:create' %}" class="add-button mobile" id="open-add-item-mobile" aria-label="Tambah Barang">
-                <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
-                    <path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-                </svg>
-            </a>
         </div>
     {% endif %}
 
@@ -66,6 +68,7 @@
             <div class="item-details">
                 <h1>{{ barter.title }}</h1>
                 <ul class="detail-list">
+                    {% if barter.item_year %}
                     <li>
                         <svg viewBox="0 0 24 24" aria-hidden="true">
                             <rect width="18" height="18" x="3" y="4" rx="2"/>
@@ -73,24 +76,23 @@
                         </svg>
                         <span>{{ barter.item_year }}</span>
                     </li>
+                    {% endif %}
+                    {% if barter.condition %}
                     <li>
                         <svg viewBox="0 0 24 24" aria-hidden="true">
                             <circle cx="12" cy="12" r="10"/>
                             <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
                             <path d="M12 17h.01"/>
                         </svg>
-                        <span>{{ barter.get_condition_display }} ({{ barter.condition_percentage }}%)</span>
+                        <span>
+                            {{ barter.get_condition_display }}
+                            {% if barter.condition_percentage != None %}
+                                ({{ barter.condition_percentage }}%)
+                            {% endif %}
+                        </span>
                     </li>
-                    <li>
-                        <svg viewBox="0 0 24 24" aria-hidden="true">
-                            <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/>
-                            <path d="M15 18H9"/>
-                            <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14"/>
-                            <circle cx="17" cy="18" r="2"/>
-                            <circle cx="7" cy="18" r="2"/>
-                        </svg>
-                        <span>{{ barter.get_shipping_method_display }}</span>
-                    </li>
+                    {% endif %}
+                    {% if barter.item_location %}
                     <li>
                         <svg viewBox="0 0 24 24" aria-hidden="true">
                             <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
@@ -98,6 +100,7 @@
                         </svg>
                         <span>{{ barter.item_location }}</span>
                     </li>
+                    {% endif %}
                     {% if barter.item_replacement %}
                     <li>
                         <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -109,21 +112,21 @@
                 </ul>
             </div>
 
-            <div class= "item-description">
+            <div class="item-description">
                 <p>{{ barter.description }}</p>
             </div>
         </div>
 
         <div class="owner">
             <div class="owner-info">
-                <div class="profile-photo"></div> <!-- TODO: ini masukin pp user -->
-                <p>{{ barter.owner.get_full_name|default:barter.owner.username }}</p>
+                <div class="profile-photo">
+                    <p>{{ profile_initials }}</p>
+                </div>
+                <div class="kontak">
+                    <p>{{ barter.owner.get_full_name|default:barter.owner.username }}</p>
+                    <h3>{{ preferred_contact}}</h3>
+                </div>
             </div>
-            <button class="owner-contact"> <!-- TODO: ini masukin nomor user -->
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                </svg>
-            </button>
         </div>
 
         <div class="other-items-from-same-profile">
@@ -133,6 +136,7 @@
                     <div class="item-card-body">
                         <p class="item-card-title">{{ item.title }}</p>
                         <ul class="detail-list compact">
+                            {% if item.item_year %}
                             <li>
                                 <svg viewBox="0 0 24 24" aria-hidden="true">
                                     <rect width="18" height="18" x="3" y="4" rx="2"/>
@@ -140,14 +144,23 @@
                                 </svg>
                                 <span>{{ item.item_year }}</span>
                             </li>
+                            {% endif %}
+                            {% if item.condition %}
                             <li>
                                 <svg viewBox="0 0 24 24" aria-hidden="true">
                                     <circle cx="12" cy="12" r="10"/>
                                     <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
                                     <path d="M12 17h.01"/>
                                 </svg>
-                                <span>{{ item.condition_percentage }}%</span>
+                                <span>
+                                    {{ item.get_condition_display }}
+                                    {% if item.condition_percentage != None %}
+                                        ({{ item.condition_percentage }}%)
+                                    {% endif %}
+                                </span>
                             </li>
+                            {% endif %}
+                            {% if item.item_location %}
                             <li>
                                 <svg viewBox="0 0 24 24" aria-hidden="true">
                                     <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
@@ -155,6 +168,7 @@
                                 </svg>
                                 <span>{{ item.item_location }}</span>
                             </li>
+                            {% endif %}
                             {% if item.item_replacement %}
                             <li>
                                 <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -184,40 +198,52 @@
     </main>
 
     <!-- Jangan diganti dari base.html karena footernya beda -->
-    <footer class="site-footer">
-        <button type="button" class="cart-button" id="open-cart">Tambah ke Keranjang</button>
-        <button type="button" class="bid-button" id="open-bid">Ajukan Penawaran</button>
-    </footer>
+    {% if user != barter.owner %}
+        <footer class="site-footer">
+            <button type="button" class="cart-button" id="open-cart">Tambah ke Keranjang</button>
+            <button type="button" class="bid-button" id="open-bid">Ajukan Penawaran</button>
+        </footer>
 
-    <dialog id="bid-modal" class="bid-modal">
-        <h2>Ajukan Penawaran</h2>
-        <p class="bid-target">Kamu menawar <strong>{{ barter.title }}</strong></p>
+        <dialog id="bid-modal" class="bid-modal">
+            <h2>Ajukan Penawaran</h2>
+            <p class="bid-target">Kamu menawar <strong>{{ barter.title }}</strong></p>
 
-        <form id="bid-form" novalidate data-url="{% url 'barter_details:submit_bid_ajax' barter.pk %}">
-            {% csrf_token %}
-            {% for field in bid_form %}
-                <div class="field{% if field.name == 'replacement_thumbnail' or field.name == 'item_year' or field.name == 'condition' or field.name == 'condition_percentage' %} goods-field{% endif %}">
-                    {{ field.label_tag }}
-                    {{ field }}
+            <form id="bid-form" novalidate data-url="{% url 'barter_details:submit_bid_ajax' barter.pk %}">
+                {% csrf_token %}
+                {% for field in bid_form %}
+                    {% if field.is_hidden %}
+                        {{ field }}
+                    {% elif field.name == 'replacement_location' %}
+                        <div class="field">
+                            {{ field.label_tag }}
+                            {{ field }}
+                            <div id="bid-region-dropdown" class="region-dropdown" hidden></div>
+                        </div>
+                    {% else %}
+                        <div class="field">
+                            {{ field.label_tag }}
+                            {{ field }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+
+                <div class="bid-actions">
+                    <button type="button" class="bid-cancel" id="close-bid">Batal</button>
+                    <button type="submit" class="bid-confirm">Konfirmasi</button>
                 </div>
-            {% endfor %}
+            </form>
+        </dialog>
+
+        <dialog id="cart-modal" class="bid-modal">
+            <h2>Tambah ke Keranjang?</h2>
+            <p class="bid-target">Kamu akan menambahkan <strong>{{ barter.title }}</strong> ke keranjang.</p>
 
             <div class="bid-actions">
-                <button type="button" class="bid-cancel" id="close-bid">Batal</button>
-                <button type="submit" class="bid-confirm">Konfirmasi</button>
+                <button type="button" class="bid-cancel" id="cart-cancel">Batal</button>
+                <button type="button" class="bid-confirm" id="cart-confirm">Ya, Tambahkan</button>
             </div>
-        </form>
-    </dialog>
-
-    <dialog id="cart-modal" class="bid-modal">
-        <h2>Tambah ke Keranjang?</h2>
-        <p class="bid-target">Kamu akan menambahkan <strong>{{ barter.title }}</strong> ke keranjang.</p>
-
-        <div class="bid-actions">
-            <button type="button" class="bid-cancel" id="cart-cancel">Batal</button>
-            <button type="button" class="bid-confirm" id="cart-confirm">Ya, Tambahkan</button>
-        </div>
-    </dialog>
+        </dialog>
+    {% endif %}
 
     {% if user == barter.owner %}
     <dialog id="delete-modal" class="bid-modal">
@@ -232,7 +258,7 @@
         </form>
     </dialog>
     {% endif %}
-
+    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const modal = document.getElementById('bid-modal');
@@ -242,19 +268,62 @@
             const openButton = document.getElementById('open-bid');
             const closeButton = document.getElementById('close-bid');
             const submitButton = form.querySelector('button[type="submit"]');
-            const typeField = form.elements['replacement_type'];
-            const goodsField = form.querySelectorAll('.goods-field');
             const submitUrl = form.dataset.url;
+            const regionSearch = document.getElementById('bid-region-search');
+            const regionCode = form.elements['replacement_location_code'];
+            const regionDropdown = document.getElementById('bid-region-dropdown');
+            let regionRequestRevision = 0;
+            let regionDebounceTimer;
 
-            function toggleGoodsFields(){
-                const isGood = typeField.value === 'goods';
-                goodsField.forEach((wrapper) => {
-                    wrapper.hidden = !isGood;
-                    wrapper.querySelectorAll('input, select, textarea').forEach((input) => {
-                        input.disabled = !isGood;
+            async function searchRegions(query) {
+                const revision = ++regionRequestRevision;
+                try {
+                    const response = await fetch(
+                        `{% url 'profile_post:search_regions' %}?q=${encodeURIComponent(query)}`
+                    );
+                    const data = await response.json();
+                    if (revision !== regionRequestRevision) return;
+                    const results = Array.isArray(data.results) ? data.results : [];
+                    regionDropdown.replaceChildren();
+                    results.forEach((region) => {
+                        const option = document.createElement('button');
+                        option.type = 'button';
+                        option.className = 'region-option';
+                        option.textContent = region.label || region.name;
+                        option.addEventListener('click', () => {
+                            regionSearch.value = option.textContent;
+                            regionCode.value = region.code;
+                            regionDropdown.hidden = true;
+                        });
+                        regionDropdown.appendChild(option);
                     });
-                });
+                    if (!results.length) {
+                        const empty = document.createElement('p');
+                        empty.textContent = 'Wilayah tidak ditemukan.';
+                        regionDropdown.appendChild(empty);
+                    }
+                    regionDropdown.hidden = false;
+                } catch (error) {
+                    if (revision !== regionRequestRevision) return;
+                    regionDropdown.replaceChildren();
+                    const unavailable = document.createElement('p');
+                    unavailable.textContent = 'Daftar wilayah belum tersedia.';
+                    regionDropdown.appendChild(unavailable);
+                    regionDropdown.hidden = false;
+                }
             }
+
+            regionSearch.addEventListener('input', () => {
+                regionCode.value = '';
+                clearTimeout(regionDebounceTimer);
+                regionDebounceTimer = setTimeout(
+                    () => searchRegions(regionSearch.value.trim()),
+                    250
+                );
+            });
+            regionSearch.addEventListener('focus', () => {
+                searchRegions(regionSearch.value.trim());
+            });
 
             function clearErrors() {
                 form.querySelectorAll('.field-error').forEach((el) => el.remove());
@@ -286,7 +355,7 @@
                 modal.close();
                 form.reset();
                 clearErrors();
-                toggleGoodsFields();
+                regionDropdown.hidden = true;
             }
 
             async function handleSubmit(event) {
@@ -310,10 +379,10 @@
                     } else if (response.status === 400 && data.errors) {
                         showFieldErrors(data.errors);
                     } else {
-                        showToast(data.message || 'Terjadi kesalahan.', 'error');
+                        showToast(data.message || 'Penawaran gagal dikirim. Periksa kembali data dan coba lagi.', 'error');
                     }
                 } catch (err) {
-                    showToast('Tidak dapat terhubung ke server. Coba lagi.', 'error');
+                    showToast('Koneksi ke server terputus. Periksa jaringan dan coba lagi.', 'error');
                 } finally {
                     submitButton.disabled = false;
                     submitButton.textContent = 'Konfirmasi';
@@ -326,10 +395,7 @@
             if (e.target === modal) closeModal();
             });
 
-            typeField.addEventListener('change', toggleGoodsFields);
             form.addEventListener('submit', handleSubmit);
-
-            toggleGoodsFields();
 
             modal.addEventListener('close', () => {
                 document.body.classList.remove('modal-open');
@@ -358,9 +424,7 @@
         async function handleConfirm() {
             confirmButton.disabled = true;
 
-            // TODO: sambungin ke endpoint keranjang
-
-            showToast('Barang ditambahkan ke keranjang!', 'success');
+            showToast('Penambahan barang ke keranjang dari halaman detail belum tersedia.', 'warning');
             setTimeout(closeModal, 1000);
         }
 
@@ -413,11 +477,11 @@
                     modal.close();
                     setTimeout(() => { window.location.href = getBackUrl(data.redirect_url); }, 800);
                 } else {
-                    showToast(data.message || 'Gagal menghapus.', 'error');
+                    showToast(data.message || 'Barang gagal dihapus. Silakan coba lagi.', 'error');
                     confirmButton.disabled = false;
                 }
             } catch (err) {
-                showToast('Tidak dapat terhubung ke server. Coba lagi.', 'error');
+                showToast('Koneksi ke server terputus. Periksa jaringan dan coba lagi.', 'error');
                 confirmButton.disabled = false;
             }
         });

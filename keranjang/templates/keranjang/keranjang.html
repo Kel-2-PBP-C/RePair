@@ -118,6 +118,19 @@
                         </a>
                     </h2>
 
+                    <!-- STATUS BARANG -->
+                    <div class="cart-status
+                        {% if item.barter.status == 'AVAILABLE' %}
+                            cart-status-available
+                        {% elif item.barter.status == 'NEGOTIATING' %}
+                            cart-status-negotiating
+                        {% elif item.barter.status == 'BARTERED' %}
+                            cart-status-bartered
+                        {% endif %}
+                    ">
+                        {{ item.barter.get_status_display }}
+                    </div>
+
                     <!-- FORM FAVORIT -->
                     <form
                         class="favorite-form"
@@ -135,7 +148,7 @@
                         <button
                             type="submit"
                             class="favorite-button {% if item.is_favorite %}is-favorite{% endif %}"
-                            aria-pressed="{% if item.is_favorite %}true{% else %}false{% endif %}"
+                            aria-pressed="{{ item.is_favorite|yesno:'true,false' }}"
                             aria-label="{% if item.is_favorite %}Hapus dari favorit{% else %}Tambahkan ke favorit{% endif %}"
                         >
                             {% if item.is_favorite %}
@@ -148,9 +161,7 @@
 
                     <!-- TAHUN BARANG -->
                     <p class="cart-detail">
-                        <span class="detail-icon" aria-hidden="true">
-                            ▣
-                        </span>
+                        <span class="detail-icon" aria-hidden="true">📅</span>
                         <span>
                             Tahun: {{ item.barter.item_year }}
                         </span>
@@ -158,9 +169,7 @@
 
                     <!-- BARANG PENGGANTI -->
                     <p class="cart-detail">
-                        <span class="detail-icon" aria-hidden="true">
-                            ↻
-                        </span>
+                        <span class="detail-icon" aria-hidden="true">↻</span>
                         <span>
                             Barang pengganti:
                             {{ item.barter.item_replacement|default:"Belum ditentukan" }}
@@ -169,9 +178,7 @@
 
                     <!-- LOKASI -->
                     <p class="cart-detail">
-                        <span class="detail-icon" aria-hidden="true">
-                            ●
-                        </span>
+                        <span class="detail-icon" aria-hidden="true">📍</span>
                         <span>
                             Lokasi: {{ item.barter.item_location }}
                         </span>
@@ -179,39 +186,135 @@
 
                     <!-- KONDISI -->
                     <p class="cart-detail">
-                        <span class="detail-icon" aria-hidden="true">
-                            ✓
-                        </span>
+                        <span class="detail-icon" aria-hidden="true">✓</span>
                         <span>
                             Kondisi:
-                            {{ item.barter.get_condition_display }}
-                            ({{ item.barter.condition_percentage }}%)
+                            {{ item.barter.get_condition_display|default:"-" }}
+                            {% if item.barter.condition_percentage != None %}
+                                ({{ item.barter.condition_percentage }}%)
+                            {% endif %}
                         </span>
                     </p>
 
-                    <!-- STATUS BARANG -->
-                    <div class="cart-status
-                        {% if item.barter.status == 'AVAILABLE' %}
-                            cart-status-available
-                        {% elif item.barter.status == 'NEGOTIATING' %}
-                            cart-status-negotiating
-                        {% elif item.barter.status == 'BARTERED' %}
-                            cart-status-bartered
+                    <!-- INFORMASI NEGOSIASI -->
+                    {% if item.barter.status == "NEGOTIATING" and item.user_selected_offer %}
+                        <section
+                            class="cart-negotiation-contact"
+                            aria-label="Kontak pengunggah barang"
+                        >
+                            <strong>
+                                Barter sedang dinegosiasikan dengan:
+                            </strong>
+
+                            <span>
+                                {{ item.barter.owner.get_full_name|default:item.barter.owner.username }}
+                            </span>
+
+                            <span>
+                                Kontak:
+                                {{ item.owner_contact|default:"Kontak belum diatur" }}
+                            </span>
+                        </section>
+                    {% endif %}
+
+                    <!-- INFORMASI DAN FORM ULASAN -->
+                    {% if item.barter.status == "BARTERED" and item.user_selected_offer %}
+
+                        {% if item.user_barter_review %}
+
+                            <section class="cart-review-summary">
+                                <strong>
+                                    Ulasan Anda untuk
+                                    {{ item.barter.owner.get_full_name|default:item.barter.owner.username }}
+                                </strong>
+
+                                <span aria-label="Rating {{ item.user_barter_review.rating }} dari 5">
+                                    {% for _ in "12345" %}
+                                        {% if forloop.counter <= item.user_barter_review.rating %}
+                                            ★
+                                        {% else %}
+                                            ☆
+                                        {% endif %}
+                                    {% endfor %}
+                                </span>
+
+                                {% if item.user_barter_review.comment %}
+                                    <p>
+                                        {{ item.user_barter_review.comment }}
+                                    </p>
+                                {% endif %}
+                            </section>
+
+                        {% elif item.barter.is_profile_post %}
+
+                            <form
+                                class="cart-review-form"
+                                method="post"
+                                action="{% url 'profile_post:submit_bidder_review' item.barter.pk %}"
+                            >
+                                {% csrf_token %}
+
+                                <strong>
+                                    Ulasan untuk pengunggah
+                                </strong>
+
+                                <label>
+                                    Rating
+
+                                    <select name="rating" required>
+                                        <option value="5">★★★★★ 5 · Sangat puas</option>
+                                        <option value="4">★★★★☆ 4 · Bagus</option>
+                                        <option value="3">★★★☆☆ 3 · Cukup</option>
+                                        <option value="2">★★☆☆☆ 2 · Kurang</option>
+                                        <option value="1">★☆☆☆☆ 1 · Mengecewakan</option>
+                                    </select>
+                                </label>
+
+                                <label>
+                                    Komentar
+
+                                    <textarea
+                                        name="comment"
+                                        rows="3"
+                                        maxlength="1000"
+                                        placeholder="Ceritakan pengalaman barter"
+                                    ></textarea>
+                                </label>
+
+                                <button
+                                    type="submit"
+                                    class="cart-review-submit"
+                                >
+                                    Kirim ulasan
+                                </button>
+                            </form>
+
                         {% endif %}
-                    ">
-                        {{ item.barter.get_status_display }}
-                    </div>
+
+                    {% endif %}
 
                     <!-- TOMBOL AKSI -->
                     <div class="cart-actions">
 
-                        <!-- DETAIL / PENAWARAN -->
-                        <a
-                            class="offer-button"
-                            href="{% url 'barter_details:barter_detail' item.barter.id %}"
-                        >
-                            Ajukan Penawaran
-                        </a>
+                        {% if item.barter.status == "AVAILABLE" %}
+
+                            <a
+                                class="offer-button"
+                                href="{% url 'barter_details:barter_detail' item.barter.id %}"
+                            >
+                                Ajukan Penawaran
+                            </a>
+
+                        {% elif item.barter.status == "NEGOTIATING" %}
+
+                            <a
+                                class="offer-button"
+                                href="{% url 'barter_details:barter_detail' item.barter.id %}"
+                            >
+                                Lihat detail barter
+                            </a>
+
+                        {% endif %}
 
                         <!-- HAPUS BARANG -->
                         <form
@@ -248,6 +351,7 @@
                         </form>
 
                     </div>
+
                 </div>
             </article>
 
