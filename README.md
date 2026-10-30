@@ -92,9 +92,50 @@ Pada modul ini, user dapat melakukan business process utama untuk menukar barang
 Create: Buat penawaran , Read: Lihat data detail barang yang dipilih, Update:- , Delete: Batalkan penawaran.
 
 4. Modul Keranjang (PIC: Naila Salsabila)
-Pada modul ini, user dapat melihat kembali baarng-barang yang pernah disimpan sebelumnya.
+Modul Keranjang memungkinkan pengguna menyimpan barang barter yang menarik agar dapat dilihat dan dipertimbangkan kembali sebelum mengajukan penawaran.
 
-Create: Simpan barang ke keranjang, Read: Lihat barang yang pernah disimpan, Update:- , Delete: Hapus barang dari keranjang.
+a. Alur Pengguna
+    1. Pengguna menekan tombol Keranjang pada barang yang dipilih.
+    2. Sistem menyimpan barang ke keranjang pengguna.
+    3. Pengguna membuka halaman Keranjang untuk melihat barang tersimpan.
+    4. Pengguna dapat mencari barang berdasarkan nama dan lokasi.
+    5. Pengguna dapat menandai barang sebagai favorit.
+    6. Pengguna dapat melihat detail atau menghapus barang dari keranjang.
+
+b. Detail CRUD
+    - **Create:** Menyimpan barang ke keranjang. Sistem mencegah duplikasi dan pengguna tidak dapat menyimpan barang miliknya sendiri.
+    - **Read:** Menampilkan barang tersimpan beserta foto, nama, deskripsi, kondisi, lokasi, dan status barang.
+    - **Update:** Menandai atau membatalkan tanda favorit pada barang.
+    - **Delete:** Menghapus barang dari keranjang dengan konfirmasi.
+
+c. Implementasi 
+    - Menggunakan Django Model-View-Template (MVT).
+    - Model `CartItem` untuk menyimpan hubungan pengguna dan barang barter.
+    - `FavoriteForm` untuk mengelola status favorit.
+    - JavaScript dan AJAX untuk memperbarui status favorit tanpa memuat ulang halaman.
+    - `UniqueConstraint` untuk mencegah penyimpanan barang yang sama secara berulang oleh pengguna yang sama.
+
+d. Keamanan dan Pengujian
+    - Halaman keranjang hanya dapat diakses oleh pengguna yang sudah login.
+    - Pengguna hanya dapat melihat dan mengelola keranjang miliknya sendiri.
+    - Pengujian menggunakan `python manage.py test keranjang`.
+    - Hasil pengujian: 19 test berhasil dijalankan (OK).
+
+d. AI Disclosure
+    a. Tools
+    - ChatGPT (GPT-6).
+
+    b. Prompt Strategy
+    - Meminta bantuan memahami struktur dan alur pengembangan modul Keranjang menggunakan Django.
+    - Menggunakan AI untuk membantu implementasi fitur, menemukan bug, dan memperbaiki kode.
+    - Melakukan pemeriksaan serta penyesuaian kode secara manual agar sesuai dengan kebutuhan proyek.
+    
+    c. Prompting Log
+    1. Panduan pembuatan modul Keranjang menggunakan Django.
+    2. Bantuan implementasi fitur tambah, tampil, dan hapus barang.
+    3. Bantuan implementasi fitur favorit dan pencarian.
+    4. Bantuan memperbaiki bug dan menyelesaikan konflik Git.
+    5. Bantuan pengujian dan penyusunan dokumentasi README.
 
 5. Modul Daftar Post (PIC: Hafizuddin Dzaki Azzam)
 Pada modul ini, user dapat melihat seluruh post yang pernah dibuat, menghapus post, dan melihat siapa saja yang membuat pengajuan dari barang tersebut beserta detail informasi (Nama User, Domisili, dan Barang yang  ditawarkan)
