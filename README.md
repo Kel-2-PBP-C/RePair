@@ -84,7 +84,50 @@ Tampilan landing, login, Lengkapi Profil, dan Settings menyesuaikan layar HP dan
 2. Modul Barter / Main Page (PIC: Aisha Ibnaty Zahira)
 Pada modul ini, user dapat melihat seluruh barang yang sedang ditawarkan oleh pengguna lainnya, beberapa fitur yang dibutuhkan adalah Search Bar, Halaman Rekomendasi (berisi card barang-barang rekomendasi), Card Barang yang ditawarkan (berisi informasi singkat berupa Foto, Nama Barang, Kondisi Kelayakan, dan Tombol Keranjang), Filter, Tombol & Menu Post Barang
 
-Create: Post Barang Baru, Read: Melihat daftar barang yang ada, Update:-, Delete:-.
+Create: Post Barang Baru, Read: Melihat daftar barang yang ada, Update: Menyediakan tombol edit barang, Delete: Menyediakan tombol untuk hapus barang pengguna.
+
+### Detail CRUD – Main Page
+
+1. Create
+- Menyediakan tombol Post Barang pada halaman utama yang mengarahkan pengguna ke halaman pembuatan barang baru pada modul Daftar Post.
+- Barang yang berhasil ditambahkan akan ditampilkan secara dinamis pada Main Page.
+
+2. Read
+- Menampilkan daftar barang yang tersedia berdasarkan data dari database.
+- Menampilkan informasi barang berupa foto, nama barang, tahun barang, kondisi kelayakan, lokasi, dan barang yang diinginkan sebagai pengganti.
+- Menyediakan fitur pencarian barang berdasarkan nama.
+- Menyediakan filter berdasarkan kondisi barang, yaitu Baru, Bekas – Layak Pakai, dan Butuh Perbaikan.
+
+3. Update
+- Menyediakan tombol Edit Barang untuk mengarahkan pengguna ke halaman pengeditan barang pada modul Daftar Post.
+- Tombol edit hanya ditampilkan untuk barang milik pengguna yang sedang login.
+- Perubahan informasi barang akan ditampilkan kembali pada Main Page.
+
+4. Delete
+- Menyediakan tombol Hapus Barang untuk menghapus barang milik pengguna melalui integrasi dengan modul Daftar Post.
+- Tombol hapus hanya ditampilkan untuk barang milik pengguna yang sedang login.
+- Setelah penghapusan berhasil, barang tidak lagi ditampilkan pada daftar Main Page.
+
+### AI Disclosure – Main Page
+
+    1. Tools
+    - ChatGPT (web)
+
+    2. Prompt Strategy
+    - Menentukan kebutuhan fitur Main Page terlebih dahulu, seperti menampilkan daftar barang, fitur pencarian, filter kondisi barang, serta tampilan card barang sesuai desain Figma.
+    - Menggunakan AI untuk membantu memahami implementasi Django, terutama dalam mengambil dan menampilkan data barang secara dinamis dari database.
+    - Memanfaatkan AI untuk memberikan arahan dalam menghubungkan tombol pada Main Page dengan fitur dari modul lain, seperti tambah barang, edit barang, hapus barang, dan keranjang.
+    - Menggunakan AI untuk membantu proses debugging ketika terjadi error pada implementasi maupun integrasi antarmodul.
+    - Memanfaatkan AI untuk membantu menyusun unit test, kemudian menjalankan pengujian dan memeriksa hasilnya secara langsung.
+    - Melakukan penyesuaian kode dan tampilan berdasarkan hasil pengujian agar fitur Main Page berjalan sesuai kebutuhan.
+
+    3. Prompting Log
+    - Perancangan dan penyesuaian tampilan Main Page berdasarkan desain Figma.
+    - Implementasi fitur pencarian dan filter kondisi barang.
+    - Integrasi fitur CRUD Main Page dengan modul lain.
+    - Debugging integrasi tombol Add to Cart dengan modul Keranjang.
+    - Pembuatan dan pengujian unit test Main Page.
+    - Seluruh proses dilakukan melalui percakapan ChatGPT selama pengembangan modul.
 
 3. Modul Detail Barter (PIC: Rasya Azyan Kautsar)
 Pada modul ini, user dapat melakukan business process utama untuk menukar barang dengan barang/jasa lainnya, dengan komponen berupa halaman Detail Barang (seperti Foto, Nama, Deskripsi, Kondisi Kelayakan Barang, Barang/Jasa yang ingin didapatkan (opsional), Lokasi Titik Temu, Deadline Penawaran, Tombol Keranjang, dan Tombol Ajukan Penawaran beserta dengan menu pengajuan barang).
