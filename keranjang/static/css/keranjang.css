@@ -1,3 +1,487 @@
+
+/* ========================================
+   HALAMAN KERANJANG RE&PAIR
+======================================== */
+
+.cart-page,
+.cart-page * {
+    box-sizing: border-box;
+}
+
+main.shell.cart-page {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    background: #f7f8f5;
+    color: #24352a;
+}
+
+main.cart-page + .site-footer {
+    display: none;
+}
+
+/* ========================================
+   KONTEN UTAMA
+======================================== */
+
+.cart-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 24px 60px;
+}
+
+.cart-heading {
+    margin: 0 0 8px;
+    color: #244b37;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.cart-subtitle {
+    margin: 0;
+    color: #718076;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* ========================================
+   PENCARIAN
+======================================== */
+
+.cart-search {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 22px 0 24px;
+}
+
+.cart-search input {
+    flex: 1 1 240px;
+    min-width: 0;
+    height: 44px;
+    padding: 0 14px;
+    border: 1px solid #dce4dc;
+    border-radius: 8px;
+    outline-color: #168447;
+    background: #fff;
+    color: #24352a;
+    font: inherit;
+    font-size: 14px;
+}
+
+.cart-search button,
+.clear-search,
+.back-home {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 10px 16px;
+    border: 0;
+    border-radius: 8px;
+    background: #168447;
+    color: #fff;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.cart-search button:hover,
+.back-home:hover {
+    background: #106b38;
+}
+
+.clear-search {
+    background: #e8f3eb;
+    color: #17663c;
+}
+
+.clear-search:hover {
+    background: #d9ebde;
+}
+
+/* ========================================
+   GRID CARD BARANG
+======================================== */
+
+.cart-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+    align-items: stretch;
+}
+
+/* ========================================
+   CARD BARANG
+======================================== */
+
+.cart-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 100%;
+    padding: 12px;
+    overflow: hidden;
+    border: 1px solid #e7ebe5;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(31, 65, 42, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cart-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(31, 65, 42, 0.1);
+}
+
+/* Kartu barang favorit */
+
+.cart-card:has(.favorite-button.is-favorite) {
+    border-color: #c5dfce;
+}
+
+/* ========================================
+   GAMBAR BARANG
+======================================== */
+
+.cart-image-link {
+    display: block;
+    text-decoration: none;
+}
+
+.cart-image {
+    display: block;
+    flex: none;
+    width: 100%;
+    height: 170px;
+    margin: 0 0 12px;
+    border: 0;
+    border-radius: 8px;
+    background: #f4f5f2;
+    object-fit: cover;
+}
+
+.cart-image-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    color: #7a847d;
+    font-size: 12px;
+    text-align: center;
+}
+
+/* ========================================
+   INFORMASI BARANG
+======================================== */
+
+.cart-info {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: stretch;
+    min-width: 0;
+}
+
+.cart-item-title {
+    margin: 0 0 12px;
+    color: #244b37;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+.cart-item-link {
+    color: inherit;
+    text-decoration: none;
+}
+
+.cart-item-link:hover {
+    color: #168447;
+}
+
+/* ========================================
+   TOMBOL FAVORIT
+======================================== */
+
+.favorite-form {
+    display: flex;
+    margin: 0 0 12px;
+}
+
+.favorite-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    min-height: 34px;
+    padding: 7px 12px;
+    border: 1px solid #dce4dc;
+    border-radius: 20px;
+    background: #fff;
+    color: #596a5e;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.4;
+    cursor: pointer;
+    transition: background 0.2s ease,
+                border-color 0.2s ease,
+                color 0.2s ease;
+}
+
+.favorite-button:hover {
+    border-color: #8dc6a0;
+    background: #edf7ef;
+    color: #17663c;
+}
+
+.favorite-button.is-favorite {
+    border-color: #a7d4b5;
+    background: #e8f5eb;
+    color: #17663c;
+}
+
+.favorite-button:focus-visible {
+    outline: 2px solid #168447;
+    outline-offset: 3px;
+}
+
+.favorite-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+#favorite-message {
+    margin: 0 0 12px;
+    color: #17663c;
+    font-size: 13px;
+}
+
+/* ========================================
+   DETAIL BARANG
+======================================== */
+
+.cart-detail {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 4px 0;
+    color: #596a5e;
+    font-size: 12px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.detail-icon {
+    flex: 0 0 auto;
+    color: #168447;
+    font-weight: 700;
+}
+
+/* ========================================
+   STATUS BARANG
+======================================== */
+
+.cart-status {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    margin-top: 8px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.cart-status-available {
+    background: #e8f5eb;
+    color: #17663c;
+}
+
+.cart-status-negotiating {
+    background: #fff3d9;
+    color: #946200;
+}
+
+.cart-status-bartered {
+    background: #eeeeee;
+    color: #666666;
+}
+
+/* ========================================
+   TOMBOL PENAWARAN DAN HAPUS
+======================================== */
+
+.cart-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 16px;
+}
+
+.offer-button {
+    display: inline-flex;
+    flex: 1 1 auto;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 38px;
+    padding: 8px 10px;
+    border: 0;
+    border-radius: 7px;
+    background: #168447;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.35;
+    text-align: center;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+}
+
+.offer-button:hover {
+    background: #106b38;
+}
+
+.delete-form {
+    display: inline-flex;
+    flex: 0 0 auto;
+    margin: 0;
+}
+
+.delete-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    padding: 8px;
+    border: 1px solid #f1dada;
+    border-radius: 7px;
+    background: #fff3f3;
+    color: #d9363e;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.delete-button:hover {
+    background: #ffe2e2;
+}
+
+.delete-button:focus-visible,
+.offer-button:focus-visible {
+    outline: 2px solid #168447;
+    outline-offset: 3px;
+}
+
+.delete-button svg {
+    display: block;
+    width: 20px;
+    height: 20px;
+}
+
+/* ========================================
+   KERANJANG KOSONG
+======================================== */
+
+.empty-cart {
+    grid-column: 1 / -1;
+    padding: 42px 20px;
+    border: 1px solid #e7ebe5;
+    border-radius: 12px;
+    background: #fff;
+    color: #718076;
+    text-align: center;
+}
+
+.empty-cart h2 {
+    margin: 0 0 10px;
+    color: #244b37;
+    font-size: 21px;
+}
+
+.empty-cart p {
+    margin: 0 0 20px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* ========================================
+   DIALOG KONFIRMASI HAPUS
+======================================== */
+
+.delete-dialog {
+    width: min(400px, calc(100% - 32px));
+    max-width: 400px;
+    margin: auto;
+    padding: 28px 24px;
+    border: 0;
+    border-radius: 15px;
+    background: #fff;
+    color: #24352a;
+    text-align: center;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.delete-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.55);
+}
+
+.dialog-icon {
+    color: #d9363e;
+}
+
+.dialog-icon svg {
+    width: 36px;
+    height: 36px;
+}
+
+.delete-dialog h2 {
+    margin: 12px 0 8px;
+    color: #24352a;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.delete-dialog p {
+    margin: 0 0 20px;
+    color: #718076;
+    font-size: 14px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+.dialog-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.dialog-actions button {
+    flex: 1;
+    min-height: 42px;
+    padding: 10px;
+    border: 0;
+    border-radius: 7px;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.cancel-delete {
+    background: #e8eae7;
+    color: #333;
+}
+
 .cancel-delete:hover {
     background: #daddd8;
 }
@@ -11,7 +495,9 @@
     background: #b92730;
 }
 
+/* ========================================
    AKSESIBILITAS
+======================================== */
 
 .sr-only {
     position: absolute;
@@ -25,7 +511,9 @@
     border: 0;
 }
 
+/* ========================================
    RESPONSIVE TABLET
+======================================== */
 
 @media (max-width: 1000px) {
     .cart-grid {
@@ -38,7 +526,9 @@
     }
 }
 
+/* ========================================
    RESPONSIVE MOBILE
+======================================== */
 
 @media (max-width: 700px) {
     .cart-container {
@@ -105,6 +595,10 @@
         padding: 24px 18px;
     }
 }
+
+/* ========================================
+   RESPONSIVE LAYAR KECIL
+======================================== */
 
 @media (max-width: 360px) {
     .cart-grid {

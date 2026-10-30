@@ -10,25 +10,30 @@
 {% endblock %}
 
 {% block content %}
+
 <section class="cart-container" aria-labelledby="cart-heading">
 
+    <!-- HEADER -->
     <div class="cart-header">
         <div>
-            <h1 class="cart-heading" id="cart-heading">Keranjang</h1>
+            <h1 class="cart-heading" id="cart-heading">
+                Keranjang
+            </h1>
+
             <p class="cart-subtitle">
                 Barang yang kamu simpan untuk ditukar.
             </p>
         </div>
     </div>
 
-    <!-- Pencarian barang -->
+    <!-- PENCARIAN BARANG -->
     <form
         class="cart-search"
         method="get"
         action="{% url 'keranjang:keranjang' %}"
     >
         <label class="sr-only" for="cart-search-input">
-            Cari barang di keranjang
+            Cari barang berdasarkan nama
         </label>
 
         <input
@@ -36,12 +41,26 @@
             type="search"
             name="q"
             value="{{ search_query|default:'' }}"
-            placeholder="Cari barang di keranjang..."
+            placeholder="Cari nama barang..."
         >
 
-        <button type="submit">Cari</button>
+        <label class="sr-only" for="cart-location-input">
+            Cari barang berdasarkan lokasi
+        </label>
 
-        {% if search_query %}
+        <input
+            id="cart-location-input"
+            type="search"
+            name="location"
+            value="{{ location_query|default:'' }}"
+            placeholder="Cari lokasi..."
+        >
+
+        <button type="submit">
+            Cari
+        </button>
+
+        {% if search_query or location_query %}
             <a
                 class="clear-search"
                 href="{% url 'keranjang:keranjang' %}"
@@ -51,13 +70,22 @@
         {% endif %}
     </form>
 
-    <!-- Daftar barang -->
+    <!-- PESAN AJAX FAVORIT -->
+    <p
+        id="favorite-message"
+        class="favorite-message"
+        role="status"
+        aria-live="polite"
+    ></p>
+
+    <!-- DAFTAR BARANG -->
     <div class="cart-grid">
+
         {% for item in cart_items %}
 
             <article class="cart-card">
 
-                <!-- Gambar barang -->
+                <!-- GAMBAR BARANG -->
                 <a
                     class="cart-image-link"
                     href="{% url 'barter_details:barter_detail' item.barter.id %}"
@@ -77,10 +105,10 @@
                     {% endif %}
                 </a>
 
-                <!-- Informasi barang -->
+                <!-- INFORMASI BARANG -->
                 <div class="cart-info">
 
-                    <!-- Nama barang -->
+                    <!-- NAMA BARANG -->
                     <h2 class="cart-item-title">
                         <a
                             class="cart-item-link"
@@ -90,12 +118,20 @@
                         </a>
                     </h2>
 
-                    <p class="cart-status cart-status-{{ item.barter.status|lower }}"
-                       aria-label="Status barang: {{ item.barter.get_status_display }}">
+                    <!-- STATUS BARANG -->
+                    <div class="cart-status
+                        {% if item.barter.status == 'AVAILABLE' %}
+                            cart-status-available
+                        {% elif item.barter.status == 'NEGOTIATING' %}
+                            cart-status-negotiating
+                        {% elif item.barter.status == 'BARTERED' %}
+                            cart-status-bartered
+                        {% endif %}
+                    ">
                         {{ item.barter.get_status_display }}
-                    </p>
+                    </div>
 
-                    <!-- Tombol favorit -->
+                    <!-- FORM FAVORIT -->
                     <form
                         class="favorite-form"
                         method="post"
@@ -103,12 +139,17 @@
                     >
                         {% csrf_token %}
 
+                        <input
+                            type="hidden"
+                            name="is_favorite"
+                            value="{% if item.is_favorite %}false{% else %}true{% endif %}"
+                        >
+
                         <button
                             type="submit"
                             class="favorite-button {% if item.is_favorite %}is-favorite{% endif %}"
-                            aria-pressed="{% if item.is_favorite %}true{% else %}false{% endif %}"
-                            aria-label="{% if item.is_favorite %}Hapus {{ item.barter.title }} dari favorit{% else %}Tambahkan {{ item.barter.title }} ke favorit{% endif %}"
-                            title="{% if item.is_favorite %}Hapus dari favorit{% else %}Tambahkan ke favorit{% endif %}"
+                            aria-pressed="{{ item.is_favorite|yesno:'true,false' }}"
+                            aria-label="{% if item.is_favorite %}Hapus dari favorit{% else %}Tambahkan ke favorit{% endif %}"
                         >
                             {% if item.is_favorite %}
                                 ♥ Favorit
@@ -118,54 +159,108 @@
                         </button>
                     </form>
 
+                    <!-- TAHUN BARANG -->
+                    <p class="cart-detail">
+                        <span class="detail-icon" aria-hidden="true">📅</span>
+                        <span>
+                            Tahun: {{ item.barter.item_year }}
+                        </span>
+                    </p>
+
+                    <!-- BARANG PENGGANTI -->
                     <p class="cart-detail">
                         <span class="detail-icon" aria-hidden="true">↻</span>
-                        <span>{{ item.barter.item_replacement }}</span>
+                        <span>
+                            Barang pengganti:
+                            {{ item.barter.item_replacement|default:"Belum ditentukan" }}
+                        </span>
                     </p>
 
+                    <!-- LOKASI -->
                     <p class="cart-detail">
-                        <span class="detail-icon" aria-hidden="true">●</span>
-                        <span>{{ item.barter.item_location }}</span>
+                        <span class="detail-icon" aria-hidden="true">📍</span>
+                        <span>
+                            Lokasi: {{ item.barter.item_location }}
+                        </span>
                     </p>
 
+                    <!-- KONDISI -->
                     <p class="cart-detail">
                         <span class="detail-icon" aria-hidden="true">✓</span>
                         <span>
-                            Kondisi: {{ item.barter.get_condition_display|default:"-" }}
+                            Kondisi:
+                            {{ item.barter.get_condition_display|default:"-" }}
                             {% if item.barter.condition_percentage != None %}
                                 ({{ item.barter.condition_percentage }}%)
                             {% endif %}
                         </span>
                     </p>
 
+                    <!-- INFORMASI NEGOSIASI -->
                     {% if item.barter.status == "NEGOTIATING" and item.user_selected_offer %}
-                        <section class="cart-negotiation-contact" aria-label="Kontak pengunggah barang">
-                            <strong>Barter sedang dinegosiasikan dengan:</strong>
-                            <span>{{ item.barter.owner.get_full_name|default:item.barter.owner.username }}</span>
-                            <span>Kontak: {{ item.owner_contact|default:"Kontak belum diatur" }}</span>
+                        <section
+                            class="cart-negotiation-contact"
+                            aria-label="Kontak pengunggah barang"
+                        >
+                            <strong>
+                                Barter sedang dinegosiasikan dengan:
+                            </strong>
+
+                            <span>
+                                {{ item.barter.owner.get_full_name|default:item.barter.owner.username }}
+                            </span>
+
+                            <span>
+                                Kontak:
+                                {{ item.owner_contact|default:"Kontak belum diatur" }}
+                            </span>
                         </section>
                     {% endif %}
 
+                    <!-- INFORMASI DAN FORM ULASAN -->
                     {% if item.barter.status == "BARTERED" and item.user_selected_offer %}
+
                         {% if item.user_barter_review %}
+
                             <section class="cart-review-summary">
-                                <strong>Ulasan Anda untuk {{ item.barter.owner.get_full_name|default:item.barter.owner.username }}</strong>
+                                <strong>
+                                    Ulasan Anda untuk
+                                    {{ item.barter.owner.get_full_name|default:item.barter.owner.username }}
+                                </strong>
+
                                 <span aria-label="Rating {{ item.user_barter_review.rating }} dari 5">
                                     {% for _ in "12345" %}
-                                        {% if forloop.counter <= item.user_barter_review.rating %}★{% else %}☆{% endif %}
+                                        {% if forloop.counter <= item.user_barter_review.rating %}
+                                            ★
+                                        {% else %}
+                                            ☆
+                                        {% endif %}
                                     {% endfor %}
                                 </span>
+
                                 {% if item.user_barter_review.comment %}
-                                    <p>{{ item.user_barter_review.comment }}</p>
+                                    <p>
+                                        {{ item.user_barter_review.comment }}
+                                    </p>
                                 {% endif %}
                             </section>
+
                         {% elif item.barter.is_profile_post %}
-                            <form class="cart-review-form" method="post"
-                                  action="{% url 'profile_post:submit_bidder_review' item.barter.pk %}">
+
+                            <form
+                                class="cart-review-form"
+                                method="post"
+                                action="{% url 'profile_post:submit_bidder_review' item.barter.pk %}"
+                            >
                                 {% csrf_token %}
-                                <strong>Ulasan untuk pengunggah</strong>
+
+                                <strong>
+                                    Ulasan untuk pengunggah
+                                </strong>
+
                                 <label>
                                     Rating
+
                                     <select name="rating" required>
                                         <option value="5">★★★★★ 5 · Sangat puas</option>
                                         <option value="4">★★★★☆ 4 · Bagus</option>
@@ -174,32 +269,54 @@
                                         <option value="1">★☆☆☆☆ 1 · Mengecewakan</option>
                                     </select>
                                 </label>
+
                                 <label>
                                     Komentar
-                                    <textarea name="comment" rows="3" maxlength="1000"
-                                              placeholder="Ceritakan pengalaman barter"></textarea>
+
+                                    <textarea
+                                        name="comment"
+                                        rows="3"
+                                        maxlength="1000"
+                                        placeholder="Ceritakan pengalaman barter"
+                                    ></textarea>
                                 </label>
-                                <button type="submit" class="cart-review-submit">Kirim ulasan</button>
+
+                                <button
+                                    type="submit"
+                                    class="cart-review-submit"
+                                >
+                                    Kirim ulasan
+                                </button>
                             </form>
+
                         {% endif %}
+
                     {% endif %}
 
-                    <!-- Tombol penawaran dan hapus -->
+                    <!-- TOMBOL AKSI -->
                     <div class="cart-actions">
 
                         {% if item.barter.status == "AVAILABLE" %}
+
                             <a
                                 class="offer-button"
                                 href="{% url 'barter_details:barter_detail' item.barter.id %}"
                             >
                                 Ajukan Penawaran
                             </a>
+
                         {% elif item.barter.status == "NEGOTIATING" %}
-                            <a class="offer-button" href="{% url 'barter_details:barter_detail' item.barter.id %}">
+
+                            <a
+                                class="offer-button"
+                                href="{% url 'barter_details:barter_detail' item.barter.id %}"
+                            >
                                 Lihat detail barter
                             </a>
+
                         {% endif %}
 
+                        <!-- HAPUS BARANG -->
                         <form
                             class="delete-form"
                             method="post"
@@ -234,15 +351,17 @@
                         </form>
 
                     </div>
+
                 </div>
             </article>
 
         {% empty %}
 
-            <!-- Tampilan ketika keranjang kosong -->
+            <!-- KERANJANG KOSONG -->
             <div class="empty-cart">
+
                 <h2>
-                    {% if search_query %}
+                    {% if search_query or location_query %}
                         Barang tidak ditemukan
                     {% else %}
                         Keranjang kamu masih kosong
@@ -250,8 +369,8 @@
                 </h2>
 
                 <p>
-                    {% if search_query %}
-                        Coba kata kunci pencarian yang berbeda.
+                    {% if search_query or location_query %}
+                        Coba kata kunci atau lokasi yang berbeda.
                     {% else %}
                         Simpan barang yang kamu minati agar mudah ditemukan lagi.
                     {% endif %}
@@ -260,19 +379,22 @@
                 <a class="back-home" href="/landing/">
                     Jelajahi Barang
                 </a>
+
             </div>
 
         {% endfor %}
+
     </div>
 </section>
 
-<!-- Dialog konfirmasi hapus -->
+<!-- DIALOG KONFIRMASI HAPUS -->
 <dialog
     class="delete-dialog"
     id="delete-dialog"
     aria-labelledby="delete-title"
     aria-describedby="delete-description"
 >
+
     <div class="dialog-icon" aria-hidden="true">
         <svg
             viewBox="0 0 24 24"
@@ -288,13 +410,16 @@
         </svg>
     </div>
 
-    <h2 id="delete-title">Hapus Barang?</h2>
+    <h2 id="delete-title">
+        Hapus Barang?
+    </h2>
 
     <p id="delete-description">
         Apakah kamu yakin ingin menghapus barang ini?
     </p>
 
     <div class="dialog-actions">
+
         <button
             type="button"
             class="cancel-delete"
@@ -310,8 +435,11 @@
         >
             Ya, hapus
         </button>
+
     </div>
+
 </dialog>
+
 {% endblock %}
 
 {% block extra_js %}
