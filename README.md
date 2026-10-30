@@ -87,9 +87,60 @@ Pada modul ini, user dapat melihat seluruh barang yang sedang ditawarkan oleh pe
 Create: Post Barang Baru, Read: Melihat daftar barang yang ada, Update:-, Delete:-.
 
 3. Modul Detail Barter (PIC: Rasya Azyan Kautsar)
+Pada modul ini, user dapat melakukan business process utama untuk menukar barang dengan barang/jasa lainnya, dengan komponen berupa halaman Detail Barang (seperti Foto, Nama, Deskripsi, Kondisi Kelayakan Barang, Barang/Jasa yang ingin didapatkan (opsional), Lokasi Titik Temu, Tombol Keranjang, dan Tombol Ajukan Penawaran beserta dengan menu pengajuan barang).
+
+3. Modul Detail Barter (PIC: Rasya Azyan Kautsar)
 Pada modul ini, user dapat melakukan business process utama untuk menukar barang dengan barang/jasa lainnya, dengan komponen berupa halaman Detail Barang (seperti Foto, Nama, Deskripsi, Kondisi Kelayakan Barang, Barang/Jasa yang ingin didapatkan (opsional), Lokasi Titik Temu, Deadline Penawaran, Tombol Keranjang, dan Tombol Ajukan Penawaran beserta dengan menu pengajuan barang).
 
 Create: Buat penawaran , Read: Lihat data detail barang yang dipilih, Update:- , Delete: Batalkan penawaran.
+    1. Alur Pengguna
+    <ul>
+        <li>User akan masuk ke halaman barter details setelah menekan card pada home page</li>
+        <li>Pada halaman ini, user dapat melihat foto, detail barang seperti tahun membeli, kondisi, cara pengantaran, lokasibarang, dan barang yang ingin ditukarkan.</li>
+        <li>Pada halaman ini juga terdapat 2 action button utama pada footer, ada button "Tambah Ke Keranjang" untuk menambahkan barang ke keranjang, button "Ajukan Penawaran" untuk mengajukan bid.</li>
+        <li>Pada saat user menekan button "Tambah ke Keranjang", user akan melihat sebuah modal konfirmasi untuk menyetujui atau membatalkan aksi. Jika button "Batal" ditekan maka akan kembali ke halaman barter detail. Sedangkan jika user menekan button "Ya", maka barang akan masuk ke keranjang dan akan muncul toast notifikasi.</li>
+        <li>Pada saat user menekan button "Ajukan Penawaran", user akan melihat dapat mengisi pop up modal form untuk mengajukan penawaran, dengan parameter (Dropdown Jenis Penawaran[Barang/Jasa], Nama Barang/jasa, Deskripsi, URL Foto (hanya untuk barang), Tahun barang (hanya untuk barang), Kondisi dalam persentase (hanya untuk barang))</li>
+        <li>Selain itu, bagi pemilik barang (barter owner), akan ada 3 action button khusus, yaitu button "Edit" (icon pensil), button "Tambah Barang" (icon '+'), dan button "Delete" (icon tempat sampah).</li>
+        <li>Pada saat menekan tambah barang, maka barter owner akan masuk ke dalam halaman baru untuk menambah barang, dengan parameter berupa Nama, Deskripsi, URL Foto, Tahun, Kondisi, Persentase Kelayakan, Metode Pengiriman, dan Domisili.<li>
+        <li>Pada saat menekan edit barang, maka akan muncul form yang sama namun Autofill.<li>
+        <li>Pada saat menekan hapus barang, maka akan muncul modal konfirmasi dengan opsi button "Ya" dan "Tidak".<li>
+    </ul>
+    2. CRUD
+        a. CREATE
+        <ul>
+            <li>Pada halaman ini, user (selain pemilik barang) dapat membuat Bid Request yang dapat berupa barang ataupun jasa.</li>
+            <li>Selain itu, pemilik barang juga dapat menambahkan barang melalui floating button yang terdapat pada halaman ini.</li>
+        </ul>
+        b. READ
+        <ul>
+            <li>Membaca informasi dari barang yang telah dibuat oleh pemilik barang, berupa foto, nama barang, tahub barang, kondisi barang, metode pengantaran, domisili, barang yang ingin ditukarkan serta deskripsi barang</li>
+            <li>User juga dapat melihat pemilik barang dan kontak yang dilampirkan oleh pemilik barang</li>
+            <li>Terakhir, user juga dapat melihat barang lain yang sedang ditawarkan oleh pemilik barang</li>
+        </ul>
+        c. UPDATE
+        <ul>
+            <li>Pada halaman ini, pemilik barang bisa mengedit beberapa parameter yang dapat diubah dan melekat pada barang yang dimiliki</li>
+        </ul>
+        c. DELETE
+        <ul>
+            <li>Pada halaman ini juga, pemilik barang dapat menghapus barang yang pernah ditawarkan apabila barang tersebut tidak jadi ditawarkan</li>
+        </ul>
+    3. AI Disclosure
+        a. Tools
+        <ul>
+            <li>Claude Sonnet 5.5</li>
+        </ul>
+        b. Prompt Strategy
+        <ul>
+            <li>Menggunakan AI untuk membantu melengkapi dan menyesuaikan test case dengan models terbaru.</li>
+            <li>Menggunakan AI untuk dasar dalam membuat function-function dasar JavaScript sebelum diimplementasikan pada barter_details.</li>
+            <li>Menggunakan AI untuk membuat toast notification untuk menampilkan pesan konfirmasi kepada user.</li>
+            <li>Menggunakan AI untuk membantu membuat svg icon pada halaman barter details</li>
+        </ul>
+        c. Prompting Log
+        <ul>
+            <li>Membantu Melengkapi & Menyempurnakan Test Case: https://claude.ai/share/82c241f3-bf2c-41bb-a4c4-455d0c09cdc1</li>
+        </ul>
 
 4. Modul Keranjang (PIC: Naila Salsabila)
 Pada modul ini, user dapat melihat kembali baarng-barang yang pernah disimpan sebelumnya.
