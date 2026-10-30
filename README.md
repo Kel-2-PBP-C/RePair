@@ -188,7 +188,7 @@ Pada modul ini, user dapat melihat seluruh post yang pernah dibuat, menghapus po
             2. Menambah toast: https://share.gemini.google/lfVTLD3xBQXU
             3. Memperbaiki UI: https://claude.ai/share/56659c6d-aa10-4961-b9fb-f088c00cd4ee
             4. Bug fixing dan integrasi antar modul: GPT-6 Luna (dalam session VS Code)
-            4.1. Integrasi antar modul meliputi penyelarasan model tampilan UI serta tampilan komponen toast.
+                1. Integrasi antar modul meliputi penyelarasan model tampilan UI serta tampilan komponen toast.
 
 5. Modul Profil & Setting (PIC: Aisha Ibnaty Zahira)
 Dalam modul ini, user dapat melihat detail akun, mengubah password, dan mengubah preferensi penggunaan aplikasi
