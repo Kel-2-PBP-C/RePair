@@ -1,6 +1,7 @@
 from django import forms
 from django.utils.html import strip_tags
 from accounts.models import Profile
+from accounts.regions import RegionServiceError
 from .models import Post
 
 
@@ -23,7 +24,7 @@ def resolve_region_from_accounts(code: str, fallback_label: str = ''):
                     return clean_code, res.get('name') or res.get('label') or clean_label
                 if isinstance(res, str) and res:
                     return clean_code, res
-    except ImportError:
+    except (ImportError, RegionServiceError, ValueError):
         pass
 
     return clean_code, clean_label

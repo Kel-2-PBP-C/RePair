@@ -1,16 +1,33 @@
 name: Push to PWS
 
+# Deploy only after "Tests and coverage" has passed for a push to main.
 on:
-  push:
+  workflow_run:
+    workflows: [ "Tests and coverage" ]
+    types: [ completed ]
     branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pws-deploy
+  cancel-in-progress: false
 
 jobs:
   build-and-push:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push')
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
+        ref: ${{ github.event.workflow_run.head_sha || github.sha }}
         fetch-depth: 0
 
     - name: Set up Git
@@ -30,14 +47,9 @@ jobs:
           exit 1
         fi
 
-        current_branch="$(git branch --show-current)"
-        if [ -z "${current_branch}" ]; then
-          current_branch="HEAD"
-        fi
-
-        echo "Current branch: ${current_branch}"
-
-        if ! push_output=$(git push "${PWS_URL}" "${current_branch}:main" 2>&1); then
+        # PWS builds from its master branch (it has no main branch). GitHub main is
+        # the source of truth, so force the mirror in case main's history was rewritten.
+        if ! push_output=$(git push --force "${PWS_URL}" HEAD:refs/heads/master 2>&1); then
           echo "Push failed with output:"
           echo "${push_output}"
           echo "Error: Unable to push changes. Please check the error message above and resolve any conflicts manually."

@@ -4,7 +4,7 @@ from django.views.decorators.http import require_GET
 from barter_details.models import Barter
 
 
-# @login_required
+@login_required
 @require_GET
 def show_main(request):
     items = Barter.objects.filter(status=Barter.StatusChoices.AVAILABLE).exclude(owner=request.user)

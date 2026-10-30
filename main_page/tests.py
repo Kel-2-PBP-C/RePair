@@ -20,35 +20,25 @@ class MainPageIntegrationTests(TestCase):
                     fetch_redirect_response=False,
                 )
 
-    def test_signed_in_home_is_plain_placeholder_with_integrated_navigation(self):
+    def test_signed_in_home_renders_main_page_with_integrated_navigation(self):
         self.client.force_login(self.user)
         for name in ("core:landing", "main_page:show_main"):
             with self.subTest(route=name):
                 response = self.client.get(reverse(name))
-                self.assertTemplateUsed(response, "core/landing.html")
-                self.assertContains(response, "<p>semangat ngerjainnya guys-noe</p>", html=True)
+                self.assertTemplateUsed(response, "main_page/main_page.html")
+                self.assertContains(response, "Rekomendasi Untuk Kamu")
                 self.assertContains(response, '<header class="repair-navbar">')
                 self.assertContains(response, '<nav class="repair-navbar-menu"')
                 self.assertContains(response, '<footer class="site-footer shell">')
-                self.assertNotContains(response, "Cari barang...")
-                self.assertNotContains(response, "Rekomendasi Barang")
-                self.assertNotContains(response, "Tambah ke Keranjang")
-                self.assertNotContains(response, 'class="panel"')
-                for target in ("keranjang", "profile_post:show_posts", "accounts:profile"):
+                for target in ("keranjang:keranjang", "profile_post:show_posts", "accounts:profile"):
                     self.assertContains(response, f'href="{reverse(target)}"')
-
-    def test_main_page_view_keeps_the_same_placeholder(self):
-        request = RequestFactory().get("/landing/")
-        request.user = self.user
-        response = show_main(request)
-        self.assertContains(response, "<p>semangat ngerjainnya guys-noe</p>", html=True)
-        self.assertNotContains(response, "Rekomendasi Barang")
 
 
 class MainPageBarterTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.owner = get_user_model().objects.create_user(username="main-page-owner")
+        cls.viewer = get_user_model().objects.create_user(username="main-page-viewer")
         for condition, status in (
             (Barter.ConditionChoices.NEW, Barter.StatusChoices.AVAILABLE),
             (Barter.ConditionChoices.GOOD, Barter.StatusChoices.AVAILABLE),
@@ -67,7 +57,7 @@ class MainPageBarterTests(TestCase):
 
     def get_main_page(self, query_string=""):
         request = RequestFactory().get(f"/landing/{query_string}")
-        request.user = self.owner
+        request.user = self.viewer
         return show_main(request)
 
     def test_only_available_items_are_displayed(self):
@@ -78,6 +68,13 @@ class MainPageBarterTests(TestCase):
         self.assertContains(response, "REPAIR AVAILABLE")
         self.assertNotContains(response, "NEW NEGOTIATING")
         self.assertNotContains(response, "GOOD BARTERED")
+
+    def test_owner_does_not_see_own_items(self):
+        request = RequestFactory().get("/landing/")
+        request.user = self.owner
+        response = show_main(request)
+        self.assertNotContains(response, "NEW AVAILABLE")
+        self.assertContains(response, "Belum ada barang yang diposting.")
 
     def test_condition_filter_uses_item_condition_choices(self):
         for condition in Barter.ConditionChoices.values:

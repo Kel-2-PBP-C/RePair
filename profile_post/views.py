@@ -17,6 +17,7 @@ from django.utils.html import strip_tags
 from django.urls import reverse, NoReverseMatch
 
 from accounts.models import Profile
+from accounts.regions import RegionServiceError
 from accounts.utils import profile_initials
 from .models import Post, BarterOffer, BarterReview
 from .forms import PostForm, resolve_region_from_accounts
@@ -137,8 +138,8 @@ def _query_accounts_regions(query: str):
                         results.append({'code': code, 'name': label})
             if results:
                 return results[:25]
-    except ImportError:
-        pass
+    except (ImportError, RegionServiceError, ValueError):
+        results = []
 
     # 3. Fallback to standard Indonesian cities/regencies
     for item in FALLBACK_REGIONS:
@@ -335,7 +336,7 @@ def get_posts_json(request):
     else:
         queryset = queryset.order_by('-created_at')
 
-    page_number = int(request.GET.get('page', 1))
+    page_number = request.GET.get('page', 1)
     paginator = Paginator(queryset, 5)
     page_obj = paginator.get_page(page_number)
 
@@ -431,7 +432,7 @@ def create_post_ajax(request):
             post.location_code = default_code
             post.location = default_label
         elif post.location_code and not post.location:
-            post.location = resolve_region_from_accounts(post.location_code, post.location_code)
+            _, post.location = resolve_region_from_accounts(post.location_code, post.location_code)
 
         if not post.image_url:
             post.image_url = 'https://placehold.co/300x300/e3f4ea/0d5c31?text=RePair+Item'

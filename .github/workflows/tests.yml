@@ -27,8 +27,10 @@ jobs:
             requirements-test.txt
       - name: Install test dependencies
         run: python -m pip install -r requirements-test.txt
+      - name: Check for missing migrations
+        run: python manage.py makemigrations --check --dry-run --settings=accounts.test_settings
       - name: Run every Python app and Git safety tests
-        run: python -m coverage run manage.py test accounts core barter_details keranjang main_page profile_post RePair scripts --settings=accounts.test_settings --noinput
+        run: python -m coverage run manage.py test accounts core barter_details keranjang main_page profile_post add_items RePair scripts --settings=accounts.test_settings --noinput
       - name: Require at least 90 percent overall and for each app
         run: |
           python -m coverage report --fail-under=90
