@@ -7,6 +7,7 @@ from django.utils import timezone
 
 from accounts.forms import ProfileForm
 from accounts.models import Profile
+from barter_details.models import Barter
 from profile_post.forms import PostForm
 from profile_post.models import BarterOffer, BarterReview, Post
 from profile_post.views import _format_created_at, _get_user_contact
@@ -38,6 +39,21 @@ class PostFeatureTests(TestCase):
             "preferred_barter": "A houseplant",
         }
 
+    def test_profile_post_uses_the_canonical_barter_model(self):
+        self.assertIs(Post, Barter)
+
+        post = Post.objects.create(
+            user=self.user,
+            title="A well-loved book",
+            description="In good condition",
+            location="Depok",
+            preferred_barter="A houseplant",
+        )
+
+        self.assertTrue(
+            Barter.objects.filter(pk=post.pk, is_profile_post=True).exists()
+        )
+
     def test_new_posts_require_a_category_and_legacy_posts_can_remain_uncategorized(self):
         self.assertFalse(PostForm(self.post_data(category="")).is_valid())
         self.assertTrue(PostForm(self.post_data()).is_valid())
@@ -61,6 +77,51 @@ class PostFeatureTests(TestCase):
 
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Post.objects.get().category, "elektronik")
+
+    def test_create_endpoint_accepts_a_selected_region_code_and_label(self):
+        response = self.client.post(
+            reverse("profile_post:create_post"),
+            {
+                **self.post_data(),
+                "location_code": "32.76",
+                "location": "Kota Depok, Jawa Barat",
+            },
+        )
+
+        self.assertEqual(response.status_code, 201)
+        post = Post.objects.get()
+        self.assertEqual(post.location_code, "32.76")
+        self.assertEqual(post.location, "Kota Depok, Jawa Barat")
+
+    def test_create_endpoint_accepts_single_character_title_and_description(self):
+        response = self.client.post(
+            reverse("profile_post:create_post"),
+            {
+                **self.post_data(),
+                "title": "A",
+                "description": "B",
+            },
+        )
+
+        self.assertEqual(response.status_code, 201)
+        post = Post.objects.get()
+        self.assertEqual(post.title, "A")
+        self.assertEqual(post.description, "B")
+
+    def test_create_validation_toast_errors_include_indonesian_field_labels(self):
+        response = self.client.post(
+            reverse("profile_post:create_post"),
+            {
+                **self.post_data(),
+                "title": "A" * 256,
+            },
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json()["errors"]["Nama barang"],
+            ["Nama barang: Maksimal 255 karakter."],
+        )
 
     def test_edit_endpoint_updates_the_selected_category(self):
         post = Post.objects.create(
@@ -160,6 +221,35 @@ class PostFeatureTests(TestCase):
         self.assertEqual(response.json()["offers"][0]["offerer_contact"], "Kontak belum diatur")
         self.assertNotIn("offerer@example.test", response.content.decode())
 
+    def test_post_offers_endpoint_returns_no_dummy_offers_when_empty(self):
+        post = Post.objects.create(
+            user=self.user,
+            title="A well-loved book",
+            description="In good condition",
+            location="Depok",
+            preferred_barter="A houseplant",
+        )
+
+        response = self.client.get(
+            reverse("profile_post:get_post_offers", args=[post.pk])
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["offers"], [])
+
+    def test_posts_page_shows_empty_offer_message_and_layers_toast_above_modal(self):
+        response = self.client.get(reverse("profile_post:show_posts"))
+
+        self.assertContains(response, "Belum ada tawaran untuk barang ini.")
+        self.assertContains(response, 'id="toast-container"')
+        self.assertContains(response, 'href="/static/css/toast.css"')
+        self.assertContains(response, 'id="profile-confirm-dialog"')
+        self.assertContains(response, "Konfirmasi tindakan")
+        self.assertContains(response, "Batalkan negosiasi")
+        self.assertContains(response, "Selesaikan barter")
+        self.assertContains(response, "Hapus post")
+        self.assertNotContains(response, "if (!confirm(")
+
     def test_category_is_returned_by_posts_api_and_shown_on_detail(self):
         post = Post.objects.create(
             user=self.user,
@@ -185,11 +275,11 @@ class PostFeatureTests(TestCase):
 
         self.assertContains(response, "line-clamp-3 break-words [overflow-wrap:anywhere]")
 
-    def test_list_template_only_offers_an_owner_submitted_review(self):
+    def test_list_template_shows_owner_and_bidder_review_states(self):
         response = self.client.get(reverse("profile_post:show_posts"))
 
         self.assertContains(response, "Ulasan Anda untuk")
-        self.assertContains(response, "Ulasan dari pihak penawar belum tersedia.")
+        self.assertContains(response, "Penawar belum mengirim ulasan.")
         self.assertNotContains(response, "Simulasikan review penawar")
         self.assertNotContains(response, "review-role")
 
@@ -224,7 +314,7 @@ class PostFeatureTests(TestCase):
 
         self.assertEqual(
             [post["id"] for post in response.json()["posts"]],
-            [more_offers.id, fewer_offers.id],
+            [str(more_offers.id), str(fewer_offers.id)],
         )
 
     def test_created_at_uses_indonesian_date_and_relative_time(self):
@@ -235,6 +325,43 @@ class PostFeatureTests(TestCase):
         self.assertIn("Januari", date_display)
         self.assertNotIn("January", date_display)
         self.assertTrue(relative_display.endswith("yang lalu"))
+
+    def test_completed_barter_remains_in_profile_posts_with_completed_status(self):
+        post = Post.objects.create(
+            user=self.user,
+            title="Completed barter",
+            description="Completed",
+            location="Depok",
+            preferred_barter="A plant",
+            status=Post.StatusChoices.NEGOTIATING,
+        )
+        offerer = User.objects.create_user(
+            username="completed-offerer",
+            password="test-password",
+        )
+        BarterOffer.objects.create(
+            post=post,
+            offerer=offerer,
+            offered_item_title="A plant",
+            offered_item_description="Healthy",
+            offerer_contact="",
+            is_selected=True,
+        )
+
+        completion_response = self.client.post(
+            reverse("profile_post:complete_barter", args=[post.pk])
+        )
+
+        self.assertEqual(completion_response.status_code, 200)
+        post.refresh_from_db()
+        self.assertEqual(post.status, Post.StatusChoices.BARTERED)
+        self.assertIsNotNone(post.completed_at)
+        posts_response = self.client.get(reverse("profile_post:get_posts_json"))
+        listed_post = next(
+            item for item in posts_response.json()["posts"]
+            if item["id"] == str(post.pk)
+        )
+        self.assertEqual(listed_post["status_code"], Post.StatusChoices.BARTERED)
 
     def test_review_endpoint_always_records_owner_to_offerer_review(self):
         post = Post.objects.create(
@@ -274,10 +401,10 @@ class PostFeatureTests(TestCase):
 
         list_response = self.client.get(reverse("profile_post:get_posts_json"))
         serialized_review = list_response.json()["posts"][0]["reviews"]
-        self.assertNotIn("to_owner", serialized_review)
+        self.assertIsNone(serialized_review["to_owner"])
         self.assertEqual(serialized_review["to_offerer"]["rating"], 4)
 
-    def test_owner_to_offerer_reviews_are_the_only_reviews_counted_as_received(self):
+    def test_reviews_from_both_roles_are_counted_as_received(self):
         reviewed_user = User.objects.create_user(
             username="reviewed-member", password="test-password"
         )
@@ -317,4 +444,26 @@ class PostFeatureTests(TestCase):
             reverse("profile_post:get_user_stats"), {"period": "A"}
         )
 
-        self.assertEqual(response.json()["rating"]["value"], 4.0)
+        self.assertEqual(response.json()["rating"]["value"], 2.5)
+        self.assertNotIn("barters", response.json())
+
+    def test_stats_endpoint_only_returns_rating_and_post_stats_for_all_periods(self):
+        for period in ("A", "M", "Y"):
+            with self.subTest(period=period):
+                response = self.client.get(
+                    reverse("profile_post:get_user_stats"),
+                    {"period": period},
+                )
+
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(
+                    set(response.json()) ,
+                    {"period", "show_delta", "rating", "posts"},
+                )
+
+    def test_profile_post_page_has_no_total_barter_stat_or_bindings(self):
+        response = self.client.get(reverse("profile_post:show_posts"))
+
+        self.assertNotContains(response, "stat-barters")
+        self.assertNotContains(response, "Barters")
+        self.assertNotContains(response, "updateStatBox('barters'")

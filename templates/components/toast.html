@@ -1,0 +1,10 @@
+<div id="toast-container" class="toast-stack" popover="manual" role="region" aria-label="Notifikasi" aria-live="polite" aria-relevant="additions text" aria-atomic="false"></div>
+<div id="toast-message-queue" hidden>
+    {% for message in messages %}
+    <span
+        data-toast-message
+        data-type="{{ message.level_tag }}"
+        {% if 'account-deleted' in message.tags %}data-account-deleted="true" data-account-deleted-notifications data-notification role="status" data-duration="8000"{% endif %}
+    >{{ message }}</span>
+    {% endfor %}
+</div>

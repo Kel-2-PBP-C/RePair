@@ -4,12 +4,14 @@
     color-scheme: light;
     --ink: #244b37;
     --muted: #677266;
-    --cream: #f6f5ed;
+    --cream: #f5f7f2;
+    --surface: #fffefa;
     --green: #dce9cc;
     --line: #e0e5d7;
 }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--cream); color: var(--ink); font-family: 'Plus Jakarta Sans', 'Segoe UI', Arial, sans-serif; line-height: 1.6; }
+body.bg-slate-50 { background-color: var(--cream); }
 a { color: var(--ink); text-underline-offset: 4px; }
 button, input, select, textarea { font: inherit; }
 button, .button { cursor: pointer; font-family: 'Poppins', 'Segoe UI', Arial, sans-serif; }

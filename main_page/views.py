@@ -7,7 +7,7 @@ from barter_details.models import Barter
 # @login_required
 @require_GET
 def show_main(request):
-    items = Barter.objects.all()
+    items = Barter.objects.filter(status=Barter.StatusChoices.AVAILABLE).exclude(owner=request.user)
 
     # Mengambil input pencarian dan filter dari user
     search = request.GET.get('search', '').strip()
@@ -17,13 +17,8 @@ def show_main(request):
     if search:
         items = items.filter(title__icontains=search)
 
-    # Filter berdasarkan persentase kondisi barang
-    if kondisi == 'baik':
-        items = items.filter(condition__gte=80, condition__lte=100)
-    elif kondisi == 'cukup':
-        items = items.filter(condition__gte=50, condition__lt=80)
-    elif kondisi == 'kurang':
-        items = items.filter(condition__lt=50)
+    if kondisi in Barter.ConditionChoices.values:
+        items = items.filter(condition=kondisi)
 
     context = {
         'items': items,

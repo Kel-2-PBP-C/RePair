@@ -9,21 +9,17 @@
     <link rel="stylesheet" href="{% static 'css/site.css' %}">
     <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
     {% block extra_css %}{% endblock %}
+    <link rel="stylesheet" href="{% static 'css/toast.css' %}">
 </head>
 <body class="{% block body_class %}has-responsive-navbar{% endblock %}"{% block body_attributes %}{% endblock %}>
     <a class="skip-link" href="#content">Lewati ke konten</a>
     {% block navbar %}{% include 'components/navbar.html' %}{% endblock %}
+    {% include 'components/toast.html' %}
     <main id="content" class="shell {% block main_class %}page-main{% endblock %}">
-        {% if messages %}
-        <ul class="messages" aria-label="Pemberitahuan" aria-live="polite">
-            {% for message in messages %}
-            <li class="message{% if message.tags %} message-{{ message.tags }}{% endif %}"{% if 'error' in message.tags %} role="alert"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
         {% block content %}{% endblock %}
     </main>
     <footer class="site-footer shell">&copy; Repair, all rights reserved.</footer>
+    <script src="{% static 'js/toast.js' %}" defer></script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>
