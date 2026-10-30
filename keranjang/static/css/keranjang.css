@@ -1,7 +1,7 @@
 
 /* ========================================
    HALAMAN KERANJANG RE&PAIR
-   ======================================== */
+======================================== */
 
 .cart-page,
 .cart-page * {
@@ -23,7 +23,7 @@ main.cart-page + .site-footer {
 
 /* ========================================
    KONTEN UTAMA
-   ======================================== */
+======================================== */
 
 .cart-container {
     width: 100%;
@@ -49,7 +49,7 @@ main.cart-page + .site-footer {
 
 /* ========================================
    PENCARIAN
-   ======================================== */
+======================================== */
 
 .cart-search {
     display: flex;
@@ -102,9 +102,13 @@ main.cart-page + .site-footer {
     color: #17663c;
 }
 
+.clear-search:hover {
+    background: #d9ebde;
+}
+
 /* ========================================
    GRID CARD BARANG
-   ======================================== */
+======================================== */
 
 .cart-grid {
     display: grid;
@@ -115,7 +119,7 @@ main.cart-page + .site-footer {
 
 /* ========================================
    CARD BARANG
-   ======================================== */
+======================================== */
 
 .cart-card {
     display: flex;
@@ -128,9 +132,7 @@ main.cart-page + .site-footer {
     border-radius: 12px;
     background: #fff;
     box-shadow: 0 2px 8px rgba(31, 65, 42, 0.06);
-    transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .cart-card:hover {
@@ -146,7 +148,7 @@ main.cart-page + .site-footer {
 
 /* ========================================
    GAMBAR BARANG
-   ======================================== */
+======================================== */
 
 .cart-image-link {
     display: block;
@@ -177,7 +179,7 @@ main.cart-page + .site-footer {
 
 /* ========================================
    INFORMASI BARANG
-   ======================================== */
+======================================== */
 
 .cart-info {
     display: flex;
@@ -207,7 +209,7 @@ main.cart-page + .site-footer {
 
 /* ========================================
    TOMBOL FAVORIT
-   ======================================== */
+======================================== */
 
 .favorite-form {
     display: flex;
@@ -230,10 +232,9 @@ main.cart-page + .site-footer {
     font-weight: 600;
     line-height: 1.4;
     cursor: pointer;
-    transition:
-        background 0.2s ease,
-        border-color 0.2s ease,
-        color 0.2s ease;
+    transition: background 0.2s ease,
+                border-color 0.2s ease,
+                color 0.2s ease;
 }
 
 .favorite-button:hover {
@@ -253,9 +254,20 @@ main.cart-page + .site-footer {
     outline-offset: 3px;
 }
 
+.favorite-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+#favorite-message {
+    margin: 0 0 12px;
+    color: #17663c;
+    font-size: 13px;
+}
+
 /* ========================================
    DETAIL BARANG
-   ======================================== */
+======================================== */
 
 .cart-detail {
     display: flex;
@@ -275,8 +287,38 @@ main.cart-page + .site-footer {
 }
 
 /* ========================================
+   STATUS BARANG
+======================================== */
+
+.cart-status {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    margin-top: 8px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.cart-status-available {
+    background: #e8f5eb;
+    color: #17663c;
+}
+
+.cart-status-negotiating {
+    background: #fff3d9;
+    color: #946200;
+}
+
+.cart-status-bartered {
+    background: #eeeeee;
+    color: #666666;
+}
+
+/* ========================================
    TOMBOL PENAWARAN DAN HAPUS
-   ======================================== */
+======================================== */
 
 .cart-actions {
     display: flex;
@@ -349,7 +391,7 @@ main.cart-page + .site-footer {
 
 /* ========================================
    KERANJANG KOSONG
-   ======================================== */
+======================================== */
 
 .empty-cart {
     grid-column: 1 / -1;
@@ -375,7 +417,7 @@ main.cart-page + .site-footer {
 
 /* ========================================
    DIALOG KONFIRMASI HAPUS
-   ======================================== */
+======================================== */
 
 .delete-dialog {
     width: min(400px, calc(100% - 32px));
@@ -455,7 +497,7 @@ main.cart-page + .site-footer {
 
 /* ========================================
    AKSESIBILITAS
-   ======================================== */
+======================================== */
 
 .sr-only {
     position: absolute;
@@ -471,7 +513,7 @@ main.cart-page + .site-footer {
 
 /* ========================================
    RESPONSIVE TABLET
-   ======================================== */
+======================================== */
 
 @media (max-width: 1000px) {
     .cart-grid {
@@ -486,7 +528,7 @@ main.cart-page + .site-footer {
 
 /* ========================================
    RESPONSIVE MOBILE
-   ======================================== */
+======================================== */
 
 @media (max-width: 700px) {
     .cart-container {
@@ -553,6 +595,10 @@ main.cart-page + .site-footer {
         padding: 24px 18px;
     }
 }
+
+/* ========================================
+   RESPONSIVE LAYAR KECIL
+======================================== */
 
 @media (max-width: 360px) {
     .cart-grid {
