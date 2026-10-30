@@ -21,15 +21,9 @@
 
     <select name="kondisi">
         <option value="">Semua Kondisi</option>
-        <option value="baik" {% if kondisi == 'baik' %}selected{% endif %}>
-            Kondisi 80–100%
-        </option>
-        <option value="cukup" {% if kondisi == 'cukup' %}selected{% endif %}>
-            Kondisi 50–79%
-        </option>
-        <option value="kurang" {% if kondisi == 'kurang' %}selected{% endif %}>
-            Kondisi di bawah 50%
-        </option>
+        <option value="NEW" {% if kondisi == 'NEW' %}selected{% endif %}>Baru</option>
+        <option value="GOOD" {% if kondisi == 'GOOD' %}selected{% endif %}>Bekas - Layak Pakai</option>
+        <option value="REPAIR" {% if kondisi == 'REPAIR' %}selected{% endif %}>Butuh Perbaikan</option>
     </select>
 
     <button type="submit">Cari</button>
@@ -46,32 +40,60 @@
 
 <div class="barang-container">
     {% for item in items %}
-        <div class="barang-card">
-            <a href="{% url 'barter_details:barter_detail' item.pk %}">
-                <img src="{{ item.thumbnail }}" alt="{{ item.title }}" width="200">
+    <div class="barang-card">
+
+        <!-- Foto barang -->
+        <a href="{% url 'barter_details:barter_detail' item.pk %}"
+           class="barang-image">
+            <img src="{{ item.thumbnail }}" alt="{{ item.title }}">
+        </a>
+
+        <!-- Informasi barang -->
+        <div class="barang-info">
+
+            <a href="{% url 'barter_details:barter_detail' item.pk %}"
+               class="barang-title">
                 <h3>{{ item.title }}</h3>
             </a>
 
-            <p>Kondisi: {{ item.condition_percentage }}%</p>
+            <div class="barang-details">
+                <p>📅 <span>{{ item.item_year }}</span></p>
+                <p>🔄 <span>{{ item.item_replacement|default:"Belum ditentukan" }}</span></p>
+                <p>📍 <span>{{ item.item_location }}</span></p>
+                <p>📊 <span>{{ item.condition_percentage }}%</span></p>
+            </div>
 
-            {% if user.is_authenticated and item.owner_id == user.id %}
-                <a href="{% url 'add_items:edit' item.pk %}">
+            <!-- Tombol aksi -->
+            <div class="barang-actions">
+
+                {% if user.is_authenticated and item.owner_id == user.id %}
+                <a href="{% url 'add_items:edit' item.pk %}"
+                   class="btn-edit">
                     ✏️ Edit Barang
                 </a>
 
                 <form class="delete-barang-form"
-                    action="{% url 'add_items:delete' item.pk %}"
-                    method="POST">
+                      action="{% url 'add_items:delete' item.pk %}"
+                      method="POST">
                     {% csrf_token %}
-                    <button type="submit">🗑️ Hapus Barang</button>
+                    <button type="submit" class="btn-delete">
+                        🗑️ Hapus Barang
+                    </button>
                 </form>
-            {% endif %}
+                {% endif %}
 
-            <form method="POST" action="{% url 'keranjang:tambah_keranjang' item.pk %}">
-                {% csrf_token %}
-                <button type="submit">Add to Cart</button>
-            </form>
+                <form method="POST"
+                      action="{% url 'keranjang:tambah_keranjang' item.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-cart">
+                        🛒 + Add to Cart
+                    </button>
+                </form>
+
+            </div>
         </div>
+    </div>
+
     {% empty %}
         {% if search or kondisi %}
             <p>Barang yang kamu cari tidak ditemukan.</p>
