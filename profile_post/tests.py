@@ -19,6 +19,7 @@ class PostsPageTests(TestCase):
         response = self.client.get(url)
         self.assertTemplateUsed(response, "profile_post/index.html")
         self.assertTemplateUsed(response, "base.html")
+        self.assertContains(response, "<title>Posts | RePair</title>", html=True)
         self.assertContains(response, "Unggahan Saya")
         self.assertContains(response, 'aria-label="Navigasi utama"')
         self.assertContains(response, "&copy; Repair, all rights reserved.")
