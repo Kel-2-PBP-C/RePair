@@ -11,7 +11,10 @@
 <header class="settings-mobile-brand">
     <a href="{{ navigation.home_url }}" aria-label="RePair, beranda"><img src="{% static 'img/Group 40.png' %}" width="991" height="345" alt="RePair"></a>
 </header>
-<h1 class="settings-sr-only">Profil &amp; Pengaturan</h1>
+<div class="settings-header">
+    <h1 class="settings-heading">Profil &amp; Pengaturan</h1>
+    <p class="settings-subtitle">Kelola data diri, kategori favorit, dan keamanan akunmu.</p>
+</div>
 <form id="profile" class="settings-summary" method="post" action="{% url 'accounts:profile' %}#profile" data-profile-editor data-profile-invalid="{% if profile_form.errors %}true{% else %}false{% endif %}">
     {% csrf_token %}<input type="hidden" name="action" value="profile"><input type="hidden" name="preferred_categories_present" value="1">
     <div class="settings-profile-card settings-card">
