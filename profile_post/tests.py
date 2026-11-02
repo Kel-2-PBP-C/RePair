@@ -11,11 +11,15 @@ class PostsPageTests(TestCase):
         self.assertEqual(url, "/posts/")
         self.assertEqual(resolve(url).func, index)
 
+        self.assertRedirects(
+            self.client.get(url), f"{reverse('accounts:auth')}?next=/posts/", fetch_redirect_response=False,
+        )
+
+        self.client.force_login(get_user_model().objects.create_user(username="posts-layout-member"))
         response = self.client.get(url)
         self.assertTemplateUsed(response, "profile_post/index.html")
         self.assertTemplateUsed(response, "base.html")
-        self.assertContains(response, "<title>Posts | RePair</title>", html=True)
-        self.assertContains(response, "<h1>Posts</h1>", html=True)
+        self.assertContains(response, "Unggahan Saya")
         self.assertContains(response, 'aria-label="Navigasi utama"')
         self.assertContains(response, "&copy; Repair, all rights reserved.")
         self.assertNotContains(response, "THIS IS THE USER PROFILE")

@@ -97,8 +97,9 @@ Tampilan landing, login, Lengkapi Profil, dan Settings menyesuaikan layar HP dan
 Contributes beyond modules:
 1. Handle all Pull Request and Checking
 2. Handle all API 
-3. Handle min 50 data that's being required 
-4. Help teammates figure out their job
+3. Handle min 50 data that's being required and integrated with colleague's modul
+4. Handle the CI CD
+5. Help colleagues figure out their job
 
 2. Modul Barter / Main Page (PIC: Aisha Ibnaty Zahira)
 Pada modul ini, user dapat melihat seluruh barang yang sedang ditawarkan oleh pengguna lainnya, beberapa fitur yang dibutuhkan adalah Search Bar, Halaman Rekomendasi (berisi card barang-barang rekomendasi), Card Barang yang ditawarkan (berisi informasi singkat berupa Foto, Nama Barang, Kondisi Kelayakan, dan Tombol Keranjang), Filter, Tombol & Menu Post Barang
@@ -201,6 +202,24 @@ Cara impor (cukup sekali request ke DummyJSON):
 python manage.py migrate
 python manage.py import_dummyjson
 ```
+
+Setelah impor, login lalu buka **Home** (`/landing/`). Produk ditampilkan dari
+database aplikasi, dengan foto, pencarian, filter kondisi, detail barang, dan
+tombol tambah keranjang. Data lokal dan hosting terpisah: command impor harus
+dijalankan pada database yang digunakan web tersebut; push kode saja tidak
+mengisi database PWS.
+
+Jika Requests di Windows gagal dengan `CERTIFICATE_VERIFY_FAILED`, gunakan
+bundle sertifikat yang sudah dipercaya Windows tanpa mematikan verifikasi TLS:
+
+```powershell
+python manage.py export_bogortech_ca
+$env:REQUESTS_CA_BUNDLE = (Resolve-Path '.test-artifacts/windows-ca-bundle.pem').Path
+python manage.py import_dummyjson
+```
+
+Verifikasi lokal 2 November 2026: 50 produk DummyJSON tersimpan dan seluruh
+50 gambar berhasil tampil di browser pada halaman Home.
 <br><br>
 
 ## Link Proyek
