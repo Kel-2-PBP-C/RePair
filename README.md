@@ -77,19 +77,134 @@ d. Delete
     - Pengguna keluar dari semua perangkat, kembali ke landing page, dan menerima notifikasi penghapusan.
     - Email dan akun Google yang sama dapat dipakai untuk mendaftar kembali.
     - Tombol Keluar dari Akun tersedia di Settings.
-
+ 1. Tools
+            <ul>
+                <li>Claude Sonnet 5.5 (web)</li>
+                <li>GPT-6 Luna (VS Code)</li>
+            </ul>
+        2. Prompt Strategy
+            <ul>
+                <li>Merancang Flow Tech Stack dan integrasi webb</li>
+                <li>Menanyakan cara integrasi 50 data</li>
+            </ul>
+        3. Prompting Log
+            1. Membentuk struktur proyek: https://claude.ai/chat/52297ab6-20fa-4e0e-9bb3-282ecda3ec21
+            56659c6d-aa10-4961-b9fb-f088c00cd4ee
+            4. Bug fixing: GPT-6 Luna (dalam session VS Code)
+            
 Tampilan landing, login, Lengkapi Profil, dan Settings menyesuaikan layar HP dan laptop. Navbar bersama menampilkan Home, Cart, Posts, dan Settings; berada di bawah pada HP dan di atas pada laptop.
 
+Contributes beyond modules:
+1. Handle all Pull Request and Checking
+2. Handle all API 
+3. Handle min 50 data that's being required and integrated with colleague's modul
+4. Handle the CI CD
+5. Help colleagues figure out their job
+
+<hr>
 
 2. Modul Barter / Main Page (PIC: Aisha Ibnaty Zahira)
 Pada modul ini, user dapat melihat seluruh barang yang sedang ditawarkan oleh pengguna lainnya, beberapa fitur yang dibutuhkan adalah Search Bar, Halaman Rekomendasi (berisi card barang-barang rekomendasi), Card Barang yang ditawarkan (berisi informasi singkat berupa Foto, Nama Barang, Kondisi Kelayakan, dan Tombol Keranjang), Filter, Tombol & Menu Post Barang
 
-Create: Post Barang Baru, Read: Melihat daftar barang yang ada, Update:-, Delete:-.
+Create: Post Barang Baru, Read: Melihat daftar barang yang ada, Update: Menyediakan tombol edit barang, Delete: Menyediakan tombol untuk hapus barang pengguna.
+
+1. Detail CRUD – Main Page
+    1. Create
+    - Menyediakan tombol Post Barang pada halaman utama yang mengarahkan pengguna ke halaman pembuatan barang baru pada modul Daftar Post.
+    - Barang yang berhasil ditambahkan akan ditampilkan secara dinamis pada Main Page.
+
+    2. Read
+    - Menampilkan daftar barang yang tersedia berdasarkan data dari database.
+    - Menampilkan informasi barang berupa foto, nama barang, tahun barang, kondisi kelayakan, lokasi, dan barang yang diinginkan sebagai pengganti.
+    - Menyediakan fitur pencarian barang berdasarkan nama.
+    - Menyediakan filter berdasarkan kondisi barang, yaitu Baru, Bekas – Layak Pakai, dan Butuh Perbaikan.
+
+    3. Update
+    - Menyediakan tombol Edit Barang untuk mengarahkan pengguna ke halaman pengeditan barang pada modul Daftar Post.
+    - Tombol edit hanya ditampilkan untuk barang milik pengguna yang sedang login.
+    - Perubahan informasi barang akan ditampilkan kembali pada Main Page.
+
+    4. Delete
+    - Menyediakan tombol Hapus Barang untuk menghapus barang milik pengguna melalui integrasi dengan modul Daftar Post.
+    - Tombol hapus hanya ditampilkan untuk barang milik pengguna yang sedang login.
+    - Setelah penghapusan berhasil, barang tidak lagi ditampilkan pada daftar Main Page.
+
+2. AI Disclosure – Main Page
+    1. Tools
+    - ChatGPT (web)
+
+    2. Prompt Strategy
+    - Menentukan kebutuhan fitur Main Page terlebih dahulu, seperti menampilkan daftar barang, fitur pencarian, filter kondisi barang, serta tampilan card barang sesuai desain Figma.
+    - Menggunakan AI untuk membantu memahami implementasi Django, terutama dalam mengambil dan menampilkan data barang secara dinamis dari database.
+    - Memanfaatkan AI untuk memberikan arahan dalam menghubungkan tombol pada Main Page dengan fitur dari modul lain, seperti tambah barang, edit barang, hapus barang, dan keranjang.
+    - Menggunakan AI untuk membantu proses debugging ketika terjadi error pada implementasi maupun integrasi antarmodul.
+    - Memanfaatkan AI untuk membantu menyusun unit test, kemudian menjalankan pengujian dan memeriksa hasilnya secara langsung.
+    - Melakukan penyesuaian kode dan tampilan berdasarkan hasil pengujian agar fitur Main Page berjalan sesuai kebutuhan.
+
+    3. Prompting Log
+    - Perancangan dan penyesuaian tampilan Main Page berdasarkan desain Figma.
+    - Implementasi fitur pencarian dan filter kondisi barang.
+    - Integrasi fitur CRUD Main Page dengan modul lain.
+    - Debugging integrasi tombol Add to Cart dengan modul Keranjang.
+    - Pembuatan dan pengujian unit test Main Page.
+    - Seluruh proses dilakukan melalui percakapan ChatGPT selama pengembangan modul
+
+<hr>
 
 3. Modul Detail Barter (PIC: Rasya Azyan Kautsar)
 Pada modul ini, user dapat melakukan business process utama untuk menukar barang dengan barang/jasa lainnya, dengan komponen berupa halaman Detail Barang (seperti Foto, Nama, Deskripsi, Kondisi Kelayakan Barang, Barang/Jasa yang ingin didapatkan (opsional), Lokasi Titik Temu, Deadline Penawaran, Tombol Keranjang, dan Tombol Ajukan Penawaran beserta dengan menu pengajuan barang).
 
 Create: Buat penawaran , Read: Lihat data detail barang yang dipilih, Update:- , Delete: Batalkan penawaran.
+    1. Alur Pengguna
+    <ul>
+        <li>User akan masuk ke halaman barter details setelah menekan card pada home page</li>
+        <li>Pada halaman ini, user dapat melihat foto, detail barang seperti tahun membeli, kondisi, cara pengantaran, lokasibarang, dan barang yang ingin ditukarkan.</li>
+        <li>Pada halaman ini juga terdapat 2 action button utama pada footer, ada button "Tambah Ke Keranjang" untuk menambahkan barang ke keranjang, button "Ajukan Penawaran" untuk mengajukan bid.</li>
+        <li>Pada saat user menekan button "Tambah ke Keranjang", user akan melihat sebuah modal konfirmasi untuk menyetujui atau membatalkan aksi. Jika button "Batal" ditekan maka akan kembali ke halaman barter detail. Sedangkan jika user menekan button "Ya", maka barang akan masuk ke keranjang dan akan muncul toast notifikasi.</li>
+        <li>Pada saat user menekan button "Ajukan Penawaran", user akan melihat dapat mengisi pop up modal form untuk mengajukan penawaran, dengan parameter (Dropdown Jenis Penawaran[Barang/Jasa], Nama Barang/jasa, Deskripsi, URL Foto (hanya untuk barang), Tahun barang (hanya untuk barang), Kondisi dalam persentase (hanya untuk barang))</li>
+        <li>Selain itu, bagi pemilik barang (barter owner), akan ada 3 action button khusus, yaitu button "Edit" (icon pensil), button "Tambah Barang" (icon '+'), dan button "Delete" (icon tempat sampah).</li>
+        <li>Pada saat menekan tambah barang, maka barter owner akan masuk ke dalam halaman baru untuk menambah barang, dengan parameter berupa Nama, Deskripsi, URL Foto, Tahun, Kondisi, Persentase Kelayakan, Metode Pengiriman, dan Domisili.</li>
+        <li>Pada saat menekan edit barang, maka akan muncul form yang sama namun Autofill.</li>
+        <li>Pada saat menekan hapus barang, maka akan muncul modal konfirmasi dengan opsi button "Ya" dan "Tidak".</li>
+    </ul>
+    2. CRUD
+        1. CREATE
+        <ul>
+            <li>Pada halaman ini, user (selain pemilik barang) dapat membuat Bid Request yang dapat berupa barang ataupun jasa.</li>
+            <li>Selain itu, pemilik barang juga dapat menambahkan barang melalui floating button yang terdapat pada halaman ini.</li>
+        </ul>
+        2. READ
+        <ul>
+            <li>Membaca informasi dari barang yang telah dibuat oleh pemilik barang, berupa foto, nama barang, tahub barang, kondisi barang, metode pengantaran, domisili, barang yang ingin ditukarkan serta deskripsi barang</li>
+            <li>User juga dapat melihat pemilik barang dan kontak yang dilampirkan oleh pemilik barang</li>
+            <li>Terakhir, user juga dapat melihat barang lain yang sedang ditawarkan oleh pemilik barang</li>
+        </ul>
+        3. UPDATE
+        <ul>
+            <li>Pada halaman ini, pemilik barang bisa mengedit beberapa parameter yang dapat diubah dan melekat pada barang yang dimiliki</li>
+        </ul>
+        4. DELETE
+        <ul>
+            <li>Pada halaman ini juga, pemilik barang dapat menghapus barang yang pernah ditawarkan apabila barang tersebut tidak jadi ditawarkan</li>
+        </ul>
+    3. AI Disclosure
+        1. Tools
+        <ul>
+            <li>Claude Sonnet 5.5</li>
+        </ul>
+        2. Prompt Strategy
+        <ul>
+            <li>Menggunakan AI untuk membantu melengkapi dan menyesuaikan test case dengan models terbaru.</li>
+            <li>Menggunakan AI untuk dasar dalam membuat function-function dasar JavaScript sebelum diimplementasikan pada barter_details.</li>
+            <li>Menggunakan AI untuk membuat toast notification untuk menampilkan pesan konfirmasi kepada user.</li>
+            <li>Menggunakan AI untuk membantu membuat svg icon pada halaman barter details</li>
+        </ul>
+        3. Prompting Log
+        <ul>
+            <li>Membantu Melengkapi & Menyempurnakan Test Case: https://claude.ai/share/82c241f3-bf2c-41bb-a4c4-455d0c09cdc1</li>
+        </ul>
+
+<hr>
 
 4. Modul Keranjang (PIC: Naila Salsabila)
 Modul Keranjang memungkinkan pengguna menyimpan barang barter yang menarik agar dapat dilihat dan dipertimbangkan kembali sebelum mengajukan penawaran.
@@ -136,6 +251,8 @@ d. AI Disclosure
     3. Bantuan implementasi fitur favorit dan pencarian.
     4. Bantuan memperbaiki bug dan menyelesaikan konflik Git.
     5. Bantuan pengujian dan penyusunan dokumentasi README.
+
+<hr>
 
 5. Modul Daftar Post (PIC: Hafizuddin Dzaki Azzam)
 Pada modul ini, user dapat melihat seluruh post yang pernah dibuat, menghapus post, dan melihat siapa saja yang membuat pengajuan dari barang tersebut beserta detail informasi (Nama User, Domisili, dan Barang yang  ditawarkan)
@@ -190,8 +307,7 @@ Pada modul ini, user dapat melihat seluruh post yang pernah dibuat, menghapus po
             4. Bug fixing dan integrasi antar modul: GPT-6 Luna (dalam session VS Code)
             4.1. Integrasi antar modul meliputi penyelarasan model tampilan UI serta tampilan komponen toast.
 
-5. Modul Profil & Setting (PIC: Aisha Ibnaty Zahira)
-Dalam modul ini, user dapat melihat detail akun, mengubah password, dan mengubah preferensi penggunaan aplikasi
+<hr>
 
 ### Fitur lain yang dapat dibangun (Nice To Have Features)
 1. Modul Peta Persebaran Lokasi Service Barang
@@ -202,18 +318,49 @@ Dengan modul ini, harapannya user bisa berinteraksi dengan user lainnya untuk me
 <br><br>
 
 ## List API
-- OpenStreetMap: Untuk memudahkan pencarian titik temu
-- Cloudinary: Upload & kompresi foto barang bekas
-- emsifa/api-wilayah-indonesia Standarisasi input domisili kota/kecamatan (Memakai API Serupa lainnya karena API ini tidak dapat digunakan)
-- Nominatim (OSM): Konversi titik temu ke nama lokasi
-- Firebase Auth & FCM (Menggunakan Google Oauth Service): Login cepat & notifikasi
-- Overpass API (OSM): Sumber data lokasi tempat reparasi/servis barang
-- Sightengine: Moderasi foto barang otomatis
-- Google OAuth 2.0 / OpenID Connect (Baru): Autentikasi akun Google untuk pendaftaran dan login RePair
-- BogorTech API Wilayah Indonesia (Baru): Pencarian kota/kabupaten beserta provinsi dan kode wilayah untuk domisili pengguna
+- Google OAuth 2.0 / OpenID Connect (Noe): Autentikasi akun Google untuk pendaftaran dan login RePair
+- BogorTech API Wilayah Indonesia (Noe): Pencarian kota/kabupaten beserta provinsi dan kode wilayah untuk domisili pengguna
+- DummyJSON Products API (Noe): Sumber dataset awal 50 barang barter
+<br><br>
+
+## Dataset Awal
+- **Sumber:** [DummyJSON Products API](https://dummyjson.com/products?limit=0&select=id,title,description,category,thumbnail) (data publik, dummy, bebas dipakai untuk pengembangan).
+- **Jumlah data:** 50 barang disimpan ke model `Barter`: elektronik 13, perabot 13, pakaian 12, hobi 12. Dipilih bergantian per kategori dari 136 produk relevan (total 194 produk DummyJSON).
+- **Pemetaan kategori:**
+  - `smartphones`, `laptops`, `tablets`, `mobile-accessories` → `elektronik`
+  - `furniture`, `home-decoration`, `kitchen-accessories` → `perabot`
+  - `mens-shirts`, `mens-shoes`, `mens-watches`, `womens-dresses`, `womens-shoes`, `womens-bags`, `womens-watches`, `tops` → `pakaian`
+  - `sports-accessories` → `hobi`
+- **Pemilik data:** user sistem nonaktif `dataset_dummyjson` (tidak bisa login, bukan staff/superuser).
+- **Idempoten:** setiap barang memakai UUID deterministik `uuid5(NAMESPACE_URL, "https://dummyjson.com/products/<id>")`, jadi command aman dijalankan ulang tanpa duplikat.
+- **Nilai contoh:** kondisi `GOOD` (80%), tahun 2024, lokasi "Depok (data contoh)" — bukan data asli dari DummyJSON.
+
+Cara impor (cukup sekali request ke DummyJSON):
+```bash
+python manage.py migrate
+python manage.py import_dummyjson
+```
+
+Setelah impor, login lalu buka **Home** (`/landing/`). Produk ditampilkan dari
+database aplikasi, dengan foto, pencarian, filter kondisi, detail barang, dan
+tombol tambah keranjang. Data lokal dan hosting terpisah: command impor harus
+dijalankan pada database yang digunakan web tersebut; push kode saja tidak
+mengisi database PWS.
+
+Jika Requests di Windows gagal dengan `CERTIFICATE_VERIFY_FAILED`, gunakan
+bundle sertifikat yang sudah dipercaya Windows tanpa mematikan verifikasi TLS:
+
+```powershell
+python manage.py export_bogortech_ca
+$env:REQUESTS_CA_BUNDLE = (Resolve-Path '.test-artifacts/windows-ca-bundle.pem').Path
+python manage.py import_dummyjson
+```
+
+Verifikasi lokal 2 November 2026: 50 produk DummyJSON tersimpan dan seluruh
+50 gambar berhasil tampil di browser pada halaman Home.
 <br><br>
 
 ## Link Proyek
 **Link Figma:** https://www.figma.com/design/DECET1J0NLpkkESRoc5YL0/PBP-%7C-Re.Pair?node-id=0-1&t=ETOfeGihmOFiVStt-1
 
-**Link Deployment PWS:** https://pws.cs.ui.ac.id/rasya.azyan/repair
+**Link Deployment PWS:** https://noe-andrew-repair.pws.cs.ui.ac.id/
