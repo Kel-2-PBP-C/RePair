@@ -1,4 +1,4 @@
-﻿# Re&Pair
+# Re&Pair
 
 Nama Aplikasi: **Re&Pair**
 <br><br>
@@ -77,8 +77,29 @@ d. Delete
     - Pengguna keluar dari semua perangkat, kembali ke landing page, dan menerima notifikasi penghapusan.
     - Email dan akun Google yang sama dapat dipakai untuk mendaftar kembali.
     - Tombol Keluar dari Akun tersedia di Settings.
-
+ 1. Tools
+            <ul>
+                <li>Claude Sonnet 5.5 (web)</li>
+                <li>GPT-6 Luna (VS Code)</li>
+            </ul>
+        2. Prompt Strategy
+            <ul>
+                <li>Merancang Flow Tech Stack dan integrasi webb</li>
+                <li>Menanyakan cara integrasi 50 data</li>
+            </ul>
+        3. Prompting Log
+            1. Membentuk struktur proyek: https://claude.ai/chat/52297ab6-20fa-4e0e-9bb3-282ecda3ec21
+            56659c6d-aa10-4961-b9fb-f088c00cd4ee
+            4. Bug fixing: GPT-6 Luna (dalam session VS Code)
+            
 Tampilan landing, login, Lengkapi Profil, dan Settings menyesuaikan layar HP dan laptop. Navbar bersama menampilkan Home, Cart, Posts, dan Settings; berada di bawah pada HP dan di atas pada laptop.
+
+Contributes beyond modules:
+1. Handle all Pull Request and Checking
+2. Handle all API 
+3. Handle min 50 data that's being required and integrated with colleague's modul
+4. Handle the CI CD
+5. Help colleagues figure out their job
 
 <hr>
 
@@ -297,18 +318,49 @@ Dengan modul ini, harapannya user bisa berinteraksi dengan user lainnya untuk me
 <br><br>
 
 ## List API
-- OpenStreetMap: Untuk memudahkan pencarian titik temu
-- Cloudinary: Upload & kompresi foto barang bekas
-- emsifa/api-wilayah-indonesia Standarisasi input domisili kota/kecamatan (Memakai API Serupa lainnya karena API ini tidak dapat digunakan)
-- Nominatim (OSM): Konversi titik temu ke nama lokasi
-- Firebase Auth & FCM (Menggunakan Google Oauth Service): Login cepat & notifikasi
-- Overpass API (OSM): Sumber data lokasi tempat reparasi/servis barang
-- Sightengine: Moderasi foto barang otomatis
-- Google OAuth 2.0 / OpenID Connect (Baru): Autentikasi akun Google untuk pendaftaran dan login RePair
-- BogorTech API Wilayah Indonesia (Baru): Pencarian kota/kabupaten beserta provinsi dan kode wilayah untuk domisili pengguna
+- Google OAuth 2.0 / OpenID Connect (Noe): Autentikasi akun Google untuk pendaftaran dan login RePair
+- BogorTech API Wilayah Indonesia (Noe): Pencarian kota/kabupaten beserta provinsi dan kode wilayah untuk domisili pengguna
+- DummyJSON Products API (Noe): Sumber dataset awal 50 barang barter
+<br><br>
+
+## Dataset Awal
+- **Sumber:** [DummyJSON Products API](https://dummyjson.com/products?limit=0&select=id,title,description,category,thumbnail) (data publik, dummy, bebas dipakai untuk pengembangan).
+- **Jumlah data:** 50 barang disimpan ke model `Barter`: elektronik 13, perabot 13, pakaian 12, hobi 12. Dipilih bergantian per kategori dari 136 produk relevan (total 194 produk DummyJSON).
+- **Pemetaan kategori:**
+  - `smartphones`, `laptops`, `tablets`, `mobile-accessories` → `elektronik`
+  - `furniture`, `home-decoration`, `kitchen-accessories` → `perabot`
+  - `mens-shirts`, `mens-shoes`, `mens-watches`, `womens-dresses`, `womens-shoes`, `womens-bags`, `womens-watches`, `tops` → `pakaian`
+  - `sports-accessories` → `hobi`
+- **Pemilik data:** user sistem nonaktif `dataset_dummyjson` (tidak bisa login, bukan staff/superuser).
+- **Idempoten:** setiap barang memakai UUID deterministik `uuid5(NAMESPACE_URL, "https://dummyjson.com/products/<id>")`, jadi command aman dijalankan ulang tanpa duplikat.
+- **Nilai contoh:** kondisi `GOOD` (80%), tahun 2024, lokasi "Depok (data contoh)" — bukan data asli dari DummyJSON.
+
+Cara impor (cukup sekali request ke DummyJSON):
+```bash
+python manage.py migrate
+python manage.py import_dummyjson
+```
+
+Setelah impor, login lalu buka **Home** (`/landing/`). Produk ditampilkan dari
+database aplikasi, dengan foto, pencarian, filter kondisi, detail barang, dan
+tombol tambah keranjang. Data lokal dan hosting terpisah: command impor harus
+dijalankan pada database yang digunakan web tersebut; push kode saja tidak
+mengisi database PWS.
+
+Jika Requests di Windows gagal dengan `CERTIFICATE_VERIFY_FAILED`, gunakan
+bundle sertifikat yang sudah dipercaya Windows tanpa mematikan verifikasi TLS:
+
+```powershell
+python manage.py export_bogortech_ca
+$env:REQUESTS_CA_BUNDLE = (Resolve-Path '.test-artifacts/windows-ca-bundle.pem').Path
+python manage.py import_dummyjson
+```
+
+Verifikasi lokal 2 November 2026: 50 produk DummyJSON tersimpan dan seluruh
+50 gambar berhasil tampil di browser pada halaman Home.
 <br><br>
 
 ## Link Proyek
 **Link Figma:** https://www.figma.com/design/DECET1J0NLpkkESRoc5YL0/PBP-%7C-Re.Pair?node-id=0-1&t=ETOfeGihmOFiVStt-1
 
-**Link Deployment PWS:** https://pws.cs.ui.ac.id/rasya.azyan/repair
+**Link Deployment PWS:** https://noe-andrew-repair.pws.cs.ui.ac.id/
