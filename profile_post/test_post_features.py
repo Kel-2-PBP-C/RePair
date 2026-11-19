@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django.contrib.auth import get_user_model
+from django.http import Http404
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
@@ -9,7 +10,7 @@ from accounts.forms import ProfileForm
 from accounts.models import Profile
 from profile_post.forms import PostForm
 from profile_post.models import BarterOffer, BarterReview, Post
-from profile_post.views import _format_created_at, _get_user_contact
+from profile_post.views import _format_created_at, _get_post_or_404, _get_user_contact
 
 
 User = get_user_model()
@@ -37,6 +38,21 @@ class PostFeatureTests(TestCase):
             "condition": Post.ConditionChoices.GOOD,
             "preferred_barter": "A houseplant",
         }
+
+    def test_get_post_or_404_resolves_numeric_ids_and_rejects_invalid_ids(self):
+        post = Post.objects.create(
+            user=self.user,
+            title="A post",
+            description="A description",
+            location="Depok",
+            preferred_barter="A book",
+        )
+
+        self.assertEqual(_get_post_or_404(str(post.pk)), post)
+        with self.assertRaises(Http404):
+            _get_post_or_404("not-a-post")
+        with self.assertRaises(Http404):
+            _get_post_or_404("0")
 
     def test_new_posts_require_a_category_and_legacy_posts_can_remain_uncategorized(self):
         self.assertFalse(PostForm(self.post_data(category="")).is_valid())

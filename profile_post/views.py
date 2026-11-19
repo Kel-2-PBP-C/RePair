@@ -1,6 +1,6 @@
 from datetime import timedelta
 from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse
+from django.http import Http404, JsonResponse
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST, require_GET
@@ -175,6 +175,16 @@ def _calc_delta(current_val, prev_val, is_float=False):
     }
 
 
+def _get_post_or_404(post_id, **filters):
+    try:
+        post_id = int(post_id)
+    except (TypeError, ValueError):
+        raise Http404
+    if post_id < 1:
+        raise Http404
+    return get_object_or_404(Post, pk=post_id, **filters)
+
+
 @login_required
 def index(request):
     """Renders the main Posts page with inherited account contact and region."""
@@ -192,7 +202,7 @@ def index(request):
 
 @login_required
 def post_detail_page(request, post_id):
-    post = get_object_or_404(Post, id=post_id)
+    post = _get_post_or_404(post_id)
     selected_offer = post.offers.filter(is_selected=True).first()
     created_at_display, _ = _format_created_at(post.created_at)
     return render(request, 'profile_post/detail.html', {
