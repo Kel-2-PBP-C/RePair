@@ -1,0 +1,29 @@
+[run]
+branch = True
+source =
+    accounts
+    core
+    barter_details
+    keranjang
+    main_page
+    profile_post
+    RePair
+    scripts
+omit =
+    */migrations/*
+    */tests/*
+    */tests.py
+    */test_*.py
+    */postgres_test_settings.py
+
+[report]
+fail_under = 90
+precision = 2
+show_missing = True
+skip_empty = True
+
+[html]
+directory = htmlcov
+
+[xml]
+output = coverage.xml

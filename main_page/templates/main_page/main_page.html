@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'main_page/style.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="search-section">
+
+<form method="GET">
+    <input
+        type="text"
+        name="search"
+        placeholder="Cari Barang yang Kamu Inginkan..."
+        value="{{ search }}"
+    >
+
+    <select name="kondisi">
+        <option value="">Semua Kondisi</option>
+        <option value="NEW" {% if kondisi == 'NEW' %}selected{% endif %}>
+            Baru
+        </option>
+        <option value="GOOD" {% if kondisi == 'GOOD' %}selected{% endif %}>
+            Bekas - Layak Pakai
+        </option>
+        <option value="REPAIR" {% if kondisi == 'REPAIR' %}selected{% endif %}>
+            Butuh Perbaikan
+        </option>
+    </select>
+
+    <button type="submit">Cari</button>
+</form>
+</div>
+
+<div class="rekomendasi-header">
+    <div>
+        <h2>Rekomendasi Untuk Kamu</h2>
+        <span>Telusuri barang-barang untuk ditukar.</span>
+    </div>
+    
+    <a href="{% url 'profile_post:show_posts' %}?create=1" class="post-barang-link">
+        + Post Barang
+    </a>
+</div>
+
+<div class="barang-container">
+    {% for item in items %}
+        <div class="barang-card">
+            <a href="{% url 'barter_details:barter_detail' item.pk %}" class="barang-link">
+                <img src="{{ item.thumbnail }}" alt="{{ item.title }}" width="200">
+                <h3>{{ item.title }}</h3>
+            </a>
+
+            <p>Kondisi: {{ item.get_condition_display }}</p>
+
+            <form method="POST" action="{% url 'keranjang:tambah_keranjang' item.pk %}">
+                {% csrf_token %}
+                <button type="submit">Tambah ke Keranjang</button>
+            </form>
+        </div>
+    {% empty %}
+        {% if search or kondisi %}
+            <p>Barang yang kamu cari tidak ditemukan.</p>
+        {% else %}
+            <p>Belum ada barang yang diposting.</p>
+        {% endif %}
+    {% endfor %}
+</div>
+
+{% endblock %}

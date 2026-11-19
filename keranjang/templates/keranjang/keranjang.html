@@ -1,15 +1,445 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Keranjang</title>
-</head>
-<body>
 
-    <h1>Keranjang Saya</h1>
+{% extends "base.html" %}
+{% load static %}
 
-    <p>Belum ada barang di keranjang.</p>
+{% block title %}Keranjang{% endblock %}
+{% block main_class %}cart-page{% endblock %}
 
-</body>
-</html>
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/keranjang.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="cart-container" aria-labelledby="cart-heading">
+
+    <!-- HEADER -->
+    <div class="cart-header">
+        <div>
+            <h1 class="cart-heading" id="cart-heading">
+                Keranjang
+            </h1>
+
+            <p class="cart-subtitle">
+                Barang yang kamu simpan untuk ditukar.
+            </p>
+        </div>
+    </div>
+
+    <!-- PENCARIAN BARANG -->
+    <form
+        class="cart-search"
+        method="get"
+        action="{% url 'keranjang:keranjang' %}"
+    >
+        <label class="sr-only" for="cart-search-input">
+            Cari barang berdasarkan nama
+        </label>
+
+        <input
+            id="cart-search-input"
+            type="search"
+            name="q"
+            value="{{ search_query|default:'' }}"
+            placeholder="Cari nama barang..."
+        >
+
+        <label class="sr-only" for="cart-location-input">
+            Cari barang berdasarkan lokasi
+        </label>
+
+        <input
+            id="cart-location-input"
+            type="search"
+            name="location"
+            value="{{ location_query|default:'' }}"
+            placeholder="Cari lokasi..."
+        >
+
+        <button type="submit">
+            Cari
+        </button>
+
+        {% if search_query or location_query %}
+            <a
+                class="clear-search"
+                href="{% url 'keranjang:keranjang' %}"
+            >
+                Reset
+            </a>
+        {% endif %}
+    </form>
+
+    <!-- PESAN AJAX FAVORIT -->
+    <p
+        id="favorite-message"
+        class="favorite-message"
+        role="status"
+        aria-live="polite"
+    ></p>
+
+    <!-- DAFTAR BARANG -->
+    <div class="cart-grid">
+
+        {% for item in cart_items %}
+
+            <article class="cart-card">
+
+                <!-- GAMBAR BARANG -->
+                <a
+                    class="cart-image-link"
+                    href="{% url 'barter_details:barter_detail' item.barter.id %}"
+                    aria-label="Lihat detail {{ item.barter.title }}"
+                >
+                    {% if item.barter.thumbnail %}
+                        <img
+                            class="cart-image"
+                            src="{{ item.barter.thumbnail }}"
+                            alt="{{ item.barter.title }}"
+                            loading="lazy"
+                        >
+                    {% else %}
+                        <div class="cart-image cart-image-empty">
+                            Gambar tidak tersedia
+                        </div>
+                    {% endif %}
+                </a>
+
+                <!-- INFORMASI BARANG -->
+                <div class="cart-info">
+
+                    <!-- NAMA BARANG -->
+                    <h2 class="cart-item-title">
+                        <a
+                            class="cart-item-link"
+                            href="{% url 'barter_details:barter_detail' item.barter.id %}"
+                        >
+                            {{ item.barter.title }}
+                        </a>
+                    </h2>
+
+                    <!-- STATUS BARANG -->
+                    <div class="cart-status
+                        {% if item.barter.status == 'AVAILABLE' %}
+                            cart-status-available
+                        {% elif item.barter.status == 'NEGOTIATING' %}
+                            cart-status-negotiating
+                        {% elif item.barter.status == 'BARTERED' %}
+                            cart-status-bartered
+                        {% endif %}
+                    ">
+                        {{ item.barter.get_status_display }}
+                    </div>
+
+                    <!-- FORM FAVORIT -->
+                    <form
+                        class="favorite-form"
+                        method="post"
+                        action="{% url 'keranjang:toggle_favorit' item.id %}"
+                    >
+                        {% csrf_token %}
+
+                        <input
+                            type="hidden"
+                            name="is_favorite"
+                            value="{% if item.is_favorite %}false{% else %}true{% endif %}"
+                        >
+
+                        <button
+                            type="submit"
+                            class="favorite-button {% if item.is_favorite %}is-favorite{% endif %}"
+                            aria-pressed="{{ item.is_favorite|yesno:'true,false' }}"
+                            aria-label="{% if item.is_favorite %}Hapus dari favorit{% else %}Tambahkan ke favorit{% endif %}"
+                        >
+                            {% if item.is_favorite %}
+                                ♥ Favorit
+                            {% else %}
+                                ♡ Tambah Favorit
+                            {% endif %}
+                        </button>
+                    </form>
+
+                    <!-- BARANG PENGGANTI -->
+                    <p class="cart-detail">
+                        <span class="detail-icon" aria-hidden="true">↻</span>
+                        <span>
+                            Barang pengganti:
+                            {{ item.barter.item_replacement|default:"Belum ditentukan" }}
+                        </span>
+                    </p>
+
+                    <!-- LOKASI -->
+                    <p class="cart-detail">
+                        <span class="detail-icon" aria-hidden="true">📍</span>
+                        <span>
+                            Lokasi: {{ item.barter.item_location }}
+                        </span>
+                    </p>
+
+                    <!-- KONDISI -->
+                    <p class="cart-detail">
+                        <span class="detail-icon" aria-hidden="true">✓</span>
+                        <span>
+                            Kondisi:
+                            {{ item.barter.get_condition_display|default:"-" }}
+                            {% if item.barter.condition_percentage != None %}
+                                ({{ item.barter.condition_percentage }}%)
+                            {% endif %}
+                        </span>
+                    </p>
+
+                    <!-- INFORMASI NEGOSIASI -->
+                    {% if item.barter.status == "NEGOTIATING" and item.user_selected_offer %}
+                        <section
+                            class="cart-negotiation-contact"
+                            aria-label="Kontak pengunggah barang"
+                        >
+                            <strong>
+                                Barter sedang dinegosiasikan dengan:
+                            </strong>
+
+                            <span>
+                                {{ item.barter.owner.get_full_name|default:item.barter.owner.username }}
+                            </span>
+
+                            <span>
+                                Kontak:
+                                {{ item.owner_contact|default:"Kontak belum diatur" }}
+                            </span>
+                        </section>
+                    {% endif %}
+
+                    <!-- INFORMASI DAN FORM ULASAN -->
+                    {% if item.barter.status == "BARTERED" and item.user_selected_offer %}
+
+                        {% if item.user_barter_review %}
+
+                            <section class="cart-review-summary">
+                                <strong>
+                                    Ulasan Anda untuk
+                                    {{ item.barter.owner.get_full_name|default:item.barter.owner.username }}
+                                </strong>
+
+                                <span aria-label="Rating {{ item.user_barter_review.rating }} dari 5">
+                                    {% for _ in "12345" %}
+                                        {% if forloop.counter <= item.user_barter_review.rating %}
+                                            ★
+                                        {% else %}
+                                            ☆
+                                        {% endif %}
+                                    {% endfor %}
+                                </span>
+
+                                {% if item.user_barter_review.comment %}
+                                    <p>
+                                        {{ item.user_barter_review.comment }}
+                                    </p>
+                                {% endif %}
+                            </section>
+
+                        {% elif item.barter.is_profile_post %}
+
+                            <form
+                                class="cart-review-form"
+                                method="post"
+                                action="{% url 'profile_post:submit_bidder_review' item.barter.pk %}"
+                            >
+                                {% csrf_token %}
+
+                                <strong>
+                                    Ulasan untuk pengunggah
+                                </strong>
+
+                                <label>
+                                    Rating
+
+                                    <select name="rating" required>
+                                        <option value="5">★★★★★ 5 · Sangat puas</option>
+                                        <option value="4">★★★★☆ 4 · Bagus</option>
+                                        <option value="3">★★★☆☆ 3 · Cukup</option>
+                                        <option value="2">★★☆☆☆ 2 · Kurang</option>
+                                        <option value="1">★☆☆☆☆ 1 · Mengecewakan</option>
+                                    </select>
+                                </label>
+
+                                <label>
+                                    Komentar
+
+                                    <textarea
+                                        name="comment"
+                                        rows="3"
+                                        maxlength="1000"
+                                        placeholder="Ceritakan pengalaman barter"
+                                    ></textarea>
+                                </label>
+
+                                <button
+                                    type="submit"
+                                    class="cart-review-submit"
+                                >
+                                    Kirim ulasan
+                                </button>
+                            </form>
+
+                        {% endif %}
+
+                    {% endif %}
+
+                    <!-- TOMBOL AKSI -->
+                    <div class="cart-actions">
+
+                        {% if item.barter.status == "AVAILABLE" %}
+
+                            <a
+                                class="offer-button"
+                                href="{% url 'barter_details:barter_detail' item.barter.id %}"
+                            >
+                                Ajukan Penawaran
+                            </a>
+
+                        {% elif item.barter.status == "NEGOTIATING" %}
+
+                            <a
+                                class="offer-button"
+                                href="{% url 'barter_details:barter_detail' item.barter.id %}"
+                            >
+                                Lihat detail barter
+                            </a>
+
+                        {% endif %}
+
+                        <!-- HAPUS BARANG -->
+                        {% if item.barter.status != "NEGOTIATING" %}
+                        <form
+                            class="delete-form"
+                            method="post"
+                            action="{% url 'keranjang:hapus_keranjang' item.id %}"
+                            data-item-title="{{ item.barter.title }}"
+                        >
+                            {% csrf_token %}
+
+                            <button
+                                class="delete-button"
+                                type="button"
+                                data-open-delete
+                                aria-label="Hapus {{ item.barter.title }}"
+                                title="Hapus barang"
+                            >
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M3 6h18"/>
+                                    <path d="M8 6V4h8v2"/>
+                                    <path d="m19 6-1 14H6L5 6"/>
+                                    <path d="M10 10v6"/>
+                                    <path d="M14 10v6"/>
+                                </svg>
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+
+                </div>
+            </article>
+
+        {% empty %}
+
+            <!-- KERANJANG KOSONG -->
+            <div class="empty-cart">
+
+                <h2>
+                    {% if search_query or location_query %}
+                        Barang tidak ditemukan
+                    {% else %}
+                        Keranjang kamu masih kosong
+                    {% endif %}
+                </h2>
+
+                <p>
+                    {% if search_query or location_query %}
+                        Coba kata kunci atau lokasi yang berbeda.
+                    {% else %}
+                        Simpan barang yang kamu minati agar mudah ditemukan lagi.
+                    {% endif %}
+                </p>
+
+                {% if search_query %}
+                    <a class="button button-primary back-home" href="{% url 'keranjang:keranjang' %}">
+                        Hapus pencarian
+                    </a>
+                {% else %}
+                    <a class="button button-primary back-home" href="{{ navigation.home_url }}">
+                        Cari Barang untuk Barter
+                    </a>
+                {% endif %}
+            </div>
+
+        {% endfor %}
+
+    </div>
+</section>
+
+<!-- DIALOG KONFIRMASI HAPUS -->
+<dialog
+    class="delete-dialog"
+    id="delete-dialog"
+    aria-labelledby="delete-title"
+    aria-describedby="delete-description"
+>
+
+    <div class="dialog-icon" aria-hidden="true">
+        <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+        >
+            <path d="M3 6h18"/>
+            <path d="M8 6V4h8v2"/>
+            <path d="m19 6-1 14H6L5 6"/>
+        </svg>
+    </div>
+
+    <h2 id="delete-title">
+        Hapus Barang?
+    </h2>
+
+    <p id="delete-description">
+        Apakah kamu yakin ingin menghapus barang ini?
+    </p>
+
+    <div class="dialog-actions">
+
+        <button
+            type="button"
+            class="cancel-delete"
+            data-cancel-delete
+        >
+            Batal
+        </button>
+
+        <button
+            type="button"
+            class="confirm-delete"
+            data-confirm-delete
+        >
+            Ya, hapus
+        </button>
+
+    </div>
+
+</dialog>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/keranjang.js' %}" defer></script>
+{% endblock %}

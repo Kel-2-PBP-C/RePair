@@ -25,15 +25,8 @@ def navigation(request):
     cart_url = _optional_url(
         getattr(settings, "NAVBAR_CART_URL_NAME", None),
         "keranjang",
-        "keranjang:show_keranjang",
+        "keranjang:keranjang",
         "cart:index",
-    )
-    forum_url = _optional_url(
-        getattr(settings, "NAVBAR_FORUM_URL_NAME", None),
-        "forum:show_forum",
-        "forum:index",
-        "forum:forum_list",
-        "forum:home",
     )
     posts_url = _optional_url(
         getattr(settings, "NAVBAR_POSTS_URL_NAME", None),
@@ -60,8 +53,6 @@ def navigation(request):
                  "active": _is_active(request, home_url), "icon": "img/home_filled.png"},
                 {"key": "cart", "label": "Cart", "url": cart_url,
                  "active": _is_active(request, cart_url), "icon": "img/shopping_cart.png"},
-                {"key": "forum", "label": "Forum", "url": forum_url,
-                 "active": _is_active(request, forum_url), "icon": "img/chat_bubble_outline.png"},
                 {"key": "posts", "label": "Posts", "url": posts_url,
                  "active": _is_active(request, posts_url), "icon": "img/insert_photo.png"},
                 {"key": "settings", "label": "Settings", "url": settings_url,

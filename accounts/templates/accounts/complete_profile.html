@@ -2,11 +2,6 @@
 {% load static %}
 {% block title %}Lengkapi Profil{% endblock %}
 {% block body_class %}brand-page--profile{% endblock %}
-{% block messages %}
-{% if messages %}{% for message in messages %}{% if 'error' in message.tags %}
-<div class="brand-messages"><p class="brand-message brand-message-error" role="alert">{{ message }}</p></div>
-{% endif %}{% endfor %}{% endif %}
-{% endblock %}
 {% block content %}
 <section class="brand-profile-completion" aria-labelledby="complete-profile-title">
     <a class="brand-logo brand-profile-logo" href="{% url 'home' %}" aria-label="RePair, halaman awal">
